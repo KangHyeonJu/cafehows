@@ -1,4 +1,4 @@
-package view;
+package cafehows.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
