@@ -1,4 +1,4 @@
-package view;
+package cafehows.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,6 +25,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+
+import cafehows.model.cafeDAO;
+import cafehows.model.menuDTO;
 
 
 public class Main extends JFrame{
@@ -56,18 +59,18 @@ public class Main extends JFrame{
 	private JPanel getTab1Panel() {
 		if(tab1Panel == null) {
 			tab1Panel = new JPanel();
-			tab1Panel.add(new JScrollPane(getMenu1Table()));
+			tab1Panel.add(new JScrollPane(getMenuTable1()));
 		}
 		return tab1Panel;
 	}
 	private JPanel getTab2Panel() {
 		if(tab2Panel == null) {
 			tab2Panel = new JPanel();
-			tab2Panel.add(new JScrollPane(getMenu2Table()));
+			tab2Panel.add(new JScrollPane(getMenuTable2()));
 		}
 		return tab2Panel;
 	}
-	private JTable getMenu1Table() {
+	private JTable getMenuTable1() {
 		if(menuTable1 == null) {
 			menuTable1 = new JTable();
 			menuTable1.setAutoCreateRowSorter(true);
@@ -75,7 +78,7 @@ public class Main extends JFrame{
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable1.getModel();
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("가격");
-		//	refreshMenu();
+			refreshMenu(1);
 			
 			menuTable1.getColumn("메뉴명").setPreferredWidth(50);
 			menuTable1.getColumn("가격").setPreferredWidth(20);
@@ -84,20 +87,20 @@ public class Main extends JFrame{
 //			menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
 //			menuTable.getColumn("가격").setCellRenderer(ctcr);
 //			
-//			menuTable.addMouseListener(new MouseAdapter() {
-//				public void mouseClicked(MouseEvent e) {
-//					int rowIndex = menuTable.getSelectedRow();
-//					if(rowIndex !=-1) {
-//						int bno = (int)menuTable.getValueAt(rowIndex, 0);
-//						
-//					}
-//				}		
-//			});
+			menuTable1.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					int rowIndex = menuTable1.getSelectedRow();
+					if(rowIndex !=-1) {
+						int bno = (int)menuTable1.getValueAt(rowIndex, 0);
+						
+					}
+				}		
+			});
 		}
 			
 		return menuTable1;
 	}
-	private JTable getMenu2Table() {
+	private JTable getMenuTable2() {
 		if(menuTable2 == null) {
 			menuTable2 = new JTable();
 			menuTable2.setAutoCreateRowSorter(true);
@@ -105,7 +108,7 @@ public class Main extends JFrame{
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable2.getModel();
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("가격");
-		//	refreshMenu();
+			refreshMenu(2);
 			
 			menuTable2.getColumn("메뉴명").setPreferredWidth(50);
 			menuTable2.getColumn("가격").setPreferredWidth(20);
@@ -237,8 +240,8 @@ public class Main extends JFrame{
 			btnPanel.add(getCustomBtn());
 			btnPanel.add(getSalesBtn());
 			btnPanel.add(getSalesBtn());
-			btnPanel.add(new JButton());
-			btnPanel.add(new JButton());
+			btnPanel.add(new JPanel());
+			btnPanel.add(new JPanel());
 			btnPanel.add(getRefundBtn());
 			btnPanel.add(getPaymentBtn());
 			
@@ -302,6 +305,15 @@ public class Main extends JFrame{
 		int leftTopX = centerPoint.x - this.getWidth()/2;
 		int leftTopY = centerPoint.y - this.getHeight()/2;
 		this.setLocation(leftTopX, leftTopY);
+	}
+	
+	public void refreshMenu(int cano) {
+		DefaultTableModel tableModel = (DefaultTableModel) menuTable1.getModel();
+		tableModel.setNumRows(0);
+		for(menuDTO dto : cafeDAO.getInstance().getItems(cano)) {
+			Object[] rowData = {dto.getMname(), dto.getPrice()};
+			tableModel.addRow(rowData);
+		}
 	}
 	
 

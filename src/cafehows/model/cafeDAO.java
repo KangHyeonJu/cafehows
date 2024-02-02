@@ -5,6 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import model.BoardDTO;
 
 
 
@@ -39,6 +43,27 @@ public class cafeDAO {
 		if ( pstmt != null ) pstmt.close();
 		if ( conn != null ) conn.close();
 	}
+	public List<menuDTO> getItems(int cano) {
+		connect();
+		sql = "select * from menu where cano = ? order by mno ";
+		List<menuDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, cano);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				menuDTO item = new menuDTO();
+				item.setMname(rs.getString(2));
+				item.setPrice(rs.getInt(3));
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+	
 	
 	
 }
