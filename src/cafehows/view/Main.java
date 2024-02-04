@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -78,7 +79,7 @@ public class Main extends JFrame{
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable1.getModel();
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("가격");
-			refreshMenu(1);
+			refreshMenu(1, menuTable1);
 			
 			menuTable1.getColumn("메뉴명").setPreferredWidth(50);
 			menuTable1.getColumn("가격").setPreferredWidth(20);
@@ -108,7 +109,7 @@ public class Main extends JFrame{
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable2.getModel();
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("가격");
-			refreshMenu(2);
+			refreshMenu(2, menuTable2);
 			
 			menuTable2.getColumn("메뉴명").setPreferredWidth(50);
 			menuTable2.getColumn("가격").setPreferredWidth(20);
@@ -155,13 +156,21 @@ public class Main extends JFrame{
 			orderPanel.add(label, BorderLayout.NORTH);
 			orderPanel.add(new JScrollPane(getOrderTable()),BorderLayout.CENTER);
 		//	orderPanel.add(getOrderBtnPanel(),BorderLayout.SOUTH);
-			JLabel priceLabel = new JLabel("총 가격");
-			JTextField priceField = new JTextField(10);
 			
 			JPanel totalField = new JPanel();
+			totalField.setLayout(new BoxLayout(totalField,BoxLayout.Y_AXIS));
+			
+			JPanel price = new JPanel();
+			JLabel priceLabel = new JLabel("총 가격");
+			JTextField priceField = new JTextField(10);
+			price.add(priceLabel);
+			price.add(priceField);
+			
 			totalField.add(getOrderBtnPanel());
-			totalField.add(priceLabel);
-			totalField.add(priceField);
+			totalField.add(price);
+			
+		
+			
 			orderPanel.add(totalField,BorderLayout.SOUTH);
 			
 		}
@@ -253,6 +262,10 @@ public class Main extends JFrame{
 		if(addBtn==null) {
 			addBtn = new JButton();
 			addBtn.setText("메뉴 추가");
+			addBtn.addActionListener(e->{
+				AddMenu addMenu = new AddMenu();
+				addMenu.setVisible(true);
+			});
 	
 		}
 		return addBtn;
@@ -261,6 +274,10 @@ public class Main extends JFrame{
 		if(modBtn==null) {
 			modBtn = new JButton();
 			modBtn.setText("메뉴 수정/삭제/숨김");
+			modBtn.addActionListener(e->{
+				MenuModify menuModify= new MenuModify();
+				menuModify.setVisible(true);
+			});
 	
 		}
 		return modBtn;
@@ -269,6 +286,10 @@ public class Main extends JFrame{
 		if(customBtn==null) {
 			customBtn = new JButton();
 			customBtn.setText("고객 관리");
+			customBtn.addActionListener(e->{
+				CustomerDialog customerDialog = new CustomerDialog();
+				customerDialog.setVisible(true);
+			});
 		
 		}
 		return customBtn;
@@ -287,7 +308,11 @@ public class Main extends JFrame{
 		if(refundBtn==null) {
 			refundBtn = new JButton();
 			refundBtn.setText("환불");
-	
+			refundBtn.addActionListener(e->{
+				Refund refund= new Refund();
+				refund.setVisible(true);
+			});
+		
 		
 		}
 		return refundBtn;
@@ -296,6 +321,10 @@ public class Main extends JFrame{
 		if(paymentBtn==null) {
 			paymentBtn = new JButton();
 			paymentBtn.setText("결제");
+			paymentBtn.addActionListener(e->{
+				UsePoints usePoints= new UsePoints();
+				usePoints.setVisible(true);
+			});
 		}
 		return paymentBtn;
 	}
@@ -307,12 +336,13 @@ public class Main extends JFrame{
 		this.setLocation(leftTopX, leftTopY);
 	}
 	
-	public void refreshMenu(int cano) {
-		DefaultTableModel tableModel = (DefaultTableModel) menuTable1.getModel();
+	public void refreshMenu(int cano, JTable menuTable) {
+		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 		tableModel.setNumRows(0);
 		for(menuDTO dto : cafeDAO.getInstance().getItems(cano)) {
 			Object[] rowData = {dto.getMname(), dto.getPrice()};
 			tableModel.addRow(rowData);
+			
 		}
 	}
 	

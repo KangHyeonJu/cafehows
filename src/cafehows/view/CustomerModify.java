@@ -13,13 +13,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-public class customerModify extends JFrame{
+public class CustomerModify extends JFrame{
 
 	private JPanel customerNum, pCenter, pSouth;
 	private JTextField txtCustomerNum;
 	private JButton btnOk, btnCancel, btnDelete;
 	
-	public customerModify() {
+	public CustomerModify() {
 		this.setTitle("고객-등록/삭제");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(300, 200);
@@ -107,7 +107,7 @@ public class customerModify extends JFrame{
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
-			customerModify cM = new customerModify();
+			CustomerModify cM = new CustomerModify();
         	cM.setVisible(true);
 	    });
 

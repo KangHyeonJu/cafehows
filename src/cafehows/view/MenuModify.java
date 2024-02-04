@@ -13,12 +13,12 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-public class menuModify extends JFrame{
+public class MenuModify extends JFrame{
 	private JPanel pCenter, pMenuName, pPrice, pSouth, pPriceIn;
 	private JTextField txtMenuName, txtPrice;
 	private JButton btnOk, btnCancel;
 
-	public menuModify() {
+	public MenuModify() {
 		this.setTitle("메뉴수정");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(300, 200);
@@ -110,7 +110,7 @@ public class menuModify extends JFrame{
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
-			menuModify mM = new menuModify();
+			MenuModify mM = new MenuModify();
         	mM.setVisible(true);
 	    });
 

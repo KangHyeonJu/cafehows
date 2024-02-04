@@ -61,6 +61,51 @@ public class cafeDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		connect();
+		sql = "select * from category where cano = ? order by mno ";
+		
+		
+		return items;
+	}
+	
+	public List<CategoryDTO> getCategoryItems() {
+		connect();
+		sql = "select * from category order by cano ";
+		List<CategoryDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				CategoryDTO item = new CategoryDTO();
+				item.setCano(rs.getInt(1));
+				item.setKind(rs.getString(2));
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+	public List<CustomerDTO> getCustomerItems() {
+		connect();
+		sql = "select * from customer order by cno ";
+		List<CustomerDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				CustomerDTO item = new CustomerDTO();
+				item.setCno(rs.getInt(1));
+				item.setPoint(rs.getInt(2));
+				item.setRecdate(rs.getDate(3));
+				item.setVisibility(rs.getInt(4));
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return items;
 	}
 	

@@ -99,7 +99,8 @@ public class AddMenu extends JFrame{
 			btnInquiry.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					TypeInquiry typeInquiry=  new TypeInquiry();
+					typeInquiry.setVisible(true);
 				}
 			});
 		}
