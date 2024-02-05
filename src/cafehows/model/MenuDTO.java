@@ -10,6 +10,4 @@ public class MenuDTO {
 	private int cano;
 	private String kind;
 
-
-	
 }

@@ -2,35 +2,22 @@ package cafehows.view;
 
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GraphicsEnvironment;
-import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
+
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
-import cafehows.model.OrderDTO;
 import cafehows.model.CafeDAO;
 
 
@@ -145,17 +132,18 @@ public class SalesDialog extends JDialog{
 		}
 		
 		
+		//메뉴별 판매량 탭
 		private JPanel getTab2Panel() {
 			if(tab2Panel == null) {
 				tab2Panel = new JPanel();
-			
 			}
 			return tab2Panel;
 		}
+		
+
 		private JPanel getTab3Panel() {
 			if(tab3Panel == null) {
 				tab3Panel = new JPanel();
-			
 			}
 			return tab3Panel;
 		}

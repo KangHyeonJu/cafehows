@@ -1,13 +1,13 @@
 package cafehows.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
@@ -30,11 +29,11 @@ public class TypeInquiry extends JFrame{
 	public TypeInquiry() {
 		this.setTitle("종류 조회");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(300, 200);
+		this.setSize(500, 200);
 
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
-		this.getContentPane().add(getPEast(), BorderLayout.EAST);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
+		locationCenter();
 	}
 	
 	public JPanel getPCenter() {
@@ -76,18 +75,6 @@ public class TypeInquiry extends JFrame{
 		return 	typeTable;
 		}
 	
-	public JPanel getPEast() {
-		if(pEast==null) {
-			pEast = new JPanel();
-	//		pEast.setLayout(new BoxLayout(pEast,BoxLayout.Y_AXIS));
-			pEast.add(new JLabel("종류", JLabel.CENTER));
-			JTextField kindName = new JTextField(10);
-			pEast.add(kindName);
-		}
-		return pEast;
-	}
-	
-	
 	public JPanel getPSouth() {
 		if(pSouth == null) {
 			pSouth = new JPanel();
@@ -108,7 +95,8 @@ public class TypeInquiry extends JFrame{
 			btnModify.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					UpdateMenuKind updatekind = new UpdateMenuKind();
+					updatekind.setVisible(true);
 				}
 			});
 		}
@@ -137,7 +125,8 @@ public class TypeInquiry extends JFrame{
 			btnAdd.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					AddKind addKind = new AddKind();
+					addKind.setVisible(true);
 				}
 			});
 		}
@@ -153,7 +142,7 @@ public class TypeInquiry extends JFrame{
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					dispose();
 				}
 			});
 		}
@@ -171,6 +160,14 @@ public class TypeInquiry extends JFrame{
 			
 		}
 	
+	}
+	
+	private void locationCenter() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Point centerPoint = ge.getCenterPoint();
+		int leftTopX = centerPoint.x - this.getWidth()/2;
+		int leftTopY = centerPoint.y - this.getHeight()/2;
+		this.setLocation(leftTopX, leftTopY);
 	}
 	
 }
