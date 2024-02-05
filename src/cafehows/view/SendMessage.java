@@ -7,10 +7,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
@@ -22,7 +20,7 @@ public class SendMessage extends JFrame{
 	public SendMessage() {
 		this.setTitle("문자 전송");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(300, 200);
+		this.setSize(400, 300);
 		
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
@@ -60,7 +58,9 @@ public class SendMessage extends JFrame{
 			btnOk.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					MessageCompletion messageCompletion = new MessageCompletion();
+					messageCompletion.setVisible(true);
+					txtMessage.setText("");
 				}
 			});
 		}
@@ -70,10 +70,11 @@ public class SendMessage extends JFrame{
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
 			btnCancel = new JButton();
-			btnCancel.setText("취소");
+			btnCancel.setText("닫기");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					SendMessage.this.dispose();
 					
 				}
 			});
