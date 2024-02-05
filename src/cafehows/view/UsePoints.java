@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -12,8 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableModel;
 
 import cafehows.model.CustomerDTO;
+import cafehows.model.OrderDTO;
 import cafehows.model.CafeDAO;
 
 
@@ -21,8 +24,10 @@ public class UsePoints extends JFrame{
 	private JPanel pCenter, pCono, pPoint, pUsePoint, pSouth, pConoIn;
 	private JTextField txtCono, txtPoint, txtUsePoint;
 	private JButton btnOk, btnCancel;
-	CustomerDTO cDto = new CustomerDTO();
-	CafeDAO dao = new CafeDAO();
+	private CustomerDTO cDto = new CustomerDTO();
+	private CafeDAO dao = new CafeDAO();
+	private static List<OrderDTO> orderList = CafeDAO.getInstance().getOrderItems();
+	private static List<CustomerDTO> customerList = CafeDAO.getInstance().getCustomerItems();
 	
 	public UsePoints() {
 		this.setTitle("회원 포인트 사용");					
@@ -81,12 +86,11 @@ public class UsePoints extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int customerNum = Integer.parseInt(txtCono.getText());
-					
 					int customerPoint = 0;
-					
-					for(CustomerDTO cDto : CafeDAO.getInstance().getCustomerItems()) {
-						if(customerNum == cDto.getCno()){
-							customerPoint = cDto.getPoint();
+
+					for(int i=0;i<customerList.size();i++) {
+						if(customerNum == customerList.get(i).getCno()){
+							customerPoint = customerList.get(i).getPoint();
 						}
 					}
 					getTxtPoint().setText(Integer.toString(customerPoint));
@@ -154,14 +158,4 @@ public class UsePoints extends JFrame{
 		}
 		return btnCancel;
 	}
-
-	
-//	public static void main(String[] args) {
-//		SwingUtilities.invokeLater(() -> {
-//			UsePoints up = new UsePoints();
-//        	up.setVisible(true);
-//	    });
-//
-//	}
-
 }

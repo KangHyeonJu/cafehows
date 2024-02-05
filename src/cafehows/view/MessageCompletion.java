@@ -2,11 +2,12 @@ package cafehows.view;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.WindowConstants;
 
 public class MessageCompletion extends JFrame{
 	private JLabel jLabel;
 	public MessageCompletion() {
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.getContentPane().add(getJLabel());
 		this.setSize(200,150);
 	}

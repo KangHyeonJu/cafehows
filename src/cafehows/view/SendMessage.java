@@ -60,6 +60,7 @@ public class SendMessage extends JFrame{
 				public void actionPerformed(ActionEvent e) {
 					MessageCompletion messageCompletion = new MessageCompletion();
 					messageCompletion.setVisible(true);
+					SendMessage.this.dispose();
 					txtMessage.setText("");
 				}
 			});
