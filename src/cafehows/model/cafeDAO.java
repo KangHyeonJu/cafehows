@@ -8,10 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.BoardDTO;
-
-
-
 public class cafeDAO {
 	private static final cafeDAO instance = new cafeDAO();
 	private final String url = "jdbc:mysql://222.119.100.89:3382/cafehows";
