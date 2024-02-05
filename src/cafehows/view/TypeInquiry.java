@@ -107,6 +107,7 @@ public class TypeInquiry extends JDialog{
 				public void actionPerformed(ActionEvent e) {
 					UpdateMenuKind updatekind = new UpdateMenuKind(main,cano);
 					updatekind.setVisible(true);
+				
 				}
 			});
 		}
@@ -121,6 +122,8 @@ public class TypeInquiry extends JDialog{
 			btnDel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					CafeDAO.getInstance().deleteCategory(cano);
+					refreshTable();
 					
 				}
 			});
@@ -131,6 +134,7 @@ public class TypeInquiry extends JDialog{
 	public JButton getBtnAdd() {
 		if(btnAdd == null) {
 			btnAdd = new JButton();
+			
 			btnAdd.setText("추가");
 			btnAdd.addActionListener(new ActionListener() {
 				@Override

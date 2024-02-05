@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import model.BoardDTO;
 
 public class CafeDAO {
 	private static final CafeDAO instance = new CafeDAO();
@@ -358,6 +357,25 @@ public class CafeDAO {
 		}catch(SQLException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,"종류를 수정할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	public void deleteCategory(int cano) {
+		connect();
+		sql = "DELETE FROM category WHERE cano=?;";
+		try {
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, cano);
+			int rows = pstmt.executeUpdate();
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"종류가 삭제되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"종류를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		}catch(Exception e){
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"종류를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 		}
 	}
 	
