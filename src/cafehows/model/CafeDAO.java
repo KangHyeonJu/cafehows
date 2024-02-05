@@ -170,7 +170,7 @@ public class CafeDAO {
 		try {
 			sql = new StringBuilder()
 					.append("UPDATE customer SET ")
-					.append("point=?, ")
+					.append("point=? ")
 					.append("WHERE cno=?;")
 					.toString();
 			
@@ -190,5 +190,15 @@ public class CafeDAO {
 		}
 	}
 	
-	
+	public void deleteOrder(int ono) {
+		connect();
+		try {
+			sql = "DELETE FROM orderlist WHERE ono=?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, ono);
+			pstmt.executeUpdate();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 }

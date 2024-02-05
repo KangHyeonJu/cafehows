@@ -108,7 +108,8 @@ public class CustomerDialog extends JDialog{
 			btnSend.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					SendMessage sendMessage = new SendMessage();
+					sendMessage.setVisible(true);
 				}
 			});
 		}
