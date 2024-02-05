@@ -8,12 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import model.BoardDTO;
-
-
-
 public class CafeDAO {
 	private static final CafeDAO instance = new CafeDAO();
 	private final String url = "jdbc:mysql://222.119.100.89:3382/cafehows";
@@ -45,6 +39,8 @@ public class CafeDAO {
 		if ( pstmt != null ) pstmt.close();
 		if ( conn != null ) conn.close();
 	}
+
+
 	public List<MenuDTO> getItems(int cano) {
 		connect();
 		sql = "select * from menu where cano = ? order by mno ";
@@ -145,6 +141,7 @@ public class CafeDAO {
 		}
 		return items;
 	}
+	
 	public List<OrderDTO> getOrderItems() {
 		connect();
 		sql = "select * from orderlist order by ono ";
@@ -167,31 +164,31 @@ public class CafeDAO {
 		}
 		return items;
 	}
-	public void insertMenu(MenuDTO menu) {
+	
+	public void updatePoint(CustomerDTO board, int cno) {
 		connect();
-		sql = """
-				insert into menu (mname,price)
-				values (?, ?, ?, now())
-				""";
 		try {
+			sql = new StringBuilder()
+					.append("UPDATE customer SET ")
+					.append("point=?, ")
+					.append("WHERE cno=?;")
+					.toString();
+			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, board.getTitle());
-			pstmt.setString(2, board.getWriter());
-			pstmt.setString(3, board.getContent());
-			int rows = pstmt.executeUpdate();
-			if(rows == 1) {
-				JOptionPane.showMessageDialog(null,"게시글이 등록되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
-			}else {
-				JOptionPane.showMessageDialog(null,"게시글을 등록할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
-			}
-			close();
-		}catch(SQLException e) {
+			pstmt.setInt(1, board.getPoint());
+			pstmt.setInt(2, cno);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,"게시글을 등록할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
-	
-	
 	
 	
 }

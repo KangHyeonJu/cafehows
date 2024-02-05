@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import cafehows.model.CustomerDTO;
-import cafehows.model.cafeDAO;
+import cafehows.model.CafeDAO;
 
 
 public class UsePoints extends JFrame{
@@ -22,7 +22,7 @@ public class UsePoints extends JFrame{
 	private JTextField txtCono, txtPoint, txtUsePoint;
 	private JButton btnOk, btnCancel;
 	CustomerDTO cDto = new CustomerDTO();
-	cafeDAO dao = new cafeDAO();
+	CafeDAO dao = new CafeDAO();
 	
 	public UsePoints() {
 		this.setTitle("회원 포인트 사용");					
@@ -84,7 +84,7 @@ public class UsePoints extends JFrame{
 					
 					int customerPoint = 0;
 					
-					for(CustomerDTO cDto : cafeDAO.getInstance().getCustomerItems()) {
+					for(CustomerDTO cDto : CafeDAO.getInstance().getCustomerItems()) {
 						if(customerNum == cDto.getCno()){
 							customerPoint = cDto.getPoint();
 						}
