@@ -133,12 +133,4 @@ public class CustomerDialog extends JDialog{
 		}
 	
 	}
-	
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			CustomerDialog cd = new CustomerDialog();
-			cd.setVisible(true);
-		});
-	}	
-
 }

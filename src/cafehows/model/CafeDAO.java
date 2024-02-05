@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class CafeDAO {
 	private final String user = "cafehows";
 	private final String password = "codehows213";
 	
-	private Connection conn;
+	private static Connection conn;
 	private PreparedStatement pstmt;
 	private ResultSet rs;
 	private String sql;
@@ -206,17 +207,50 @@ public class CafeDAO {
 		}
 	}
 
-	public void deleteCustomer(int cno) {
+	public void deleteCustomer(CustomerDTO board, int cno) {
 		connect();
 		try {
-			sql = "DELETE FROM customer WHERE cno=?;";
+			sql = new StringBuilder()
+					.append("UPDATE customer SET ")
+					.append("visibility=? ")
+					.append("WHERE cno=?;")
+					.toString();
+			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, cno);
+			pstmt.setInt(1, 0);
+			pstmt.setInt(2, cno);
+			
 			pstmt.executeUpdate();
-		}catch(Exception e){
+		}catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-		
+	}
+	
+	public void insertCustomer(CustomerDTO customer) {
+		try {
+			connect();
+			sql = "" + 
+					"INSERT INTO customer(cno, recdate, visibility) " + 
+					"VALUES(?, now(), 1);";
+			pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			pstmt.setInt(1, customer.getCno());
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	public MenuDTO getMenuByName(String mname) {
 		connect();
