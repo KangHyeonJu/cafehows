@@ -105,6 +105,30 @@ public class cafeDAO {
 		return items;
 	}
 	
+	public void updatePoint(CustomerDTO board, int cno) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE customer SET ")
+					.append("point=?, ")
+					.append("WHERE cno=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, board.getPoint());
+			pstmt.setInt(2, cno);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	
 }
