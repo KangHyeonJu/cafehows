@@ -201,4 +201,17 @@ public class CafeDAO {
 			e.printStackTrace();
 		}
 	}
+
+	public void deleteCustomer(int cno) {
+		connect();
+		try {
+			sql = "DELETE FROM customer WHERE cno=?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, cno);
+			pstmt.executeUpdate();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
 }
