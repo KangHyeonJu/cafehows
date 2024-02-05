@@ -358,7 +358,7 @@ public class Main extends JFrame{
 			addBtn = new JButton();
 			addBtn.setText("메뉴 추가");
 			addBtn.addActionListener(e->{
-				AddMenu addMenu = new AddMenu();
+				AddMenu addMenu = new AddMenu(main);
 				addMenu.setVisible(true);
 			});
 	

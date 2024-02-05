@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,15 +23,19 @@ import javax.swing.WindowConstants;
 
 import cafehows.model.CafeDAO;
 import cafehows.model.CategoryDTO;
+import cafehows.model.MenuDTO;
 
-public class AddMenu extends JFrame{
+public class AddMenu extends JDialog{
+	private Main main;
 	private JPanel pCenter, pMenuName, pInquiry, pPrice, pSouth, pInquiryIn, pPriceIn;
 	private JTextField txtMenuName, txtPrice;
 	private JComboBox ComboInquiry;
 	private JButton btnOk, btnCancel, btnInquiry;
+	private String kindTemp="커피";
 	
 
-	public AddMenu() {
+	public AddMenu(Main main) {
+		this.main = main;
 		this.setTitle("메뉴 추가");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 400);
@@ -100,6 +105,11 @@ public class AddMenu extends JFrame{
 				items.add(item.getKind());
 			}
 			ComboInquiry = new JComboBox(items);
+			ComboInquiry.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				 kindTemp = ComboInquiry.getSelectedItem().toString();
+				}
+			});
 		}
 		return ComboInquiry;
 	}
@@ -143,6 +153,15 @@ public class AddMenu extends JFrame{
 			btnOk.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					MenuDTO menu = new MenuDTO();
+					menu.setMname(txtMenuName.getText());
+					menu.setPrice(Integer.parseInt(txtPrice.getText()));
+				
+					menu.setCano(CafeDAO.getInstance().getCategoryBykind(kindTemp).getCano());
+					CafeDAO.getInstance().insertMenu(menu);
+					
+	//				main.refreshMenu();
+					dispose();
 					
 				}
 			});
@@ -172,13 +191,6 @@ public class AddMenu extends JFrame{
 		this.setLocation(leftTopX, leftTopY);
 	}
 	
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			AddMenu aM = new AddMenu();
-        	aM.setVisible(true);
-	    });
 
-
-	}
 
 }
