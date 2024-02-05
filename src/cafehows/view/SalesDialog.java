@@ -154,7 +154,7 @@ public class SalesDialog extends JDialog{
 		}
 		private JPanel getTab3Panel() {
 			if(tab3Panel == null) {
-				tab3Panel = new JPanel();
+				tab3Panel = new CostPanel();
 			
 			}
 			return tab3Panel;

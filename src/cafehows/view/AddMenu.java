@@ -2,6 +2,10 @@ package cafehows.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -15,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+
 import cafehows.model.CafeDAO;
 import cafehows.model.CategoryDTO;
 
@@ -28,10 +33,11 @@ public class AddMenu extends JFrame{
 	public AddMenu() {
 		this.setTitle("메뉴 추가");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(300, 200);
+		this.setSize(500, 400);
 
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
+		locationCenter();
 	}
 	
 	public JPanel getPCenter() {
@@ -49,6 +55,7 @@ public class AddMenu extends JFrame{
 			pMenuName = new JPanel();
 			pMenuName.add(new JLabel("메뉴명", JLabel.CENTER));
 			pMenuName.add(getTxtMenuName());
+			
 		}
 		return pMenuName;
 	}	
@@ -150,11 +157,19 @@ public class AddMenu extends JFrame{
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					dispose();
 				}
 			});
 		}
 		return btnCancel;
+	}
+	
+	private void locationCenter() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Point centerPoint = ge.getCenterPoint();
+		int leftTopX = centerPoint.x - this.getWidth()/2;
+		int leftTopY = centerPoint.y - this.getHeight()/2;
+		this.setLocation(leftTopX, leftTopY);
 	}
 	
 	public static void main(String[] args) {

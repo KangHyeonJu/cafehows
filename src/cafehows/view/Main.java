@@ -12,8 +12,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -24,8 +26,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.event.CellEditorListener; 
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
 import cafehows.model.CafeDAO;
 import cafehows.model.MenuDTO;
@@ -37,8 +42,11 @@ public class Main extends JFrame{
 	private JPanel tab1Panel,tab2Panel,orderPanel,selectPanel,orderBtnPanel,btnPanel;
 	private JTable menuTable1,menuTable2,orderTable;
 	private JButton initBtn, delBtn, addBtn,modBtn,customBtn,salesBtn,refundBtn,paymentBtn;
+	private ArrayList<MenuDTO> orderList= new ArrayList<>();
+	private String temp;
+	private int totalPrice=0;
+	private JLabel priceField;
 
-	
 	
 	public Main() {
 		this.main = this;
@@ -54,6 +62,8 @@ public class Main extends JFrame{
 		if(menuTab == null) {
 			menuTab = new JTabbedPane();
 			menuTab.setTabPlacement(JTabbedPane.TOP);
+			
+			
 			menuTab.addTab("커피", getTab1Panel());
 			menuTab.addTab("스무디", getTab2Panel());
 			}
@@ -90,12 +100,24 @@ public class Main extends JFrame{
 //			menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
 //			menuTable.getColumn("가격").setCellRenderer(ctcr);
 //			
+			//더블클릭하면 수량 선택 창
 			menuTable1.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
+					
 					int rowIndex = menuTable1.getSelectedRow();
 					if(rowIndex !=-1) {
-						int bno = (int)menuTable1.getValueAt(rowIndex, 0);
-						
+						String mname =(String) menuTable1.getValueAt(rowIndex, 0);
+						MenuDTO dto = CafeDAO.getInstance().getMenuByName(mname);
+					for(MenuDTO dto2 : orderList) {
+						if(dto2.getMname().equals(dto.getMname())) {
+							dto2.setCount(dto2.getCount()+1);
+							refreshOrderList();
+							return;
+						}
+					}
+						orderList.add(dto);
+						refreshOrderList();
+
 					}
 				}		
 			});
@@ -120,15 +142,26 @@ public class Main extends JFrame{
 //			menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
 //			menuTable.getColumn("가격").setCellRenderer(ctcr);
 //			
-//			menuTable.addMouseListener(new MouseAdapter() {
-//				public void mouseClicked(MouseEvent e) {
-//					int rowIndex = menuTable.getSelectedRow();
-//					if(rowIndex !=-1) {
-//						int bno = (int)menuTable.getValueAt(rowIndex, 0);
-//						
-//					}
-//				}		
-//			});
+			menuTable2.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					
+					int rowIndex = menuTable2.getSelectedRow();
+					if(rowIndex !=-1) {
+						String mname =(String) menuTable2.getValueAt(rowIndex, 0);
+						MenuDTO dto = CafeDAO.getInstance().getMenuByName(mname);
+					for(MenuDTO dto2 : orderList) {
+						if(dto2.getMname().equals(dto.getMname())) {
+							dto2.setCount(dto2.getCount()+1);
+							refreshOrderList();
+							return;
+						}
+					}
+						orderList.add(dto);
+						refreshOrderList();
+
+					}
+				}		
+			});
 		}
 			
 		return menuTable2;
@@ -157,7 +190,8 @@ public class Main extends JFrame{
 			label.setHorizontalAlignment(JLabel.CENTER);
 			orderPanel.add(label, BorderLayout.NORTH);
 			orderPanel.add(new JScrollPane(getOrderTable()),BorderLayout.CENTER);
-		//	orderPanel.add(new JScrollPane(getSelectPanel()),BorderLayout.EAST);)
+			
+	//		orderPanel.add(new JScrollPane(getSelectPanel()),BorderLayout.EAST);)
 		//	orderPanel.add(getOrderBtnPanel(),BorderLayout.SOUTH);
 			
 			JPanel totalField = new JPanel();
@@ -165,7 +199,7 @@ public class Main extends JFrame{
 			
 			JPanel price = new JPanel();
 			JLabel priceLabel = new JLabel("총 가격");
-			JTextField priceField = new JTextField(10);
+			priceField = new JLabel(Integer.toString(totalPrice));
 			price.add(priceLabel);
 			price.add(priceField);
 			
@@ -187,9 +221,45 @@ public class Main extends JFrame{
 			
 			DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
 			tableModel.addColumn("메뉴명");
+			tableModel.addColumn("가격");
 			tableModel.addColumn("수량");
-//			tableModel.addColumn("가격");
-//			tableModel.addColumn("아이스/핫");
+			tableModel.addColumn("아이스/핫");
+			
+			orderTable.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					
+					int rowIndex = orderTable.getSelectedRow();
+					if(rowIndex !=-1) {
+					temp =(String)orderTable.getValueAt(rowIndex, 0);
+						
+
+					}
+				}		
+			});
+			
+//			TableCellEditor editor = new DefaultCellEditor(new JTextField());
+//			editor.addCellEditorListener(new CellEditorListener() {
+//			@Override
+//			public void editingStopped(ChangeEvent e) {
+//			// 수정을 끝내고 enter 를 입력하면 ChangeEvent가 도착한다.
+//			String value = (String) editor.getCellEditorValue();
+//			TableModel model = orderTable.getModel();
+//			int rowIdx = orderTable.getSelectedRow();
+//			int colIdx =orderTable.getSelectedColumn();
+//
+//			//현재 선택된 셀에서 편집이 이루어졌으므로 모델의 값을 갱신해준다.
+//			model.setValueAt(value, rowIdx, colIdx);
+//			}
+//
+//			@Override
+//			public void editingCanceled(ChangeEvent e) {
+//			// TODO Auto-generated method stub
+//
+//			}
+//			});
+//	
+//			}
+			
 		//	refreshMenu();
 			
 //			orderTable.getColumn("메뉴명").setPreferredWidth(50);
@@ -238,7 +308,17 @@ public class Main extends JFrame{
 		if(delBtn==null) {
 			delBtn = new JButton();
 			delBtn.setText("항목 삭제");
-		
+			delBtn.addActionListener(e->{
+				
+				for(MenuDTO dto2 : orderList) {
+					if(dto2.getMname().equals(temp)) {
+						orderList.remove(dto2);
+						refreshOrderList();
+						return;
+					}
+				}
+
+			});
 		}
 		return delBtn;
 	}
@@ -248,7 +328,10 @@ public class Main extends JFrame{
 		if(initBtn==null) {
 			initBtn = new JButton();
 			initBtn.setText("초기화");
-		
+			initBtn.addActionListener(e->{
+			orderList.clear();
+			refreshOrderList();
+			});
 		}
 		return initBtn;
 	}
@@ -361,11 +444,27 @@ public class Main extends JFrame{
 		}
 	}
 	
+	public void refreshOrderList() {
+		DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
+		tableModel.setNumRows(0);
+		totalPrice = 0;
+		for(MenuDTO dto : orderList) {
+//			JTextField inputCount = new JTextField(4);
+//			JTextField inputIce = new JTextField(4);
+			Object[] rowData = {dto.getMname(), dto.getPrice(),dto.getCount(),dto.getIce()};
+			tableModel.addRow(rowData);
+			totalPrice+=dto.getPrice()*dto.getCount();
+			System.out.println(totalPrice);
+
+		}
+		priceField.setText(Integer.toString(totalPrice));
+	
+	}
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			Main main = new Main();
 			main.setVisible(true);
 		});
-}	
+}
 }
