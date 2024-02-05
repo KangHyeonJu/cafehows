@@ -76,13 +76,12 @@ public class CustomerModify extends JFrame{
 			btnOk = new JButton();
 			btnOk.setText("등록");
 			btnOk.addActionListener(new ActionListener() {
-				@Override
 				public void actionPerformed(ActionEvent e) {
-					int cno = Integer.parseInt(txtCustomerNum.getText());
-					cDto.setCno(cno);
-					//cafeDao.insertCustomer(cDto);
+					cDto.setCno(Integer.parseInt(txtCustomerNum.getText()));
+					cafeDao.insertCustomer(cDto);
 					
 					DefaultTableModel tableModel = (DefaultTableModel) CustomerDialog.getCustomerTable().getModel();
+					List<CustomerDTO> customerList = CafeDAO.getInstance().getCustomerItems();
 					int i = CustomerDialog.getCustomerTable().getRowCount();
 					Object[] rowData = {customerList.get(i).getCno(), customerList.get(i).getPoint(), customerList.get(i).getRecdate()};
 					tableModel.addRow(rowData);
@@ -101,7 +100,13 @@ public class CustomerModify extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int cno = Integer.parseInt(txtCustomerNum.getText());
-					cafeDao.deleteCustomer(cno);
+					DefaultTableModel tableModel = (DefaultTableModel) CustomerDialog.getCustomerTable().getModel();
+					for(int i=0; i<customerList.size(); i++) {
+						if(cno == customerList.get(i).getCno()) {
+							tableModel.removeRow(i);
+						}
+					}
+					cafeDao.deleteCustomer(cDto, cno);
 					CustomerModify.this.dispose();
 				}
 			});
@@ -122,13 +127,4 @@ public class CustomerModify extends JFrame{
 		}
 		return btnCancel;
 	}
-	
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			CustomerModify cM = new CustomerModify();
-        	cM.setVisible(true);
-	    });
-
-	}
-
 }
