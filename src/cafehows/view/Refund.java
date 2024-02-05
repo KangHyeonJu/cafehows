@@ -69,6 +69,9 @@ public class Refund extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					
+					
+					Refund.this.dispose();
+					
 				}
 			});
 		}
@@ -82,7 +85,7 @@ public class Refund extends JFrame{
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					Refund.this.dispose();
 				}
 			});
 		}

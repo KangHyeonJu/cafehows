@@ -4,20 +4,25 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+
+import cafehows.model.CustomerDTO;
+import cafehows.model.cafeDAO;
 
 
 public class UsePoints extends JFrame{
 	private JPanel pCenter, pCono, pPoint, pUsePoint, pSouth, pConoIn;
 	private JTextField txtCono, txtPoint, txtUsePoint;
 	private JButton btnOk, btnCancel;
+	CustomerDTO cDto = new CustomerDTO();
+	cafeDAO dao = new cafeDAO();
 	
 	public UsePoints() {
 		this.setTitle("회원 포인트 사용");					
@@ -72,6 +77,21 @@ public class UsePoints extends JFrame{
 	public JTextField getTxtCono() {
 		if(txtCono == null) {
 			txtCono = new JTextField(20);
+			txtCono.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int customerNum = Integer.parseInt(txtCono.getText());
+					
+					int customerPoint = 0;
+					
+					for(CustomerDTO cDto : cafeDAO.getInstance().getCustomerItems()) {
+						if(customerNum == cDto.getCno()){
+							customerPoint = cDto.getPoint();
+						}
+					}
+					getTxtPoint().setText(Integer.toString(customerPoint));
+				}
+			});
 		}
 		return txtCono;
 	}
@@ -107,7 +127,14 @@ public class UsePoints extends JFrame{
 			btnOk.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					int usePoint = Integer.parseInt(getTxtUsePoint().getText());
+					int point = Integer.parseInt(getTxtPoint().getText());
+					int cno = Integer.parseInt(getTxtCono().getText());
+					cDto.setPoint(point-usePoint);
+					dao.updatePoint(cDto, cno);
 					
+					UsePoints.this.dispose();
+					txtCono.setText("");
 				}
 			});
 		}
@@ -121,7 +148,7 @@ public class UsePoints extends JFrame{
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					UsePoints.this.dispose();
 				}
 			});
 		}
@@ -129,12 +156,12 @@ public class UsePoints extends JFrame{
 	}
 
 	
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			UsePoints up = new UsePoints();
-        	up.setVisible(true);
-	    });
-
-	}
+//	public static void main(String[] args) {
+//		SwingUtilities.invokeLater(() -> {
+//			UsePoints up = new UsePoints();
+//        	up.setVisible(true);
+//	    });
+//
+//	}
 
 }
