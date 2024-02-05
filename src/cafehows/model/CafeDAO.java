@@ -214,4 +214,26 @@ public class CafeDAO {
 		}
 		
 	}
+	public MenuDTO getMenuByName(String mname) {
+		connect();
+		MenuDTO item = new MenuDTO();
+		sql = "select * from menu where mname = ?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, mname);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+			
+				item.setMname(rs.getString(2));
+				item.setPrice(rs.getInt(3));			
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return item;
+	}
+	
+	
 }
