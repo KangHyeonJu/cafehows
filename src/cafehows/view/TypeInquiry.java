@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,12 +22,17 @@ import javax.swing.table.DefaultTableModel;
 import cafehows.model.CafeDAO;
 import cafehows.model.CategoryDTO;
 
-public class TypeInquiry extends JFrame{
+public class TypeInquiry extends JDialog{
+	private static final TypeInquiry instance = new TypeInquiry();
 	private JPanel pCenter, pEast, pSouth;
 	private JButton btnModify,btnDel,btnAdd, btnCancel;
 	private JTable typeTable;
+	private int cano;
+	private Main main;
+
 
 	public TypeInquiry() {
+		this.main = main;
 		this.setTitle("종류 조회");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 200);
@@ -35,6 +41,10 @@ public class TypeInquiry extends JFrame{
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 		locationCenter();
 	}
+	public static TypeInquiry getInstance() {
+		return instance;
+	}
+	
 	
 	public JPanel getPCenter() {
 		if(pCenter == null) {
@@ -65,7 +75,7 @@ public class TypeInquiry extends JFrame{
 				public void mouseClicked(MouseEvent e) {
 					int rowIndex =	typeTable.getSelectedRow();
 					if(rowIndex !=-1) {
-						int bno = (int)	typeTable.getValueAt(rowIndex, 0);
+						cano = (int)typeTable.getValueAt(rowIndex, 0);
 						
 					}
 				}		
@@ -95,7 +105,7 @@ public class TypeInquiry extends JFrame{
 			btnModify.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					UpdateMenuKind updatekind = new UpdateMenuKind();
+					UpdateMenuKind updatekind = new UpdateMenuKind(main,cano);
 					updatekind.setVisible(true);
 				}
 			});

@@ -8,6 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import model.BoardDTO;
+
 public class CafeDAO {
 	private static final CafeDAO instance = new CafeDAO();
 	private final String url = "jdbc:mysql://222.119.100.89:3382/cafehows";
@@ -233,6 +237,94 @@ public class CafeDAO {
 		}
 		
 		return item;
+	}
+	public CategoryDTO getCategoryBykind(String kind) {
+		connect();
+		CategoryDTO item = new CategoryDTO();
+		sql = "select * from category where kind = ?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, kind);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+			
+				item.setCano(rs.getInt(1));
+				item.setKind(rs.getString(2));			
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return item;
+	}
+
+	public CategoryDTO getCategoryByCano(int cano) {
+		connect();
+		CategoryDTO item = new CategoryDTO();
+		sql = "select * from category where cano = ?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, cano);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+			
+				item.setCano(rs.getInt(1));
+				item.setKind(rs.getString(2));			
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return item;
+	}
+	
+	public void insertMenu(MenuDTO menu) {
+		connect();
+		sql = """
+				insert into menu (mname,price,cano)
+				values (?,?,?)
+				""";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, menu.getMname());
+			pstmt.setInt(2, menu.getPrice());
+			pstmt.setInt(3, menu.getCano());
+			int rows = pstmt.executeUpdate();
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"메뉴가 추가되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"메뉴를 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"메뉴를 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	public void updateCategory(CategoryDTO category) {
+		connect();
+		sql = """
+				update category 
+				set kind =? 
+				where cano = ? 
+				""";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, category.getKind());
+			pstmt.setInt(2, category.getCano());
+			int rows = pstmt.executeUpdate();
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"종류가 수정되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"종류를 수정할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"종류를 수정할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+		}
 	}
 	
 	
