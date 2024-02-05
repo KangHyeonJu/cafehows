@@ -3,22 +3,21 @@ package cafehows.view;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
-import cafehows.model.CategoryDTO;
 import cafehows.model.CafeDAO;
 import cafehows.model.MenuDTO;
 
@@ -26,13 +25,15 @@ public class MenuMDS extends JDialog{
 	private JPanel pCenter, pSouth;
 	private JButton btnModify,btnDel,btnVisible, btnCancel;
 	private JTable menuTable;
+	private static List<MenuDTO> menuList = CafeDAO.getInstance().getMDSItems();
+	private CafeDAO cafeDao = new CafeDAO();
 
 	public MenuMDS() {
 		this.setTitle("메뉴 수정/삭제/숨김");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(300, 200);
+		this.setSize(500, 500);
 
-		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
+		this.getContentPane().add(new JScrollPane(getPCenter()), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 	}
 	
@@ -52,27 +53,13 @@ public class MenuMDS extends JDialog{
 			tableModel.addColumn("종류");
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("가격");
-			
-		
+
 			refreshTable();
 			
-			menuTable.getColumn("종류").setPreferredWidth(40);
-			menuTable.getColumn("메뉴명").setPreferredWidth(40);
-			menuTable.getColumn("가격").setPreferredWidth(20);
-			
-//			CenterTableCellRenderer ctcr = new CenterTableCellRenderer();
-//			menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
-//			menuTable.getColumn("가격").setCellRenderer(ctcr);
-//			
-			menuTable.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					int rowIndex =	menuTable.getSelectedRow();
-					if(rowIndex !=-1) {
-						int bno = (int)	menuTable.getValueAt(rowIndex, 0);
-						
-					}
-				}		
-			});
+			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+			TableColumnModel tcm = menuTable.getColumnModel();
+			for(int i=0; i<3; i++) tcm.getColumn(i).setCellRenderer(dtcr);
 		}
 			
 		return menuTable;
@@ -100,7 +87,11 @@ public class MenuMDS extends JDialog{
 			btnModify.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					int row = menuTable.getSelectedRow();
+					//MenuModify menuModify = new MenuModify(menuList.get(row).getMname());
 					
+					
+					//menuModify.setVisible(true);
 				}
 			});
 		}
@@ -115,7 +106,14 @@ public class MenuMDS extends JDialog{
 			btnDel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					int row = menuTable.getSelectedRow();
+					DefaultTableModel tableModel = (DefaultTableModel) getMenuTable().getModel();
+					if(row == -1) {
+						return;
+					}else {
+						tableModel.removeRow(row);
+						cafeDao.deleteMenu(menuList.get(row).getMname());
+					}
 				}
 			});
 		}
@@ -129,7 +127,12 @@ public class MenuMDS extends JDialog{
 			btnVisible.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					int row = menuTable.getSelectedRow();
+					if(row == -1) {
+						return;
+					}else {
+						cafeDao.visibilityMenu(menuList.get(row).getMname());
+					}
 				}
 			});
 		}
@@ -145,7 +148,7 @@ public class MenuMDS extends JDialog{
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					MenuMDS.this.dispose();
 				}
 			});
 		}
@@ -163,6 +166,16 @@ public class MenuMDS extends JDialog{
 			
 		}
 	
+	}
+	
+	
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			MenuMDS mM = new MenuMDS();
+        	mM.setVisible(true);
+	    });
+
+
 	}
 
 }

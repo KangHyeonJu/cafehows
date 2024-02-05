@@ -248,6 +248,44 @@ public class CafeDAO {
 			}
 		}
 	}
+	
+	public void deleteMenu(String menuName) {
+		connect();
+		try {
+			sql = "DELETE FROM menu WHERE mname=?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, menuName);
+			pstmt.executeUpdate();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void visibilityMenu(String menuName) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE menu SET ")
+					.append("visibility=? ")
+					.append("WHERE mname=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, 0);
+			pstmt.setString(2, menuName);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public MenuDTO getMenuByName(String mname) {
 		connect();
 		MenuDTO item = new MenuDTO();
@@ -268,6 +306,7 @@ public class CafeDAO {
 		
 		return item;
 	}
+	
 	
 	
 }
