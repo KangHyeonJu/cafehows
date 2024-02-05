@@ -15,7 +15,7 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
 import cafehows.model.CustomerDTO;
-import cafehows.model.cafeDAO;
+import cafehows.model.CafeDAO;
 
 public class CustomerDialog extends JDialog{
 	private JPanel pCenter, pSouth;
@@ -137,7 +137,7 @@ public class CustomerDialog extends JDialog{
 	public void refreshTable() {
 		DefaultTableModel tableModel = (DefaultTableModel) customerTable.getModel();
 		tableModel.setNumRows(0);
-		for(CustomerDTO dto : cafeDAO.getInstance().getCustomerItems()) {
+		for(CustomerDTO dto : CafeDAO.getInstance().getCustomerItems()) {
 			Object[] rowData = {dto.getCno(), dto.getPoint(),dto.getRecdate()};
 			tableModel.addRow(rowData);
 			

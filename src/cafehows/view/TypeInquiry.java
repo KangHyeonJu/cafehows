@@ -19,7 +19,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
-import cafehows.model.cafeDAO;
+import cafehows.model.CafeDAO;
 import cafehows.model.CategoryDTO;
 
 public class TypeInquiry extends JFrame{
@@ -79,7 +79,7 @@ public class TypeInquiry extends JFrame{
 	public JPanel getPEast() {
 		if(pEast==null) {
 			pEast = new JPanel();
-			pEast.setLayout(new BoxLayout(pEast,BoxLayout.Y_AXIS));
+	//		pEast.setLayout(new BoxLayout(pEast,BoxLayout.Y_AXIS));
 			pEast.add(new JLabel("종류", JLabel.CENTER));
 			JTextField kindName = new JTextField(10);
 			pEast.add(kindName);
@@ -165,7 +165,7 @@ public class TypeInquiry extends JFrame{
 	public void refreshTable() {
 		DefaultTableModel tableModel = (DefaultTableModel) typeTable.getModel();
 		tableModel.setNumRows(0);
-		for(CategoryDTO dto : cafeDAO.getInstance().getCategoryItems()) {
+		for(CategoryDTO dto : CafeDAO.getInstance().getCategoryItems()) {
 			Object[] rowData = {dto.getCano(), dto.getKind()};
 			tableModel.addRow(rowData);
 			

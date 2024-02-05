@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,15 +15,18 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import cafehows.model.CafeDAO;
+import cafehows.model.CategoryDTO;
 
 public class AddMenu extends JFrame{
 	private JPanel pCenter, pMenuName, pInquiry, pPrice, pSouth, pInquiryIn, pPriceIn;
 	private JTextField txtMenuName, txtPrice;
 	private JComboBox ComboInquiry;
 	private JButton btnOk, btnCancel, btnInquiry;
+	
 
 	public AddMenu() {
-		this.setTitle("환불");					
+		this.setTitle("메뉴 추가");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(300, 200);
 
@@ -80,7 +85,14 @@ public class AddMenu extends JFrame{
 	
 	public JComboBox getComboInquiry() {
 		if(ComboInquiry == null) {
-			ComboInquiry = new JComboBox();
+			
+			Vector items = new Vector();
+			List<CategoryDTO> itemsList = CafeDAO.getInstance().getCategoryItems();
+		
+			for(CategoryDTO item : itemsList) {
+				items.add(item.getKind());
+			}
+			ComboInquiry = new JComboBox(items);
 		}
 		return ComboInquiry;
 	}

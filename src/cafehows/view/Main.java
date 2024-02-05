@@ -27,16 +27,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import cafehows.model.cafeDAO;
-import cafehows.model.menuDTO;
+import cafehows.model.CafeDAO;
+import cafehows.model.MenuDTO;
 
 
 public class Main extends JFrame{
 	private Main main;
 	private JTabbedPane menuTab;
-	private JPanel tab1Panel,tab2Panel,orderPanel,orderBtnPanel,btnPanel;
+	private JPanel tab1Panel,tab2Panel,orderPanel,selectPanel,orderBtnPanel,btnPanel;
 	private JTable menuTable1,menuTable2,orderTable;
 	private JButton initBtn, delBtn, addBtn,modBtn,customBtn,salesBtn,refundBtn,paymentBtn;
+
+	
 	
 	public Main() {
 		this.main = this;
@@ -155,6 +157,7 @@ public class Main extends JFrame{
 			label.setHorizontalAlignment(JLabel.CENTER);
 			orderPanel.add(label, BorderLayout.NORTH);
 			orderPanel.add(new JScrollPane(getOrderTable()),BorderLayout.CENTER);
+		//	orderPanel.add(new JScrollPane(getSelectPanel()),BorderLayout.EAST);)
 		//	orderPanel.add(getOrderBtnPanel(),BorderLayout.SOUTH);
 			
 			JPanel totalField = new JPanel();
@@ -185,8 +188,8 @@ public class Main extends JFrame{
 			DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("수량");
-			tableModel.addColumn("가격");
-			tableModel.addColumn("아이스/핫");
+//			tableModel.addColumn("가격");
+//			tableModel.addColumn("아이스/핫");
 		//	refreshMenu();
 			
 //			orderTable.getColumn("메뉴명").setPreferredWidth(50);
@@ -211,6 +214,15 @@ public class Main extends JFrame{
 			
 		return orderTable;
 	}
+//	public JPanel getSelectPanel() {
+//		if(selectPanel == null) {
+//			selectPanel = new JPanel();
+//			selectPanel.setLayout(new BoxLayout(selectPanel,BoxLayout.Y_AXIS));
+//			
+//		}
+//		return selectPanel;
+//	}
+	
 	
 	public JPanel getOrderBtnPanel() {
 		if(orderBtnPanel == null) {
@@ -275,8 +287,8 @@ public class Main extends JFrame{
 			modBtn = new JButton();
 			modBtn.setText("메뉴 수정/삭제/숨김");
 			modBtn.addActionListener(e->{
-				MenuModify menuModify= new MenuModify();
-				menuModify.setVisible(true);
+				MenuMDS menuMDS= new MenuMDS();
+				menuMDS.setVisible(true);
 			});
 	
 		}
@@ -299,7 +311,10 @@ public class Main extends JFrame{
 		if(salesBtn==null) {
 			salesBtn = new JButton();
 			salesBtn.setText("매출 관리");
-	
+			salesBtn.addActionListener(e->{
+				SalesDialog salesDialog = new SalesDialog();
+				salesDialog.setVisible(true);
+			});
 		}
 		return salesBtn;
 	}
@@ -339,7 +354,7 @@ public class Main extends JFrame{
 	public void refreshMenu(int cano, JTable menuTable) {
 		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 		tableModel.setNumRows(0);
-		for(menuDTO dto : cafeDAO.getInstance().getItems(cano)) {
+		for(MenuDTO dto : CafeDAO.getInstance().getItems(cano)) {
 			Object[] rowData = {dto.getMname(), dto.getPrice()};
 			tableModel.addRow(rowData);
 			

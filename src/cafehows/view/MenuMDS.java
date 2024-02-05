@@ -19,7 +19,8 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
 import cafehows.model.CategoryDTO;
-import cafehows.model.cafeDAO;
+import cafehows.model.CafeDAO;
+import cafehows.model.MenuDTO;
 
 public class MenuMDS extends JDialog{
 	private JPanel pCenter, pSouth;
@@ -154,10 +155,10 @@ public class MenuMDS extends JDialog{
 
 
 	public void refreshTable() {
-		DefaultTableModel tableModel = (DefaultTableModel) typeTable.getModel();
+		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 		tableModel.setNumRows(0);
-		for(CategoryDTO dto : cafeDAO.getInstance().getCategoryItems()) {
-			Object[] rowData = {dto.getCano(), dto.getKind()};
+		for(MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
+			Object[] rowData = {dto.getKind(), dto.getMname(),dto.getPrice()};
 			tableModel.addRow(rowData);
 			
 		}
