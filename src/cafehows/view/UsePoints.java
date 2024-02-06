@@ -90,14 +90,14 @@ public class UsePoints extends JFrame{
 					int customerNum = Integer.parseInt(txtCono.getText());
 					int customerPoint = 0;
 					
-					if( txtCono.getText().length() == 8) {
+					if(txtCono.getText().length() == 8) {
 						for(int i=0;i<customerList.size();i++) {
 							if(customerNum == customerList.get(i).getCno()){
 								customerPoint = customerList.get(i).getPoint();
 							}
 						}
 					}else {
-						JOptionPane.showMessageDialog(null, "다시 입력해 주세요.","오류",JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "8자리를 입력해주세요.","오류",JOptionPane.ERROR_MESSAGE);
 					}
 					
 					getTxtPoint().setText(Integer.toString(customerPoint));

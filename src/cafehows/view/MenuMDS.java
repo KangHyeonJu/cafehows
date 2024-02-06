@@ -215,12 +215,8 @@ public class MenuMDS extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					int row = menuTable.getSelectedRow();
 					if (row != -1) {
-
-						// menuTable에서 vis값 가져와서 비교하여 0 이면 배경색 지정
-
-					} else {
 						cafeDao.visibilityMenu0(menuList.get(row).getMname());
-
+					} else {
 						JOptionPane.showMessageDialog(null, "수정할 메뉴를 선택해 주세요.");
 
 					}
@@ -242,7 +238,6 @@ public class MenuMDS extends JDialog {
 						return;
 					} else {
 						cafeDao.visibilityMenu1(menuList.get(row).getMname());
-
 					}
 				}
 			});
