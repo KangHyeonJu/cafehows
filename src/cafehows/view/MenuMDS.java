@@ -1,6 +1,8 @@
 package cafehows.view;
 
 import java.awt.BorderLayout;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -40,6 +42,8 @@ public class MenuMDS extends JDialog{
 		this.getContentPane().add(getSearchPanel(), BorderLayout.NORTH);
 		this.getContentPane().add(new JScrollPane(getPCenter()), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
+		
+		locationCenter();
 	}
 	
 	private JPanel getSearchPanel() {
@@ -140,12 +144,10 @@ public class MenuMDS extends JDialog{
 		}
 
 	
-	
 	public JPanel getPSouth() {
 		if(pSouth == null) {
 			pSouth = new JPanel();
 			pSouth.add(getBtnModify());
-			pSouth.add(getBtnDel());
 			pSouth.add(getBtnVisible());
 			pSouth.add(getBtnCancel());
 			
@@ -177,26 +179,26 @@ public class MenuMDS extends JDialog{
 	}
 	
 	
-	public JButton getBtnDel() {
-		if(btnDel == null) {
-			btnDel = new JButton();
-			btnDel.setText("삭제");
-			btnDel.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					int row = menuTable.getSelectedRow();
-					DefaultTableModel tableModel = (DefaultTableModel) getMenuTable().getModel();
-					if(row == -1) {
-						return;
-					}else {
-						tableModel.removeRow(row);
-						cafeDao.deleteMenu(menuList.get(row).getMname());
-					}
-				}
-			});
-		}
-		return btnDel;
-	}
+//	public JButton getBtnDel() {
+//		if(btnDel == null) {
+//			btnDel = new JButton();
+//			btnDel.setText("삭제");
+//			btnDel.addActionListener(new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					int row = menuTable.getSelectedRow();
+//					DefaultTableModel tableModel = (DefaultTableModel) getMenuTable().getModel();
+//					if(row == -1) {
+//						return;
+//					}else {
+//						tableModel.removeRow(row);
+//						cafeDao.deleteMenu(menuList.get(row).getMname());
+//					}
+//				}
+//			});
+//		}
+//		return btnDel;
+//	}
 	
 	public JButton getBtnVisible() {
 		if(btnVisible == null) {
@@ -209,7 +211,9 @@ public class MenuMDS extends JDialog{
 					if(row == -1) {
 						return;
 					}else {
+						//if(menuList.get(row).get)
 						cafeDao.visibilityMenu(menuList.get(row).getMname());
+						
 					}
 				}
 			});
@@ -241,19 +245,22 @@ public class MenuMDS extends JDialog{
 		for(MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
 			Object[] rowData = {dto.getKind(), dto.getMname(),dto.getPrice()};
 			tableModel.addRow(rowData);
-			
 		}
 	
 	}
 	
+	private void locationCenter() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Point centerPoint = ge.getCenterPoint();
+		int leftTopX = centerPoint.x - this.getWidth()/2;
+		int leftTopY = centerPoint.y - this.getHeight()/2;
+		this.setLocation(leftTopX, leftTopY);
+	}
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			MenuMDS mM = new MenuMDS();
         	mM.setVisible(true);
 	    });
-
-
 	}
-
 }

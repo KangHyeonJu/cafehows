@@ -14,5 +14,4 @@ public class MenuDTO {
 	private int cumCount;
 	private int count=1;
 	private String ice;
-
 }

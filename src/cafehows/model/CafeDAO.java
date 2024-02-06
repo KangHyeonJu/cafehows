@@ -273,7 +273,9 @@ public class CafeDAO {
 					.toString();
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, 0);
+			
+			
+			//pstmt.setInt(1, );
 			pstmt.setString(2, menuName);
 			
 			pstmt.executeUpdate();
