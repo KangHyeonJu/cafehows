@@ -73,11 +73,6 @@ public class CustomerModify extends JFrame{
 	public JTextField getTxtCustomerNum() {
 		if(txtCustomerNum==null) {
 			txtCustomerNum = new JTextField(20);
-//			NumberFormat format = NumberFormat.getIntegerInstance();
-//			NumberFormatter formatter = new NumberFormatter(format);
-//			formatter.setValueClass(Integer.class);
-//			formatter.setMinimum(0);
-//			formatter.setMaximum(Integer.MAX_VALUE);
 		}
 		return txtCustomerNum;
 	}
@@ -99,8 +94,8 @@ public class CustomerModify extends JFrame{
 			btnOk.setText("등록");
 			btnOk.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					//수정중 2024.02.06.11:57
-					if(txtCustomerNum.getText().length() == 8) {
+					//입력제한
+					if( txtCustomerNum.getText().length() == 8) {
 					cDto.setCno(Integer.parseInt(txtCustomerNum.getText()));
 					cafeDao.insertCustomer(cDto);
 					
