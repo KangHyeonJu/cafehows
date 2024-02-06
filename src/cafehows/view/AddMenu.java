@@ -25,48 +25,51 @@ import cafehows.model.CafeDAO;
 import cafehows.model.CategoryDTO;
 import cafehows.model.MenuDTO;
 
-public class AddMenu extends JDialog{
+public class AddMenu extends JDialog {
 	private Main main;
 	private JPanel pCenter, pMenuName, pInquiry, pPrice, pSouth, pInquiryIn, pPriceIn;
 	private JTextField txtMenuName, txtPrice;
 	private JComboBox ComboInquiry;
 	private JButton btnOk, btnCancel, btnInquiry;
-	private String kindTemp="커피";
-	
+	private String kindTemp = "커피";
 
 	public AddMenu(Main main) {
 		this.main = main;
-		this.setTitle("메뉴 추가");					
+		this.setTitle("메뉴 추가");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(500, 400);
+
+		this.setSize(300, 200);
 
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 		locationCenter();
 	}
-	
+
 	public JPanel getPCenter() {
-		if(pCenter==null) {
+		if (pCenter == null) {
+			JPanel panel = new JPanel();
+			panel.setLayout(new GridLayout(3,1));
 			pCenter = new JPanel();
-			pCenter.add(getMenuName());
-			pCenter.add(getInquiry());
-			pCenter.add(getPrice());
+			panel.add(getMenuName());
+			panel.add(getPrice());
+			panel.add(getInquiry());
+			pCenter.add(panel);
 		}
 		return pCenter;
 	}
-	
+
 	public JPanel getMenuName() {
-		if(pMenuName==null) {
+		if (pMenuName == null) {
 			pMenuName = new JPanel();
 			pMenuName.add(new JLabel("메뉴명", JLabel.CENTER));
 			pMenuName.add(getTxtMenuName());
-			
+
 		}
 		return pMenuName;
-	}	
-	
+	}
+
 	public JPanel getInquiry() {
-		if(pInquiry==null) {
+		if (pInquiry == null) {
 			pInquiry = new JPanel();
 			pInquiryIn = new JPanel();
 			pInquiryIn.add(new JLabel("종류", JLabel.CENTER));
@@ -75,10 +78,10 @@ public class AddMenu extends JDialog{
 			pInquiry.add(getBtnInquiry());
 		}
 		return pInquiry;
-	}		
-	
+	}
+
 	public JPanel getPrice() {
-		if(pPrice == null) {
+		if (pPrice == null) {
 			pPrice = new JPanel();
 			pPriceIn = new JPanel();
 			pPriceIn.add(new JLabel("가격", JLabel.CENTER));
@@ -87,57 +90,57 @@ public class AddMenu extends JDialog{
 		}
 		return pPrice;
 	}
-	
+
 	public JTextField getTxtMenuName() {
-		if(txtMenuName == null) {
+		if (txtMenuName == null) {
 			txtMenuName = new JTextField(20);
 		}
 		return txtMenuName;
 	}
-	
+
 	public JComboBox getComboInquiry() {
-		if(ComboInquiry == null) {
-			
+		if (ComboInquiry == null) {
+
 			Vector items = new Vector();
 			List<CategoryDTO> itemsList = CafeDAO.getInstance().getCategoryItems();
-		
-			for(CategoryDTO item : itemsList) {
+
+			for (CategoryDTO item : itemsList) {
 				items.add(item.getKind());
 			}
 			ComboInquiry = new JComboBox(items);
 			ComboInquiry.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				 kindTemp = ComboInquiry.getSelectedItem().toString();
+					kindTemp = ComboInquiry.getSelectedItem().toString();
 				}
 			});
 		}
 		return ComboInquiry;
 	}
-	
+
 	public JTextField getTxtPrice() {
-		if(txtPrice == null) {
+		if (txtPrice == null) {
 			txtPrice = new JTextField(20);
 		}
 		return txtPrice;
 	}
-	
+
 	public JButton getBtnInquiry() {
-		if(btnInquiry == null) {
+		if (btnInquiry == null) {
 			btnInquiry = new JButton();
 			btnInquiry.setText("종류 조회");
 			btnInquiry.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					TypeInquiry typeInquiry=  new TypeInquiry();
+					TypeInquiry typeInquiry = new TypeInquiry();
 					typeInquiry.setVisible(true);
 				}
 			});
 		}
 		return btnInquiry;
 	}
-	
+
 	public JPanel getPSouth() {
-		if(pSouth == null) {
+		if (pSouth == null) {
 			pSouth = new JPanel();
 			pSouth.setBackground(Color.WHITE);
 			pSouth.add(getBtnOk());
@@ -145,9 +148,9 @@ public class AddMenu extends JDialog{
 		}
 		return pSouth;
 	}
-	
+
 	public JButton getBtnOk() {
-		if(btnOk == null) {
+		if (btnOk == null) {
 			btnOk = new JButton();
 			btnOk.setText("추가");
 			btnOk.addActionListener(new ActionListener() {
@@ -156,21 +159,21 @@ public class AddMenu extends JDialog{
 					MenuDTO menu = new MenuDTO();
 					menu.setMname(txtMenuName.getText());
 					menu.setPrice(Integer.parseInt(txtPrice.getText()));
-				
+
 					menu.setCano(CafeDAO.getInstance().getCategoryBykind(kindTemp).getCano());
 					CafeDAO.getInstance().insertMenu(menu);
-					
-	//				main.refreshMenu();
+
+					// main.refreshMenu();
 					dispose();
-					
+
 				}
 			});
 		}
 		return btnOk;
 	}
-	
+
 	public JButton getBtnCancel() {
-		if(btnCancel == null) {
+		if (btnCancel == null) {
 			btnCancel = new JButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
@@ -182,15 +185,13 @@ public class AddMenu extends JDialog{
 		}
 		return btnCancel;
 	}
-	
+
 	private void locationCenter() {
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
-		int leftTopX = centerPoint.x - this.getWidth()/2;
-		int leftTopY = centerPoint.y - this.getHeight()/2;
+		int leftTopX = centerPoint.x - this.getWidth() / 2;
+		int leftTopY = centerPoint.y - this.getHeight() / 2;
 		this.setLocation(leftTopX, leftTopY);
 	}
-	
-
 
 }

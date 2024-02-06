@@ -12,15 +12,18 @@ public class MenuDTO {
 	private int ono;
 	private int price;
 	private int cano;
-	private boolean visibility;
+//	private boolean visibility;
 	
 	private String kind;
 	private int cumCount;
 	private int count=1;
 	private String ice;
-	
-	public void setVisibility(int visibility) {
-		this.visibility = (visibility!=0);
-	}
+
+//	public void setVisibility(int visibility) {
+//		this.visibility = (visibility!=0);
+//	}
+
+
+	private int visibility;
 
 }

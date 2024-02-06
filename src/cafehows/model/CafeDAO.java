@@ -161,7 +161,7 @@ public class CafeDAO {
 	}
 	public List<CustomerDTO> getCustomerItems() {
 		connect();
-		sql = "select * from customer order by cno ";
+		sql = "select * from customer where visibility=1 order by cno ";
 		List<CustomerDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -369,6 +369,97 @@ public class CafeDAO {
 			}
 		}
 	}
+
+
+	public void deleteMenu(String menuName) {
+		connect();
+		try {
+			sql = "DELETE FROM menu WHERE mname=?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, menuName);
+			pstmt.executeUpdate();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void visibilityMenu0(String menuName) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE menu SET ")
+					.append("visibility=? ")
+					.append("WHERE mname=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, 0);
+			pstmt.setString(2, menuName);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void visibilityMenu1(String menuName) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE menu SET ")
+					.append("visibility=? ")
+					.append("WHERE mname=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, 1);
+			pstmt.setString(2, menuName);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	public void updateMenu(MenuDTO menu, String mname) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE menu SET ")
+					.append("mname=?, ")
+					.append("price=? ")
+					.append("WHERE mname=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, menu.getMname());
+			pstmt.setInt(2, menu.getPrice());
+			pstmt.setString(3, mname);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public MenuDTO getMenuByName(String mname) {
 		connect();
 		MenuDTO item = new MenuDTO();
@@ -562,45 +653,11 @@ public class CafeDAO {
 			JOptionPane.showMessageDialog(null,"종류를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 		}
 	}
-
-	public void deleteMenu(String menuName) {
-		connect();
-		try {
-			sql = "DELETE FROM menu WHERE mname=?;";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, menuName);
-			pstmt.executeUpdate();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
 	
-	public void visibilityMenu(String menuName) {
-		connect();
-		try {
-			sql = new StringBuilder()
-					.append("UPDATE menu SET ")
-					.append("visibility=? ")
-					.append("WHERE mname=?;")
-					.toString();
-			
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, 0);
-			pstmt.setString(2, menuName);
-			
-			pstmt.executeUpdate();
-		}catch (SQLException e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+	
 
-	public List<MenuDTO> searchMenu(String keyword){
+
+	public List<MenuDTO> searchKeyword(String keyword){
 		connect();
 		sql = "select * from menu where mname like ?";
 		List<MenuDTO> menuboard = new ArrayList<>();
@@ -610,9 +667,15 @@ public class CafeDAO {
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				MenuDTO board = new MenuDTO();
-				board.setKind(rs.getString(1));
 				board.setMname(rs.getString(2));
 				board.setPrice(rs.getInt(3));
+				board.setCano(rs.getInt(5));
+				
+				String sql2 = "select kind from category where cano = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(5));
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) board.setKind(rs2.getString(1));
 				menuboard.add(board);
 			}
 			close();
@@ -621,9 +684,11 @@ public class CafeDAO {
 		}
 		return menuboard;
 	}
-	
 	//고객 검색창
-	public List<CustomerDTO> searchCustomer(String cno) {
+
+
+	public List<CustomerDTO> searchKeywordCustomer(String cno) {
+
 		System.out.println(cno);
 		
 		connect();
