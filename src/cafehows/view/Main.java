@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
@@ -36,6 +37,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import cafehows.model.CafeDAO;
+import cafehows.model.CategoryDTO;
 import cafehows.model.MenuDTO;
 
 
@@ -43,8 +45,8 @@ public class Main extends JFrame{
 	private Main main;
 //	private static final Main instance = new Main();
 	private JTabbedPane menuTab;
-	private JPanel tab1Panel,tab2Panel,orderPanel,selectPanel,orderBtnPanel,btnPanel;
-	private JTable menuTable1,menuTable2,orderTable;
+	private JPanel tab1Panel,tab2Panel,orderPanel,selectPanel,orderBtnPanel,btnPanel,tabPanel;
+	private JTable menuTable1,menuTable2,orderTable,menuTable;
 	private JButton initBtn, delBtn, addBtn,modBtn,customBtn,salesBtn,refundBtn,paymentBtn;
 	private ArrayList<MenuDTO> orderList= new ArrayList<>();
 	private String temp;
@@ -79,12 +81,80 @@ public class Main extends JFrame{
 			menuTab = new JTabbedPane();
 			menuTab.setTabPlacement(JTabbedPane.TOP);
 			
+			List<CategoryDTO> category= new ArrayList<>();
+			category = CafeDAO.getInstance().getCategoryItems();			
 			
-			menuTab.addTab("커피", getTab1Panel());
-			menuTab.addTab("스무디", getTab2Panel());
+			for(int i=0;i<category.size();i++) {
+				menuTab.addTab()
+			}
+			
+			for(CategoryDTO dto : category) {
+				menuTab.addTab(dto.getKind(), getTabPanel());
+			}
+//			menuTab.addTab("커피", getTab1Panel());
+//			menuTab.addTab("스무디", getTab2Panel());
 			}
 		return menuTab;
 		}
+	
+	private JPanel getTabPanel() {
+		
+		if(tabPanel == null) {
+			tabPanel = new JPanel();
+			tabPanel.add(new JScrollPane(getMenuTable()));
+		}
+		return tabPanel;
+	}
+	
+	private JTable getMenuTable() {
+		if(menuTable == null) {
+			//Table 수정 불가
+			menuTable = new JTable() {
+				@Override
+				public boolean isCellEditable(int row, int col) {
+					return false;
+				}
+			};
+			menuTable.setAutoCreateRowSorter(true);
+			
+			DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
+			tableModel.addColumn("메뉴명");
+			tableModel.addColumn("가격");
+			refreshMenu(1, menuTable);
+			
+			menuTable.getColumn("메뉴명").setPreferredWidth(50);
+			menuTable.getColumn("가격").setPreferredWidth(20);
+			
+//			CenterTableCellRenderer ctcr = new CenterTableCellRenderer();
+//			menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
+//			menuTable.getColumn("가격").setCellRenderer(ctcr);
+//			
+			//더블클릭하면 수량 선택 창 구현해야함
+			menuTable.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					
+					int rowIndex = menuTable.getSelectedRow();
+					if(rowIndex !=-1) {
+						String mname =(String) menuTable.getValueAt(rowIndex, 0);
+						MenuDTO dto = CafeDAO.getInstance().getMenuByName(mname);
+					for(MenuDTO dto2 : orderList) {
+						if(dto2.getMname().equals(dto.getMname())) {
+							dto2.setCount(dto2.getCount()+1);
+							refreshOrderList();
+							return;
+						}
+					}
+						orderList.add(dto);
+						refreshOrderList();
+
+					}
+				}		
+			});
+		}
+			
+		return menuTable;
+	}
+	
 	private JPanel getTab1Panel() {
 		if(tab1Panel == null) {
 			tab1Panel = new JPanel();

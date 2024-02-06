@@ -277,11 +277,6 @@ public class MenuMDS extends JDialog {
 		this.setLocation(leftTopX, leftTopY);
 	}
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			MenuMDS mM = new MenuMDS();
-			mM.setVisible(true);
-		});
-	}
+
 
 }
