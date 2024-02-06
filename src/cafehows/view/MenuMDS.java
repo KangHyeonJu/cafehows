@@ -69,7 +69,7 @@ public class MenuMDS extends JDialog{
 	public void searchKeyword(String keyword) {
 		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 		tableModel.setNumRows(0);
-		for(MenuDTO dto : CafeDAO.getInstance().searchKeyword(keyword)) {
+		for(MenuDTO dto : CafeDAO.getInstance().searchMenu(keyword)) {
 			Object[] rowData = {dto.getKind(), dto.getMname(),dto.getPrice()};
 			tableModel.addRow(rowData);
 			
@@ -246,14 +246,6 @@ public class MenuMDS extends JDialog{
 	
 	}
 	
-	
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			MenuMDS mM = new MenuMDS();
-        	mM.setVisible(true);
-	    });
 
-
-	}
 
 }

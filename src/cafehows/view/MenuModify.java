@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,13 +19,14 @@ import javax.swing.table.DefaultTableModel;
 import cafehows.model.CafeDAO;
 import cafehows.model.MenuDTO;
 
-public class MenuModify extends JFrame{
+public class MenuModify extends JDialog{
 	private MenuMDS menuMDS;
 	private String mname;
 	private JPanel pCenter, pMenuName, pPrice, pSouth, pPriceIn;
 	private JTextField txtMenuName, txtPrice;
 	private JButton btnOk, btnCancel;
 	private CafeDAO cafeDao = new CafeDAO();
+	
 
 	public MenuModify(MenuMDS menuMDS, String mname) {
 		this.menuMDS = menuMDS;
