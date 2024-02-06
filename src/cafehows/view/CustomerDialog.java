@@ -38,7 +38,7 @@ public class CustomerDialog extends JDialog{
 		this.setSize(500, 500);
 
 		this.getContentPane().add(getSearchPanel(),BorderLayout.NORTH);
-		this.getContentPane().add(new JScrollPane(getPCenter()), BorderLayout.CENTER);
+		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 		locationCenter();
 
@@ -94,7 +94,7 @@ public class CustomerDialog extends JDialog{
 	public void searchKeyword(String cno) {
 		DefaultTableModel tableModel = (DefaultTableModel) customerTable.getModel();
 		tableModel.setNumRows(0);
-		for(CustomerDTO dto : CafeDAO.getInstance().searchKeyword(cno)) {
+		for(CustomerDTO dto : CafeDAO.getInstance().searchKeywordCustomer(cno)) {
 			Object[] rowData = { dto.getCno(), dto.getPoint(), dto.getRecdate() };
 			tableModel.addRow(rowData);
 		}

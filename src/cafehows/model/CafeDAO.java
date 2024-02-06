@@ -470,7 +470,7 @@ public class CafeDAO {
 	}
 	
 	//고객 검색창
-	public List<CustomerDTO> searchKeyword(String cno) {
+	public List<CustomerDTO> searchKeywordCustomer(String cno) {
 		System.out.println(cno);
 		
 		connect();
