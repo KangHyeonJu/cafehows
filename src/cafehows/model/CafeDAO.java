@@ -480,9 +480,15 @@ public class CafeDAO {
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				MenuDTO board = new MenuDTO();
-				board.setKind(rs.getString(1));
 				board.setMname(rs.getString(2));
 				board.setPrice(rs.getInt(3));
+				board.setCano(rs.getInt(5));
+				
+				String sql2 = "select kind from category where cano = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(5));
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) board.setKind(rs2.getString(1));
 				menuboard.add(board);
 			}
 			close();

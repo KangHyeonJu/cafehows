@@ -27,7 +27,7 @@ import cafehows.model.MenuDTO;
 
 public class AddMenu extends JDialog {
 	private Main main;
-	private JPanel pCenter, pMenuName, pInquiry, pPrice, pSouth, pInquiryIn, pPriceIn, pNorth;
+	private JPanel pCenter, pMenuName, pInquiry, pPrice, pSouth, pInquiryIn, pPriceIn;
 	private JTextField txtMenuName, txtPrice;
 	private JComboBox ComboInquiry;
 	private JButton btnOk, btnCancel, btnInquiry;
@@ -38,10 +38,6 @@ public class AddMenu extends JDialog {
 		this.setTitle("메뉴 추가");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-		this.setSize(500, 400);
-
-		this.getContentPane().add(getPNorth(), BorderLayout.NORTH);
-
 		this.setSize(300, 200);
 
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
@@ -49,19 +45,15 @@ public class AddMenu extends JDialog {
 		locationCenter();
 	}
 
-	public JPanel getPNorth() {
-		if (pNorth == null) {
-			pNorth = new JPanel();
-			pNorth.add(getMenuName());
-			pNorth.add(getPrice());
-		}
-		return pNorth;
-	}
-
 	public JPanel getPCenter() {
 		if (pCenter == null) {
+			JPanel panel = new JPanel();
+			panel.setLayout(new GridLayout(3,1));
 			pCenter = new JPanel();
-			pCenter.add(getInquiry());
+			panel.add(getMenuName());
+			panel.add(getPrice());
+			panel.add(getInquiry());
+			pCenter.add(panel);
 		}
 		return pCenter;
 	}
