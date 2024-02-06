@@ -75,6 +75,40 @@ public class CafeDAO {
 		return items;
 	}
 	
+	public List<MenuDTO> getMenuSales() {
+		connect();
+		sql = """
+				select mno,sum(count) 
+				from menusales 
+				group by cumcount
+				""";
+		List<MenuDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				MenuDTO item = new MenuDTO();
+				item.setMno(rs.getInt(1));
+				item.setCumCount(rs.getInt(2));
+				String sql2 = "select mname from menu where mno = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(1));
+				
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setMname(rs2.getString(1));}
+				else {}
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
+	}
+	
+	
 	public List<MenuDTO> getMDSItems() {
 		connect();
 		sql = "select * from menu  order by mno ";
@@ -168,6 +202,88 @@ public class CafeDAO {
 			e.printStackTrace();
 		}
 		return items;
+	}
+	public List<OrderDTO> getOrderItemsbyPeriod(int start, int end){
+		connect();
+		sql = "select * from orderlist where date between ? and ?";
+		List<OrderDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, start);
+			pstmt.setInt(2, end);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				OrderDTO item = new OrderDTO();
+				item.setOno(rs.getInt(1));
+				item.setCno(rs.getInt(2));
+				item.setDate(rs.getDate(3));
+				item.setPrice(rs.getInt(4));
+				item.setFinalprice(rs.getInt(5));
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+	//DailySalesTable
+	public List<OrderDTO> getDailySales(){
+		connect();
+		sql = """
+				select ono,date,sum(price),sum(finalprice) 
+				from orderlist 
+				group by date;
+				""";
+		List<OrderDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				OrderDTO item = new OrderDTO();
+				item.setOno(rs.getInt(1));
+				item.setDate(rs.getDate(2));
+				item.setPrice(rs.getInt(3));
+				item.setFinalprice(rs.getInt(4));
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+		
+	}
+	
+	
+	public List<OrderDTO> getDailySalesbyPeriod(int start,int end){
+		connect();
+		sql = """
+				select ono,date,sum(price),sum(finalprice) 
+				from orderlist 
+				where date 
+				between ? and ? group by date;
+				""";
+		List<OrderDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, start);
+			pstmt.setInt(2, end);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				OrderDTO item = new OrderDTO();
+				item.setOno(rs.getInt(1));
+				item.setDate(rs.getDate(2));
+				item.setPrice(rs.getInt(3));
+				item.setFinalprice(rs.getInt(4));
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+		
 	}
 	
 	public void updatePoint(CustomerDTO board, int cno) {
@@ -446,6 +562,92 @@ public class CafeDAO {
 			JOptionPane.showMessageDialog(null,"종류를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 		}
 	}
+
+	public void deleteMenu(String menuName) {
+		connect();
+		try {
+			sql = "DELETE FROM menu WHERE mname=?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, menuName);
+			pstmt.executeUpdate();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	
+	public void visibilityMenu(String menuName) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE menu SET ")
+					.append("visibility=? ")
+					.append("WHERE mname=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, 0);
+			pstmt.setString(2, menuName);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public List<MenuDTO> searchMenu(String keyword){
+		connect();
+		sql = "select * from menu where mname like ?";
+		List<MenuDTO> menuboard = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "%"+keyword+"%");
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				MenuDTO board = new MenuDTO();
+				board.setKind(rs.getString(1));
+				board.setMname(rs.getString(2));
+				board.setPrice(rs.getInt(3));
+				menuboard.add(board);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return menuboard;
+	}
+	
+	//고객 검색창
+	public List<CustomerDTO> searchCustomer(String cno) {
+		System.out.println(cno);
+		
+		connect();
+		sql = "select cno, point, recdate from customer where cno like ?";
+		List<CustomerDTO> boards = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "%"+cno+"%");
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				CustomerDTO cDTO = new CustomerDTO();
+				cDTO.setCno(rs.getInt("cno"));
+				cDTO.setPoint(rs.getInt("point"));
+				cDTO.setRecdate(rs.getDate("recdate"));
+				
+				boards.add(cDTO);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return boards;
+	}
+
 	
 }
