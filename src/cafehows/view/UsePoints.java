@@ -16,20 +16,23 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
 import cafehows.model.CustomerDTO;
+import cafehows.model.MenuDTO;
 import cafehows.model.OrderDTO;
 import cafehows.model.CafeDAO;
 
 
 public class UsePoints extends JFrame{
+	private Main main;
 	private JPanel pCenter, pCono, pPoint, pUsePoint, pSouth, pConoIn;
 	private JTextField txtCono, txtPoint, txtUsePoint;
 	private JButton btnOk, btnCancel;
-	private CustomerDTO cDto = new CustomerDTO();
-	private CafeDAO dao = new CafeDAO();
+//	private CustomerDTO cDto = new CustomerDTO();
+//	private CafeDAO dao = new CafeDAO();
 	private static List<OrderDTO> orderList = CafeDAO.getInstance().getOrderItems();
 	private static List<CustomerDTO> customerList = CafeDAO.getInstance().getCustomerItems();
 	
-	public UsePoints() {
+	public UsePoints(Main main) {
+		this.main = main;
 		this.setTitle("회원 포인트 사용");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(300, 200);
@@ -131,14 +134,35 @@ public class UsePoints extends JFrame{
 			btnOk.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int usePoint = Integer.parseInt(getTxtUsePoint().getText());
-					int point = Integer.parseInt(getTxtPoint().getText());
 					int cno = Integer.parseInt(getTxtCono().getText());
-					cDto.setPoint(point-usePoint);
-					dao.updatePoint(cDto, cno);
+					int point = Integer.parseInt(getTxtPoint().getText());
+					int usePoint = Integer.parseInt(getTxtUsePoint().getText());
 					
-					UsePoints.this.dispose();
-					txtCono.setText("");
+					
+					
+					// orderlist date 저장, ono 생성, cno,price, finalprice 저장
+					OrderDTO orderDTO= new OrderDTO();
+					orderDTO.setCno(cno);
+					orderDTO.setFinalprice(main.getTotalPrice());
+					orderDTO.setPrice(main.getTotalPrice()-usePoint);
+					int ono = CafeDAO.getInstance().insertOrderList(orderDTO);
+					
+					//결제하면 menusales count++, ono 저장,mno
+					for(MenuDTO m : main.getOrderList()) {
+						m.setOno(ono);
+						m.setCumCount(m.getCumCount()+m.getCount());
+						System.out.println(m);
+						CafeDAO.getInstance().insertMenuSales(m);
+					}
+					
+					//customer point 차감, recdate 갱신
+					CustomerDTO cDTO = new CustomerDTO();
+					cDTO.setPoint(point-usePoint);
+					CafeDAO.getInstance().updatePoint(cDTO, cno);
+					main.getOrderList().clear();
+					main.refreshOrderList();
+					dispose();
+					
 				}
 			});
 		}

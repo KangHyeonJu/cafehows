@@ -1,5 +1,6 @@
 package cafehows.model;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -174,6 +175,7 @@ public class CafeDAO {
 		try {
 			sql = new StringBuilder()
 					.append("UPDATE customer SET ")
+					.append("recdate = now(),")
 					.append("point=? ")
 					.append("WHERE cno=?;")
 					.toString();
@@ -260,9 +262,11 @@ public class CafeDAO {
 			pstmt.setString(1, mname);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
-			
+				item.setMno(rs.getInt(1));
 				item.setMname(rs.getString(2));
-				item.setPrice(rs.getInt(3));			
+				item.setPrice(rs.getInt(3));
+				item.setVisibility(rs.getInt(4));
+				item.setCano(rs.getInt(5));
 			}
 			close();
 		} catch (SQLException e) {
@@ -336,6 +340,68 @@ public class CafeDAO {
 			JOptionPane.showMessageDialog(null,"메뉴를 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 		}
 	}
+	public int insertOrderList(OrderDTO order) {
+		int ono=0;
+		connect();
+		sql = """
+				insert into orderlist (cno,date,price,finalprice)
+				values (?,now(),?,?)
+				""";
+		try {
+			pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			pstmt.setInt(1, order.getCno());
+			pstmt.setInt(2, order.getPrice());
+			pstmt.setInt(3, order.getFinalprice());
+			int rows = pstmt.executeUpdate();
+			rs = pstmt.getGeneratedKeys();
+			
+			if(rs.next()) {
+				ono = rs.getBigDecimal(1).intValue();
+				System.out.println(ono);
+			}
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"주문목록에 추가되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"주문목록에 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+			return ono;
+		}catch(SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"주문목록에 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			return ono;
+		}
+	}
+	public void insertMenuSales(MenuDTO menu) {
+		connect();
+		sql = """
+				insert menusales 
+				set ono =?, count=? 
+				where mno = ? 
+				""";
+		sql = """
+				insert into menusales (ono,count,mno)
+				values (?,?,?)
+				""";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, menu.getOno());
+			pstmt.setInt(2, menu.getCount());
+			pstmt.setInt(3, menu.getMno());
+			int rows = pstmt.executeUpdate();
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"판매량이 저장되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"판매량을 저장할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"판매량을 저장할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	
 	public void updateCategory(CategoryDTO category) {
 		connect();
 		sql = """
@@ -359,6 +425,8 @@ public class CafeDAO {
 			JOptionPane.showMessageDialog(null,"종류를 수정할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 		}
 	}
+	
+	
 	public void deleteCategory(int cano) {
 		connect();
 		sql = "DELETE FROM category WHERE cano=?;";

@@ -12,6 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -38,6 +41,7 @@ import cafehows.model.MenuDTO;
 
 public class Main extends JFrame{
 	private Main main;
+//	private static final Main instance = new Main();
 	private JTabbedPane menuTab;
 	private JPanel tab1Panel,tab2Panel,orderPanel,selectPanel,orderBtnPanel,btnPanel;
 	private JTable menuTable1,menuTable2,orderTable;
@@ -46,6 +50,7 @@ public class Main extends JFrame{
 	private String temp;
 	private int totalPrice=0;
 	private JLabel priceField;
+
 
 	
 	public Main() {
@@ -58,6 +63,17 @@ public class Main extends JFrame{
 		this.getContentPane().add(getBtnPanel(),BorderLayout.EAST);
 		locationCenter();
 	}
+	
+	
+	public int getTotalPrice() {
+		return totalPrice;
+	}
+	public ArrayList<MenuDTO> getOrderList(){
+		return orderList;
+	}
+	
+
+
 	private JTabbedPane getJTabbedPane() {
 		if(menuTab == null) {
 			menuTab = new JTabbedPane();
@@ -100,7 +116,7 @@ public class Main extends JFrame{
 //			menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
 //			menuTable.getColumn("가격").setCellRenderer(ctcr);
 //			
-			//더블클릭하면 수량 선택 창
+			//더블클릭하면 수량 선택 창 구현해야함
 			menuTable1.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					
@@ -420,7 +436,7 @@ public class Main extends JFrame{
 			paymentBtn = new JButton();
 			paymentBtn.setText("결제");
 			paymentBtn.addActionListener(e->{
-				UsePoints usePoints= new UsePoints();
+				UsePoints usePoints= new UsePoints(main);
 				usePoints.setVisible(true);
 			});
 		}

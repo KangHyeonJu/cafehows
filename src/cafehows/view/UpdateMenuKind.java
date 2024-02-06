@@ -19,15 +19,15 @@ import cafehows.model.CafeDAO;
 import cafehows.model.CategoryDTO;
 
 public class UpdateMenuKind extends JDialog{
-
+	private TypeInquiry typeInquiry;
 	private JPanel notice, kind, pSouth;
 	private JTextField kindInput;
 	private JButton btnCancel, btnAdd;
 	private int cano;
 	private Main main;
 	
-	public UpdateMenuKind(Main main, int cano) {
-		this.main = main;
+	public UpdateMenuKind(TypeInquiry typeInquiry, int cano) {
+		this.typeInquiry = typeInquiry;
 		this.cano = cano;
 		this.setTitle("종류 수정");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -89,7 +89,7 @@ public class UpdateMenuKind extends JDialog{
 					category.setCano(cano);
 					category.setKind(kindInput.getText());
 					CafeDAO.getInstance().updateCategory(category);
-					TypeInquiry.getInstance().refreshTable();
+					typeInquiry.refreshTable();
 					dispose();
 					
 				}

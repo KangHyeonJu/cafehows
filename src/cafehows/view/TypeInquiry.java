@@ -23,16 +23,18 @@ import cafehows.model.CafeDAO;
 import cafehows.model.CategoryDTO;
 
 public class TypeInquiry extends JDialog{
-	private static final TypeInquiry instance = new TypeInquiry();
+	private TypeInquiry typeInquiry;
 	private JPanel pCenter, pEast, pSouth;
 	private JButton btnModify,btnDel,btnAdd, btnCancel;
 	private JTable typeTable;
 	private int cano;
 	private Main main;
+	
 
 
 	public TypeInquiry() {
-		this.main = main;
+	
+		this.typeInquiry = this;
 		this.setTitle("종류 조회");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 200);
@@ -41,9 +43,7 @@ public class TypeInquiry extends JDialog{
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 		locationCenter();
 	}
-	public static TypeInquiry getInstance() {
-		return instance;
-	}
+	
 	
 	
 	public JPanel getPCenter() {
@@ -105,8 +105,9 @@ public class TypeInquiry extends JDialog{
 			btnModify.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					UpdateMenuKind updatekind = new UpdateMenuKind(main,cano);
+					UpdateMenuKind updatekind = new UpdateMenuKind(typeInquiry,cano);
 					updatekind.setVisible(true);
+					
 				
 				}
 			});
