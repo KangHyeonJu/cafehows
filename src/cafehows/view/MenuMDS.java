@@ -27,7 +27,7 @@ import cafehows.model.MenuDTO;
 
 public class MenuMDS extends JDialog{
 	private JPanel pCenter, pSouth, searchPanel;
-	private JButton btnModify,btnDel,btnVisible, btnCancel, initBtn, searchBtn;
+	private JButton btnModify, btnVisible0, btnVisible1, btnCancel, initBtn, searchBtn;
 	private static JTable menuTable;
 	private JTextField searchInput;
 	private static List<MenuDTO> menuList = CafeDAO.getInstance().getMDSItems();
@@ -35,7 +35,7 @@ public class MenuMDS extends JDialog{
 	private static MenuMDS menuBoard;
 
 	public MenuMDS() {
-		this.setTitle("메뉴 수정/삭제/숨김");					
+		this.setTitle("메뉴 수정/숨김");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
 		
@@ -148,7 +148,8 @@ public class MenuMDS extends JDialog{
 		if(pSouth == null) {
 			pSouth = new JPanel();
 			pSouth.add(getBtnModify());
-			pSouth.add(getBtnVisible());
+			pSouth.add(getBtnVisible0());
+			pSouth.add(getBtnVisible1());
 			pSouth.add(getBtnCancel());
 			
 		}
@@ -200,25 +201,44 @@ public class MenuMDS extends JDialog{
 //		return btnDel;
 //	}
 	
-	public JButton getBtnVisible() {
-		if(btnVisible == null) {
-			btnVisible = new JButton();
-			btnVisible.setText("숨김/해제");
-			btnVisible.addActionListener(new ActionListener() {
+	public JButton getBtnVisible0() {
+		if(btnVisible0 == null) {
+			btnVisible0 = new JButton();
+			btnVisible0.setText("숨김");
+			btnVisible0.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int row = menuTable.getSelectedRow();
 					if(row == -1) {
 						return;
 					}else {
-						//if(menuList.get(row).get)
-						cafeDao.visibilityMenu(menuList.get(row).getMname());
+						cafeDao.visibilityMenu0(menuList.get(row).getMname());
 						
 					}
 				}
 			});
 		}
-		return btnVisible;
+		return btnVisible0;
+	}
+	
+	public JButton getBtnVisible1() {
+		if(btnVisible1 == null) {
+			btnVisible1 = new JButton();
+			btnVisible1.setText("해제");
+			btnVisible1.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int row = menuTable.getSelectedRow();
+					if(row == -1) {
+						return;
+					}else {
+						cafeDao.visibilityMenu1(menuList.get(row).getMname());
+						
+					}
+				}
+			});
+		}
+		return btnVisible1;
 	}
 	
 	
@@ -246,7 +266,6 @@ public class MenuMDS extends JDialog{
 			Object[] rowData = {dto.getKind(), dto.getMname(),dto.getPrice()};
 			tableModel.addRow(rowData);
 		}
-	
 	}
 	
 	private void locationCenter() {

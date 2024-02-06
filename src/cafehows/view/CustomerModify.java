@@ -21,6 +21,7 @@ import javax.swing.text.NumberFormatter;
 
 import cafehows.model.CafeDAO;
 import cafehows.model.CustomerDTO;
+import cafehows.model.MenuDTO;
 
 public class CustomerModify extends JFrame{
 
@@ -96,15 +97,10 @@ public class CustomerModify extends JFrame{
 				public void actionPerformed(ActionEvent e) {
 					//입력제한
 					if( txtCustomerNum.getText().length() == 8) {
-					cDto.setCno(Integer.parseInt(txtCustomerNum.getText()));
-					cafeDao.insertCustomer(cDto);
-					
-					DefaultTableModel tableModel = (DefaultTableModel) CustomerDialog.getCustomerTable().getModel();
-					List<CustomerDTO> customerList = CafeDAO.getInstance().getCustomerItems();
-					int i = CustomerDialog.getCustomerTable().getRowCount();
-					Object[] rowData = {customerList.get(i).getCno(), customerList.get(i).getPoint(), customerList.get(i).getRecdate()};
-					tableModel.addRow(rowData);
-					CustomerModify.this.dispose();
+						cDto.setCno(Integer.parseInt(txtCustomerNum.getText()));
+						cafeDao.insertCustomer(cDto);
+						CustomerDialog.refreshTable();
+						CustomerModify.this.dispose();
 					}else {
 						JOptionPane.showMessageDialog(null, "다시 입력해 주세요.","오류",JOptionPane.ERROR_MESSAGE);
 					}

@@ -125,7 +125,7 @@ public class CafeDAO {
 	}
 	public List<CustomerDTO> getCustomerItems() {
 		connect();
-		sql = "select * from customer order by cno ";
+		sql = "select * from customer where visibility=1 order by cno ";
 		List<CustomerDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -263,7 +263,7 @@ public class CafeDAO {
 		}
 	}
 	
-	public void visibilityMenu(String menuName) {
+	public void visibilityMenu0(String menuName) {
 		connect();
 		try {
 			sql = new StringBuilder()
@@ -275,7 +275,34 @@ public class CafeDAO {
 			pstmt = conn.prepareStatement(sql);
 			
 			
-			//pstmt.setInt(1, );
+			pstmt.setInt(1, 0);
+			pstmt.setString(2, menuName);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void visibilityMenu1(String menuName) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE menu SET ")
+					.append("visibility=? ")
+					.append("WHERE mname=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			
+			pstmt.setInt(1, 1);
 			pstmt.setString(2, menuName);
 			
 			pstmt.executeUpdate();
