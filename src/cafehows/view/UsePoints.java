@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
@@ -88,12 +89,17 @@ public class UsePoints extends JFrame{
 				public void actionPerformed(ActionEvent e) {
 					int customerNum = Integer.parseInt(txtCono.getText());
 					int customerPoint = 0;
-
-					for(int i=0;i<customerList.size();i++) {
-						if(customerNum == customerList.get(i).getCno()){
-							customerPoint = customerList.get(i).getPoint();
+					
+					if( txtCono.getText().length() == 8) {
+						for(int i=0;i<customerList.size();i++) {
+							if(customerNum == customerList.get(i).getCno()){
+								customerPoint = customerList.get(i).getPoint();
+							}
 						}
+					}else {
+						JOptionPane.showMessageDialog(null, "다시 입력해 주세요.","오류",JOptionPane.ERROR_MESSAGE);
 					}
+					
 					getTxtPoint().setText(Integer.toString(customerPoint));
 				}
 			});
