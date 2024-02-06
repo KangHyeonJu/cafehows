@@ -2,25 +2,29 @@ package cafehows.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.NumberFormatter;
 
 import cafehows.model.CafeDAO;
 import cafehows.model.CustomerDTO;
 
 public class CustomerModify extends JFrame{
 
-	private JPanel customerNum, pCenter, pSouth;
+	private JPanel customerNum, pCenter, pSouth, pNotice;
 	private JTextField txtCustomerNum;
 	private JButton btnOk, btnCancel, btnDelete;
 	private CafeDAO cafeDao = new CafeDAO();
@@ -32,9 +36,21 @@ public class CustomerModify extends JFrame{
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(300, 200);
 		
+		
+		this.getContentPane().add(getNotice(), BorderLayout.NORTH);
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
+		locationCenter();
 	}
+	
+	public JPanel getNotice() {
+		if(pNotice == null){
+			pNotice = new JPanel();
+			pNotice.add(new JLabel("010과 '-'를 제외한 번호 8자리를 입력해주세요."));
+		}
+		return pNotice;
+	}
+	
 	
 	public JPanel getPCenter() {
 		if(pCenter==null) {
@@ -52,6 +68,7 @@ public class CustomerModify extends JFrame{
 		}
 		return customerNum;
 	}
+	
 	
 	public JTextField getTxtCustomerNum() {
 		if(txtCustomerNum==null) {
@@ -77,6 +94,8 @@ public class CustomerModify extends JFrame{
 			btnOk.setText("등록");
 			btnOk.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					//입력제한
+					if( txtCustomerNum.getText().length() == 8) {
 					cDto.setCno(Integer.parseInt(txtCustomerNum.getText()));
 					cafeDao.insertCustomer(cDto);
 					
@@ -86,6 +105,9 @@ public class CustomerModify extends JFrame{
 					Object[] rowData = {customerList.get(i).getCno(), customerList.get(i).getPoint(), customerList.get(i).getRecdate()};
 					tableModel.addRow(rowData);
 					CustomerModify.this.dispose();
+					}else {
+						JOptionPane.showMessageDialog(null, "다시 입력해 주세요.","오류",JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			});
 		}
@@ -126,5 +148,12 @@ public class CustomerModify extends JFrame{
 			});
 		}
 		return btnCancel;
+	}
+	private void locationCenter() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Point centerPoint = ge.getCenterPoint();
+		int leftTopX = centerPoint.x - this.getWidth()/2;
+		int leftTopY = centerPoint.y - this.getHeight()/2;
+		this.setLocation(leftTopX, leftTopY);
 	}
 }

@@ -469,6 +469,31 @@ public class CafeDAO {
 		return menuboard;
 	}
 	
-	
+	//고객 검색창
+	public List<CustomerDTO> searchKeyword(String cno) {
+		System.out.println(cno);
+		
+		connect();
+		sql = "select cno, point, recdate from customer where cno like ?";
+		List<CustomerDTO> boards = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "%"+cno+"%");
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				CustomerDTO cDTO = new CustomerDTO();
+				cDTO.setCno(rs.getInt("cno"));
+				cDTO.setPoint(rs.getInt("point"));
+				cDTO.setRecdate(rs.getDate("recdate"));
+				
+				boards.add(cDTO);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return boards;
+	}
 	
 }
