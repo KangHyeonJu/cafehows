@@ -85,7 +85,13 @@ public class Main extends JFrame{
 	}
 	private JTable getMenuTable1() {
 		if(menuTable1 == null) {
-			menuTable1 = new JTable();
+			//Table 수정 불가
+			menuTable1 = new JTable() {
+				@Override
+				public boolean isCellEditable(int row, int col) {
+					return false;
+				}
+			};
 			menuTable1.setAutoCreateRowSorter(true);
 			
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable1.getModel();
@@ -127,7 +133,12 @@ public class Main extends JFrame{
 	}
 	private JTable getMenuTable2() {
 		if(menuTable2 == null) {
-			menuTable2 = new JTable();
+			menuTable2 = new JTable() {
+				@Override
+				public boolean isCellEditable(int row, int col) {
+					return false;
+				}
+			};
 			menuTable2.setAutoCreateRowSorter(true);
 			
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable2.getModel();

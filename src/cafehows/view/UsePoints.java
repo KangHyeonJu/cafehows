@@ -2,10 +2,11 @@ package cafehows.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,11 +14,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
 
+import cafehows.model.CafeDAO;
 import cafehows.model.CustomerDTO;
 import cafehows.model.OrderDTO;
-import cafehows.model.CafeDAO;
 
 
 public class UsePoints extends JFrame{
@@ -45,6 +45,7 @@ public class UsePoints extends JFrame{
 			pCenter.add(getPCono());
 			pCenter.add(getPPoint());
 			pCenter.add(getPUsePoint());
+			locationCenter();
 			//pCenter.setBounds(100, 50, 70, 60);
 		}
 		return pCenter;
@@ -157,5 +158,13 @@ public class UsePoints extends JFrame{
 			});
 		}
 		return btnCancel;
+	}
+	
+	private void locationCenter() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Point centerPoint = ge.getCenterPoint();
+		int leftTopX = centerPoint.x - this.getWidth()/2;
+		int leftTopY = centerPoint.y - this.getHeight()/2;
+		this.setLocation(leftTopX, leftTopY);
 	}
 }

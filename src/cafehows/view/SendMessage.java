@@ -2,6 +2,8 @@ package cafehows.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,6 +26,7 @@ public class SendMessage extends JFrame{
 		
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
+		locationCenter();
 	}
 	
 	public JPanel getPCenter() {
@@ -81,6 +84,14 @@ public class SendMessage extends JFrame{
 			});
 		}
 		return btnCancel;
+	}
+	
+	private void locationCenter() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Point centerPoint = ge.getCenterPoint();
+		int leftTopX = centerPoint.x - this.getWidth()/2;
+		int leftTopY = centerPoint.y - this.getHeight()/2;
+		this.setLocation(leftTopX, leftTopY);
 	}
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {

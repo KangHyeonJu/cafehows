@@ -1,6 +1,7 @@
 package cafehows.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,7 +27,7 @@ import javax.swing.table.TableColumnModel;
 import cafehows.model.CafeDAO;
 import cafehows.model.MenuDTO;
 
-public class MenuMDS extends JDialog{
+public class MenuMDS extends JDialog {
 	private JPanel pCenter, pSouth, searchPanel;
 	private JButton btnModify, btnVisible0, btnVisible1, btnCancel, initBtn, searchBtn;
 	private static JTable menuTable;
@@ -35,19 +37,19 @@ public class MenuMDS extends JDialog{
 	private static MenuMDS menuBoard;
 
 	public MenuMDS() {
-		this.setTitle("메뉴 수정/숨김");					
+		this.setTitle("메뉴 수정/숨김");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
-		
+
 		this.getContentPane().add(getSearchPanel(), BorderLayout.NORTH);
-		this.getContentPane().add(new JScrollPane(getPCenter()), BorderLayout.CENTER);
+		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
-		
+
 		locationCenter();
 	}
-	
+
 	private JPanel getSearchPanel() {
-		if(searchPanel==null) {
+		if (searchPanel == null) {
 			searchPanel = new JPanel();
 			searchPanel.add(new JLabel("메뉴명", JLabel.CENTER));
 			searchPanel.add(getSearchBar());
@@ -56,9 +58,9 @@ public class MenuMDS extends JDialog{
 		}
 		return searchPanel;
 	}
-	
+
 	private JTextField getSearchBar() {
-		if(searchInput == null) {
+		if (searchInput == null) {
 			searchInput = new JTextField(15);
 			searchInput.addActionListener(new ActionListener() {
 				@Override
@@ -69,21 +71,21 @@ public class MenuMDS extends JDialog{
 		}
 		return searchInput;
 	}
-	
+
 	public void searchKeyword(String keyword) {
 		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 		tableModel.setNumRows(0);
-		for(MenuDTO dto : CafeDAO.getInstance().searchKeyword(keyword)) {
-			Object[] rowData = {dto.getKind(), dto.getMname(),dto.getPrice()};
+		for (MenuDTO dto : CafeDAO.getInstance().searchKeyword(keyword)) {
+			Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice() };
 			tableModel.addRow(rowData);
-			
+
 		}
 	}
-	
+
 	public JButton getSerachBtn() {
-		if(searchBtn==null) {
+		if (searchBtn == null) {
 			searchBtn = new JButton();
-			//searchBtn.setText("검색");
+			// searchBtn.setText("검색");
 			JLabel btnImage = new JLabel();
 			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
 			searchBtn.add(btnImage);
@@ -96,9 +98,9 @@ public class MenuMDS extends JDialog{
 		}
 		return searchBtn;
 	}
-	
+
 	public JButton getInitBtn() {
-		if(initBtn==null) {
+		if (initBtn == null) {
 			initBtn = new JButton();
 			initBtn.setText("초기화");
 			initBtn.addActionListener(new ActionListener() {
@@ -110,66 +112,70 @@ public class MenuMDS extends JDialog{
 		}
 		return initBtn;
 	}
-	
+
 	public JPanel getPCenter() {
-		if(pCenter == null) {
+		if (pCenter == null) {
 			pCenter = new JPanel();
 			pCenter.add(new JScrollPane(getMenuTable()));
 		}
 		return pCenter;
 	}
-	
+
 	public static JTable getMenuTable() {
-		if(menuTable == null) {
-			menuTable = new JTable();
+		if (menuTable == null) {
+			menuTable = new JTable() {
+				@Override
+				public boolean isCellEditable(int row, int col) {
+					return false;
+				}
+			};
 			menuTable.setAutoCreateRowSorter(true);
-			
+
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 			tableModel.addColumn("종류");
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("가격");
 
-			for(MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
-				Object[] rowData = {dto.getKind(), dto.getMname(),dto.getPrice()};
+			for (MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
+				Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice() };
 				tableModel.addRow(rowData);
-				
+
 			}
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 			TableColumnModel tcm = menuTable.getColumnModel();
-			for(int i=0; i<3; i++) tcm.getColumn(i).setCellRenderer(dtcr);
-		}
-			
-		return menuTable;
+			for (int i = 0; i < 3; i++)
+				tcm.getColumn(i).setCellRenderer(dtcr);
 		}
 
-	
+		return menuTable;
+	}
+
 	public JPanel getPSouth() {
-		if(pSouth == null) {
+		if (pSouth == null) {
 			pSouth = new JPanel();
 			pSouth.add(getBtnModify());
 			pSouth.add(getBtnVisible0());
 			pSouth.add(getBtnVisible1());
 			pSouth.add(getBtnCancel());
-			
+
 		}
 		return pSouth;
 	}
 
-	
 	public JButton getBtnModify() {
-		if(btnModify == null) {
+		if (btnModify == null) {
 			btnModify = new JButton();
 			btnModify.setText("수정");
 			btnModify.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+
 					int row = menuTable.getSelectedRow();
 					System.out.println(row);
-					if(row == -1) {
+					if (row == -1) {
 						return;
-					}else {
+					} else {
 						MenuModify menuModify = new MenuModify(menuBoard, menuList.get(row).getMname());
 						menuModify.setVisible(true);
 					}
@@ -178,8 +184,7 @@ public class MenuMDS extends JDialog{
 		}
 		return btnModify;
 	}
-	
-	
+
 //	public JButton getBtnDel() {
 //		if(btnDel == null) {
 //			btnDel = new JButton();
@@ -200,51 +205,53 @@ public class MenuMDS extends JDialog{
 //		}
 //		return btnDel;
 //	}
-	
+
 	public JButton getBtnVisible0() {
-		if(btnVisible0 == null) {
+		if (btnVisible0 == null) {
 			btnVisible0 = new JButton();
 			btnVisible0.setText("숨김");
 			btnVisible0.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int row = menuTable.getSelectedRow();
-					if(row == -1) {
-						return;
-					}else {
+					if (row != -1) {
+
+						// menuTable에서 vis값 가져와서 비교하여 0 이면 배경색 지정
+
+					} else {
 						cafeDao.visibilityMenu0(menuList.get(row).getMname());
-						
+
+						JOptionPane.showMessageDialog(null, "수정할 메뉴를 선택해 주세요.");
+
 					}
 				}
 			});
 		}
 		return btnVisible0;
 	}
-	
+
 	public JButton getBtnVisible1() {
-		if(btnVisible1 == null) {
+		if (btnVisible1 == null) {
 			btnVisible1 = new JButton();
 			btnVisible1.setText("해제");
 			btnVisible1.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int row = menuTable.getSelectedRow();
-					if(row == -1) {
+					if (row == -1) {
 						return;
-					}else {
+					} else {
 						cafeDao.visibilityMenu1(menuList.get(row).getMname());
-						
+
 					}
 				}
 			});
 		}
 		return btnVisible1;
 	}
-	
-	
-	
+
 	public JButton getBtnCancel() {
-		if(btnCancel == null) {
+		if (btnCancel == null) {
 			btnCancel = new JButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
@@ -256,30 +263,28 @@ public class MenuMDS extends JDialog{
 		}
 		return btnCancel;
 	}
-	
-
 
 	public void refreshTable() {
 		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 		tableModel.setNumRows(0);
-		for(MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
-			Object[] rowData = {dto.getKind(), dto.getMname(),dto.getPrice()};
+		for (MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
+			Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice() };
 			tableModel.addRow(rowData);
 		}
 	}
-	
+
 	private void locationCenter() {
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		Point centerPoint = ge.getCenterPoint();
-		int leftTopX = centerPoint.x - this.getWidth()/2;
-		int leftTopY = centerPoint.y - this.getHeight()/2;
+		int leftTopX = centerPoint.x - this.getWidth() / 2;
+		int leftTopY = centerPoint.y - this.getHeight() / 2;
 		this.setLocation(leftTopX, leftTopY);
 	}
-	
+
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			MenuMDS mM = new MenuMDS();
-        	mM.setVisible(true);
-	    });
+			mM.setVisible(true);
+		});
 	}
 }

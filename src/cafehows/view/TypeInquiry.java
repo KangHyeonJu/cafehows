@@ -55,7 +55,12 @@ public class TypeInquiry extends JDialog{
 	}
 	public JTable getTypeTable() {
 		if(typeTable == null) {
-			typeTable = new JTable();
+			typeTable = new JTable() {
+				@Override
+				public boolean isCellEditable(int row, int col) {
+					return false;
+				}
+			};
 			typeTable.setAutoCreateRowSorter(true);
 			
 			DefaultTableModel tableModel = (DefaultTableModel) typeTable.getModel();
