@@ -27,6 +27,8 @@ public class MenuModify extends JFrame{
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 	}
 	
+	
+
 	public JPanel getPCenter() {
 		if(pCenter==null) {
 			pCenter = new JPanel();

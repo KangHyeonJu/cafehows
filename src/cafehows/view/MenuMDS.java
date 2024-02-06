@@ -5,26 +5,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import cafehows.model.CafeDAO;
 import cafehows.model.MenuDTO;
 
 public class MenuMDS extends JDialog{
-	private JPanel pCenter, pSouth;
-	private JButton btnModify,btnDel,btnVisible, btnCancel;
+	private JPanel pCenter, pSouth, searchPanel;
+	private JButton btnModify,btnDel,btnVisible, btnCancel, initBtn, searchBtn;
 	private JTable menuTable;
+	private JTextField searchInput;
 	private static List<MenuDTO> menuList = CafeDAO.getInstance().getMDSItems();
 	private CafeDAO cafeDao = new CafeDAO();
 
@@ -32,10 +35,85 @@ public class MenuMDS extends JDialog{
 		this.setTitle("메뉴 수정/삭제/숨김");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
-
+		
+		this.getContentPane().add(getSearchPanel(), BorderLayout.NORTH);
 		this.getContentPane().add(new JScrollPane(getPCenter()), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 	}
+	
+	private JPanel getSearchPanel() {
+		if(searchPanel==null) {
+			searchPanel = new JPanel();
+			searchPanel.add(new JLabel("메뉴명", JLabel.CENTER));
+			searchPanel.add(getSearchBar());
+			searchPanel.add(getSerachBtn());
+			searchPanel.add(getInitBtn());
+		}
+		return searchPanel;
+	}
+	
+	private JTextField getSearchBar() {
+		if(searchInput == null) {
+			searchInput = new JTextField(15);
+			searchInput.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					searchKeyword(searchInput.getText());
+				}
+			});
+		}
+		return searchInput;
+	}
+	
+	public void searchKeyword(String keyword) {
+		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
+		tableModel.setNumRows(0);
+		for(MenuDTO dto : CafeDAO.getInstance().searchKeyword(keyword)) {
+			Object[] rowData = {dto.getKind(), dto.getMname(),dto.getPrice()};
+			tableModel.addRow(rowData);
+			
+		}
+	}
+	
+	public JButton getSerachBtn() {
+		if(searchBtn==null) {
+			searchBtn = new JButton();
+			//searchBtn.setText("검색");
+			JLabel btnImage = new JLabel();
+			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
+			searchBtn.add(btnImage);
+			searchBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					searchKeyword(searchInput.getText());
+				}
+			});
+		}
+		return searchBtn;
+	}
+	
+	public JButton getInitBtn() {
+		if(initBtn==null) {
+			initBtn = new JButton();
+			initBtn.setText("초기화");
+			initBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					refreshTable();
+					searchInput.setText("");
+				}
+			});
+		}
+		return initBtn;
+	}
+	
+//	public void refreshBoard() {
+//		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
+//		tableModel.setNumRows(0);
+//		for(BoardDTO dto : BoardDAO.getInstance().getBoards()) {
+//			Object[] rowData = { dto.getBno(), dto.getTitle(), dto.getWriter(), dto.getRegdate(), dto.getHitcount() };
+//			tableModel.addRow(rowData);
+//		}
+//	}
 	
 	public JPanel getPCenter() {
 		if(pCenter == null) {
