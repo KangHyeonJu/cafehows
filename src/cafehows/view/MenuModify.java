@@ -4,31 +4,48 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableModel;
+
+import cafehows.model.CafeDAO;
+import cafehows.model.MenuDTO;
 
 public class MenuModify extends JFrame{
+	private MenuMDS menuMDS;
+	private String mname;
 	private JPanel pCenter, pMenuName, pPrice, pSouth, pPriceIn;
 	private JTextField txtMenuName, txtPrice;
 	private JButton btnOk, btnCancel;
+	private CafeDAO cafeDao = new CafeDAO();
 
-	public MenuModify() {
+	public MenuModify(MenuMDS menuMDS, String mname) {
+		this.menuMDS = menuMDS;
+		this.mname = mname;
 		this.setTitle("메뉴수정");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(300, 200);
 
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
+		this.setBoard();
+	}
+
+	public void setBoard() {
+		int rowIndex = MenuMDS.getMenuTable().getSelectedRow();
+		
+		List<MenuDTO> list = cafeDao.getMDSItems();
+		getTxtMenuName().setText(list.get(rowIndex).getMname());
+		getTxtPrice().setText(Integer.toString(list.get(rowIndex).getPrice()));
 	}
 	
-	
-
 	public JPanel getPCenter() {
 		if(pCenter==null) {
 			pCenter = new JPanel();
@@ -86,10 +103,24 @@ public class MenuModify extends JFrame{
 		if(btnOk == null) {
 			btnOk = new JButton();
 			btnOk.setText("수정");
+			int rowIndex = MenuMDS.getMenuTable().getSelectedRow();
 			btnOk.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					DefaultTableModel tableModel = (DefaultTableModel) MenuMDS.getMenuTable().getModel();
+					Vector<Vector> rows = tableModel.getDataVector();
+					Vector row = rows.elementAt(rowIndex);
+					row.set(1, txtMenuName.getText());
+					row.set(2, txtPrice.getText());
+					tableModel.fireTableDataChanged();
 					
+					List<MenuDTO> list = CafeDAO.getInstance().getMDSItems();
+					MenuDTO mdto= new MenuDTO();
+					mdto.setMname(txtMenuName.getText());
+					mdto.setPrice(Integer.parseInt(txtPrice.getText()));
+					cafeDao.updateMenu(mdto, list.get(rowIndex).getMname());
+					
+					MenuModify.this.dispose();
 				}
 			});
 		}
@@ -103,20 +134,11 @@ public class MenuModify extends JFrame{
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					MenuModify.this.dispose();
 				}
 			});
 		}
 		return btnCancel;
-	}
-	
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			MenuModify mM = new MenuModify();
-        	mM.setVisible(true);
-	    });
-
-
 	}
 }
 

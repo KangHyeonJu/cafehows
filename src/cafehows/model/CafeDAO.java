@@ -373,6 +373,35 @@ public class CafeDAO {
 			JOptionPane.showMessageDialog(null,"메뉴를 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 		}
 	}
+	
+	public void updateMenu(MenuDTO menu, String mname) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE menu SET ")
+					.append("mname=?, ")
+					.append("price=? ")
+					.append("WHERE mname=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, menu.getMname());
+			pstmt.setInt(2, menu.getPrice());
+			pstmt.setString(3, mname);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
 	public void updateCategory(CategoryDTO category) {
 		connect();
 		sql = """

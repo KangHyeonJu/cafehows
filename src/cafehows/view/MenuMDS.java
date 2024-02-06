@@ -26,10 +26,11 @@ import cafehows.model.MenuDTO;
 public class MenuMDS extends JDialog{
 	private JPanel pCenter, pSouth, searchPanel;
 	private JButton btnModify,btnDel,btnVisible, btnCancel, initBtn, searchBtn;
-	private JTable menuTable;
+	private static JTable menuTable;
 	private JTextField searchInput;
 	private static List<MenuDTO> menuList = CafeDAO.getInstance().getMDSItems();
 	private CafeDAO cafeDao = new CafeDAO();
+	private static MenuMDS menuBoard;
 
 	public MenuMDS() {
 		this.setTitle("메뉴 수정/삭제/숨김");					
@@ -106,15 +107,6 @@ public class MenuMDS extends JDialog{
 		return initBtn;
 	}
 	
-//	public void refreshBoard() {
-//		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
-//		tableModel.setNumRows(0);
-//		for(BoardDTO dto : BoardDAO.getInstance().getBoards()) {
-//			Object[] rowData = { dto.getBno(), dto.getTitle(), dto.getWriter(), dto.getRegdate(), dto.getHitcount() };
-//			tableModel.addRow(rowData);
-//		}
-//	}
-	
 	public JPanel getPCenter() {
 		if(pCenter == null) {
 			pCenter = new JPanel();
@@ -122,7 +114,8 @@ public class MenuMDS extends JDialog{
 		}
 		return pCenter;
 	}
-	public JTable getMenuTable() {
+	
+	public static JTable getMenuTable() {
 		if(menuTable == null) {
 			menuTable = new JTable();
 			menuTable.setAutoCreateRowSorter(true);
@@ -132,8 +125,11 @@ public class MenuMDS extends JDialog{
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("가격");
 
-			refreshTable();
-			
+			for(MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
+				Object[] rowData = {dto.getKind(), dto.getMname(),dto.getPrice()};
+				tableModel.addRow(rowData);
+				
+			}
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 			TableColumnModel tcm = menuTable.getColumnModel();
@@ -165,11 +161,15 @@ public class MenuMDS extends JDialog{
 			btnModify.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					
 					int row = menuTable.getSelectedRow();
-					//MenuModify menuModify = new MenuModify(menuList.get(row).getMname());
-					
-					
-					//menuModify.setVisible(true);
+					System.out.println(row);
+					if(row == -1) {
+						return;
+					}else {
+						MenuModify menuModify = new MenuModify(menuBoard, menuList.get(row).getMname());
+						menuModify.setVisible(true);
+					}
 				}
 			});
 		}
