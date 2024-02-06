@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-
 public class CafeDAO {
 	private static final CafeDAO instance = new CafeDAO();
 	private final String url = "jdbc:mysql://222.119.100.89:3382/cafehows";
@@ -374,6 +373,35 @@ public class CafeDAO {
 			JOptionPane.showMessageDialog(null,"메뉴를 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 		}
 	}
+	
+	public void updateMenu(MenuDTO menu, String mname) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE menu SET ")
+					.append("mname=?, ")
+					.append("price=? ")
+					.append("WHERE mname=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, menu.getMname());
+			pstmt.setInt(2, menu.getPrice());
+			pstmt.setString(3, mname);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
 	public void updateCategory(CategoryDTO category) {
 		connect();
 		sql = """
@@ -415,6 +443,28 @@ public class CafeDAO {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,"종류를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 		}
+	}
+
+	public List<MenuDTO> searchKeyword(String keyword){
+		connect();
+		sql = "select * from menu where mname like ?";
+		List<MenuDTO> menuboard = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "%"+keyword+"%");
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				MenuDTO board = new MenuDTO();
+				board.setKind(rs.getString(1));
+				board.setMname(rs.getString(2));
+				board.setPrice(rs.getInt(3));
+				menuboard.add(board);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return menuboard;
 	}
 	
 	//고객 검색창

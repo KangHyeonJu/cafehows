@@ -5,36 +5,106 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import cafehows.model.CafeDAO;
 import cafehows.model.MenuDTO;
 
 public class MenuMDS extends JDialog{
-	private JPanel pCenter, pSouth;
-	private JButton btnModify,btnDel,btnVisible, btnCancel;
-	private JTable menuTable;
+	private JPanel pCenter, pSouth, searchPanel;
+	private JButton btnModify,btnDel,btnVisible, btnCancel, initBtn, searchBtn;
+	private static JTable menuTable;
+	private JTextField searchInput;
 	private static List<MenuDTO> menuList = CafeDAO.getInstance().getMDSItems();
 	private CafeDAO cafeDao = new CafeDAO();
+	private static MenuMDS menuBoard;
 
 	public MenuMDS() {
 		this.setTitle("메뉴 수정/삭제/숨김");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
-
+		
+		this.getContentPane().add(getSearchPanel(), BorderLayout.NORTH);
 		this.getContentPane().add(new JScrollPane(getPCenter()), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
+	}
+	
+	private JPanel getSearchPanel() {
+		if(searchPanel==null) {
+			searchPanel = new JPanel();
+			searchPanel.add(new JLabel("메뉴명", JLabel.CENTER));
+			searchPanel.add(getSearchBar());
+			searchPanel.add(getSerachBtn());
+			searchPanel.add(getInitBtn());
+		}
+		return searchPanel;
+	}
+	
+	private JTextField getSearchBar() {
+		if(searchInput == null) {
+			searchInput = new JTextField(15);
+			searchInput.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					searchKeyword(searchInput.getText());
+				}
+			});
+		}
+		return searchInput;
+	}
+	
+	public void searchKeyword(String keyword) {
+		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
+		tableModel.setNumRows(0);
+		for(MenuDTO dto : CafeDAO.getInstance().searchKeyword(keyword)) {
+			Object[] rowData = {dto.getKind(), dto.getMname(),dto.getPrice()};
+			tableModel.addRow(rowData);
+			
+		}
+	}
+	
+	public JButton getSerachBtn() {
+		if(searchBtn==null) {
+			searchBtn = new JButton();
+			//searchBtn.setText("검색");
+			JLabel btnImage = new JLabel();
+			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
+			searchBtn.add(btnImage);
+			searchBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					searchKeyword(searchInput.getText());
+				}
+			});
+		}
+		return searchBtn;
+	}
+	
+	public JButton getInitBtn() {
+		if(initBtn==null) {
+			initBtn = new JButton();
+			initBtn.setText("초기화");
+			initBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					refreshTable();
+					searchInput.setText("");
+				}
+			});
+		}
+		return initBtn;
 	}
 	
 	public JPanel getPCenter() {
@@ -44,7 +114,8 @@ public class MenuMDS extends JDialog{
 		}
 		return pCenter;
 	}
-	public JTable getMenuTable() {
+	
+	public static JTable getMenuTable() {
 		if(menuTable == null) {
 			menuTable = new JTable();
 			menuTable.setAutoCreateRowSorter(true);
@@ -54,8 +125,11 @@ public class MenuMDS extends JDialog{
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("가격");
 
-			refreshTable();
-			
+			for(MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
+				Object[] rowData = {dto.getKind(), dto.getMname(),dto.getPrice()};
+				tableModel.addRow(rowData);
+				
+			}
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 			TableColumnModel tcm = menuTable.getColumnModel();
@@ -87,11 +161,15 @@ public class MenuMDS extends JDialog{
 			btnModify.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					
 					int row = menuTable.getSelectedRow();
-					//MenuModify menuModify = new MenuModify(menuList.get(row).getMname());
-					
-					
-					//menuModify.setVisible(true);
+					System.out.println(row);
+					if(row == -1) {
+						return;
+					}else {
+						MenuModify menuModify = new MenuModify(menuBoard, menuList.get(row).getMname());
+						menuModify.setVisible(true);
+					}
 				}
 			});
 		}
