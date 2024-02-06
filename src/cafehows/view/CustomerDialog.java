@@ -1,39 +1,114 @@
 package cafehows.view;
 
 import java.awt.BorderLayout;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-import cafehows.model.CustomerDTO;
 import cafehows.model.CafeDAO;
+import cafehows.model.CustomerDTO;
 
 public class CustomerDialog extends JDialog{
-	private JPanel pCenter, pSouth;
-	private JButton btnAD,btnSend, btnCancel;
+	private JPanel pCenter, pSouth, searchPanel, searchCno;
+	private JButton btnAD,btnSend, btnCancel, initBtn;
 	private static JTable customerTable;
+	private JTextField searchInput;
 
 	public CustomerDialog() {
 		this.setTitle("고객 관리");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
 
+		this.getContentPane().add(getSearchPanel(),BorderLayout.NORTH);
 		this.getContentPane().add(new JScrollPane(getPCenter()), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
+		locationCenter();
+
 	}
+	
+	//검색창
+	private JPanel getSearchPanel() {
+		if(searchPanel==null) {
+			searchPanel = new JPanel();
+			searchPanel.add(getSearchCno());
+			searchPanel.add(getSearchBar());
+			searchPanel.add(getInitBtn());
+		}
+		return searchPanel;
+	}
+	
+	private JPanel getSearchCno() {
+		if(searchCno==null) {
+			searchCno = new JPanel();
+			searchCno.add(new JLabel("회원 번호"));
+		}
+		return searchCno;
+	}
+	
+	private JTextField getSearchBar() {
+		if(searchInput == null) {
+			searchInput = new JTextField(15);
+			searchInput.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					String cnoText = searchInput.getText();
+					//키를 떼었을 때
+					searchKeyword(cnoText);
+				}
+			});
+		}
+		return searchInput;
+	}
+	
+	public JButton getInitBtn() {
+		if(initBtn==null) {
+			initBtn = new JButton();
+			initBtn.setText("초기화");
+			initBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					refreshBoard();
+				}
+			});
+		}
+		return initBtn;
+	}
+	
+	public void searchKeyword(String cno) {
+		DefaultTableModel tableModel = (DefaultTableModel) customerTable.getModel();
+		tableModel.setNumRows(0);
+		for(CustomerDTO dto : CafeDAO.getInstance().searchKeyword(cno)) {
+			Object[] rowData = { dto.getCno(), dto.getPoint(), dto.getRecdate() };
+			tableModel.addRow(rowData);
+		}
+	}
+	
+	public void refreshBoard() {
+		DefaultTableModel tableModel = (DefaultTableModel) customerTable.getModel();
+		tableModel.setNumRows(0);
+		for(CustomerDTO dto : CafeDAO.getInstance().getCustomerItems()) {
+			Object[] rowData = { dto.getCno(), dto.getPoint(), dto.getRecdate()  };
+			tableModel.addRow(rowData);
+		}
+	}
+	
 	
 	public JPanel getPCenter() {
 		if(pCenter == null) {
@@ -115,6 +190,7 @@ public class CustomerDialog extends JDialog{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					CustomerDialog.this.dispose();
+
 				}
 			});
 		}
@@ -132,5 +208,13 @@ public class CustomerDialog extends JDialog{
 			
 		}
 	
+	}
+	
+	private void locationCenter() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Point centerPoint = ge.getCenterPoint();
+		int leftTopX = centerPoint.x - this.getWidth()/2;
+		int leftTopY = centerPoint.y - this.getHeight()/2;
+		this.setLocation(leftTopX, leftTopY);
 	}
 }
