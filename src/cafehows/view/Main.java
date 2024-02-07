@@ -160,13 +160,7 @@ public class Main extends JFrame{
 	}
 	private JTable getMenuTable1() {
 		if(menuTable1 == null) {
-			//Table 수정 불가
-			menuTable1 = new JTable() {
-				@Override
-				public boolean isCellEditable(int row, int col) {
-					return false;
-				}
-			};
+			menuTable1 = new JTable();
 			menuTable1.setAutoCreateRowSorter(true);
 			
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable1.getModel();
@@ -370,21 +364,7 @@ public class Main extends JFrame{
 			
 		return orderTable;
 	}
-	
-	//아이스/핫
-	public class SelectTableCellRenderer extends JCheckBox implements TableCellRenderer{
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-			Boolean boolWrapper = (Boolean) value;
-			setSelected(boolWrapper.booleanValue());
-			setHorizontalAlignment(CENTER);
-			if(isSelected) {
-				setBackground(Color.RED);
-			}else {
-				setBackground(Color.BLUE);
-			}
-			return this;
-		}
-	}
+
 //	public JPanel getSelectPanel() {
 //		if(selectPanel == null) {
 //			selectPanel = new JPanel();
@@ -549,11 +529,10 @@ public class Main extends JFrame{
 		DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
 		tableModel.setNumRows(0);
 		totalPrice = 0;
-		SelectTableCellRenderer select = new SelectTableCellRenderer();
 		for(MenuDTO dto : orderList) {
 //			JTextField inputCount = new JTextField(4);
 //			JTextField inputIce = new JTextField(4);
-			Object[] rowData = {dto.getMname(), dto.getPrice(),dto.getCount(), };
+			Object[] rowData = {dto.getMname(), dto.getPrice(),dto.getCount(), dto.getIce()};
 			tableModel.addRow(rowData);
 			totalPrice+=dto.getPrice()*dto.getCount();
 			System.out.println(totalPrice);
