@@ -456,6 +456,57 @@ public class CafeDAO {
 			}
 		}
 	}
+	
+	public void hideCategory(String kind) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE category SET ")
+					.append("visibility=? ")
+					.append("WHERE kind=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, 0);
+			pstmt.setString(2, kind);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void showCategory(String kind) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE category SET ")
+					.append("visibility=? ")
+					.append("WHERE kind=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, 1);
+			pstmt.setString(2, kind);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public void updateMenu(MenuDTO menu, String mname) {
 		connect();
 		try {
@@ -632,6 +683,30 @@ public class CafeDAO {
 		}
 	}
 	
+	//카테고리 추가
+	public void addCategory(CategoryDTO category) {
+		connect();
+		sql = """
+				insert into category (kind, visibility)
+				values (?,1)
+				""";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, category.getKind());
+			int rows = pstmt.executeUpdate();
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null, "추가되었습니다.", "확인", JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"종류를 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"종류를 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	
+	
 	public void updateCategory(CategoryDTO category) {
 		connect();
 		sql = """
@@ -676,7 +751,6 @@ public class CafeDAO {
 			JOptionPane.showMessageDialog(null,"종류를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 		}
 	}
-	
 	
 
 

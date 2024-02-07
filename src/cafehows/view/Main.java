@@ -160,13 +160,7 @@ public class Main extends JFrame{
 	}
 	private JTable getMenuTable1() {
 		if(menuTable1 == null) {
-			//Table 수정 불가
-			menuTable1 = new JTable() {
-				@Override
-				public boolean isCellEditable(int row, int col) {
-					return false;
-				}
-			};
+			menuTable1 = new JTable();
 			menuTable1.setAutoCreateRowSorter(true);
 			
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable1.getModel();
