@@ -31,7 +31,7 @@ public class Refund extends JFrame{
 	private JTextField txtOrderNum;
 	private JButton btnOk, btnCancel, btnOrderList, btnreload;
 	private static JTable OrderListTable;
-	private CafeDAO cafeDao = new CafeDAO();
+//	private CafeDAO cafeDao = new CafeDAO();
 	private static List<OrderDTO> orderList = CafeDAO.getInstance().getOrderItems();
 	private static List<CustomerDTO> customerList = CafeDAO.getInstance().getCustomerItems();
 	private CustomerDTO cDto = new CustomerDTO();
@@ -152,26 +152,56 @@ public class Refund extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int ono = Integer.parseInt(txtOrderNum.getText());
-					int customerPoint = 0;
-					for(int i=0;i<orderList.size();i++) {
-						if(ono == orderList.get(i).getOno()){
-							customerPoint = orderList.get(i).getPrice() - orderList.get(i).getFinalprice();
-							for(int j=0; j<customerList.size(); j++) {
-								if(orderList.get(i).getCno() == customerList.get(j).getCno()) {
-									cDto.setPoint(customerList.get(j).getPoint() + customerPoint);
-									cafeDao.updatePoint(cDto, customerList.get(j).getCno());
-								}
-							}
-						}
-					}
+//					int customerPoint = 0;
+//					for(int i=0;i<orderList.size();i++) {
+//						if(ono == orderList.get(i).getOno()){
+//							customerPoint = orderList.get(i).getPrice() - orderList.get(i).getFinalprice();
+//							for(int j=0; j<customerList.size(); j++) {
+//								if(orderList.get(i).getCno() == customerList.get(j).getCno()) {
+//									cDto.setPoint(customerList.get(j).getPoint() + customerPoint);
+//									cafeDao.updatePoint(cDto, customerList.get(j).getCno());
+//								}
+//							}
+//						}
+//					}
+//					
+//					cafeDao.deleteOrder(ono);
 					
-					cafeDao.deleteOrder(ono);
-					Refund.this.dispose();
-				}
+					OrderDTO orderDTO = CafeDAO.getInstance().getOrderItembyOno(ono);
+			
+					CafeDAO.getInstance().deleteMenuSales(ono);
+					CafeDAO.getInstance().deleteOrder(ono);
+					int cno = orderDTO.getCno();
+					int price = orderDTO.getPrice();
+					int finalPrice = orderDTO.getFinalprice();
+					CustomerDTO cDTO = CafeDAO.getInstance().getCustomerItemByCno(cno);
+					cDTO.setPoint(cDTO.getPoint()-(price-finalPrice));
+					CafeDAO.getInstance().updatePoint(cDTO, cno);
+					
+					dispose();
+					
+				}	
 			});
 		}
 		return btnOk;
 	}
+
+//	//결제하면 menusales count++, ono 저장,mno
+//	for(MenuDTO m : main.getOrderList()) {
+//		m.setOno(ono);
+//		m.setCumCount(m.getCumCount()+m.getCount());
+//		System.out.println(m);
+//		CafeDAO.getInstance().insertMenuSales(m);
+//	}
+//	
+//	//customer point 차감, recdate 갱신
+//	CustomerDTO cDTO = new CustomerDTO();
+//	cDTO.setPoint(point-usePoint);
+//	CafeDAO.getInstance().updatePoint(cDTO, cno);
+//	main.getOrderList().clear();
+//	main.refreshOrderList();
+//	dispose();
+	
 	
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {

@@ -67,13 +67,11 @@ public class Main extends JFrame{
 	}
 	
 
-
-
 	public MenuDTO getMenuDTO() {
 		return menuDTO;
 	}
 
-
+	
 
 	private JTabbedPane getJTabbedPane() {
 		
@@ -159,13 +157,18 @@ public class Main extends JFrame{
 									refreshOrderList();
 									return;
 								}
-						}
+							}
 							orderList.add(menuDTO);
-							refreshOrderList();
-							System.out.println("한번클릭");
+							
+							for(MenuDTO dto2 : orderList) {
+								System.out.println(dto2);
+							}
 						
-					
-					}
+								refreshOrderList();
+								System.out.println("한번클릭");
+							
+						
+						}
 						//menuDTO의 수량 기본값은 1이지만 오른쪽클릭시 countDialog에서 수량 바꿨음
 				//		orderList.add(menuDTO);
 				//		refreshOrderList();
@@ -227,7 +230,7 @@ public class Main extends JFrame{
 		return orderPanel;
 	}
 	
-	private JTable getOrderTable() {
+	public JTable getOrderTable() {
 		if(orderTable == null) {
 			orderTable = new JTable() {
 				@Override
@@ -439,11 +442,9 @@ public class Main extends JFrame{
 			paymentBtn.setText("결제");
 			paymentBtn.addActionListener(e->{
 				
-		//		PaymentDialog paymentdialog = new PaymentDialog(main);
-		//		paymentdialog.setVisible(true);
-				
-				UsePoints usePoints= new UsePoints(main);
-				usePoints.setVisible(true);
+				PaymentDialog paymentDialog = new PaymentDialog(main);
+				paymentDialog.setVisible(true);
+
 			});
 		}
 		return paymentBtn;
@@ -477,8 +478,8 @@ public class Main extends JFrame{
 			tableModel.addRow(rowData);
 			totalPrice+=dto.getPrice()*dto.getCount();
 			System.out.println(totalPrice);
-
 		}
+		main.revalidate();
 		priceField.setText(Integer.toString(totalPrice));
 	
 	}
