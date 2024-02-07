@@ -10,6 +10,7 @@ import java.text.NumberFormat;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,7 +24,7 @@ import cafehows.model.CafeDAO;
 import cafehows.model.CustomerDTO;
 import cafehows.model.MenuDTO;
 
-public class CustomerModify extends JFrame{
+public class CustomerModify extends JDialog{
 
 	private JPanel customerNum, pCenter, pSouth, pNotice;
 	private JTextField txtCustomerNum;
@@ -36,8 +37,7 @@ public class CustomerModify extends JFrame{
 		this.setTitle("고객-등록/삭제");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(300, 200);
-		
-		
+		this.setModal(true); //상위 frame 클릭 불가
 		this.getContentPane().add(getNotice(), BorderLayout.NORTH);
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);

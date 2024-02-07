@@ -35,7 +35,7 @@ public class CustomerDialog extends JDialog{
 		this.setTitle("고객 관리");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
-
+		this.setModal(true); //상위 frame 클릭 불가
 		this.getContentPane().add(getSearchPanel(),BorderLayout.NORTH);
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
@@ -82,6 +82,7 @@ public class CustomerDialog extends JDialog{
 			initBtn.setText("초기화");
 			initBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					searchInput.setText("");
 					refreshBoard();
 				}
 			});
@@ -124,13 +125,14 @@ public class CustomerDialog extends JDialog{
 			tableModel.addColumn("전화번호");
 			tableModel.addColumn("포인트");
 			tableModel.addColumn("최근방문일");
+			tableModel.addColumn("상태");
 			
 			refreshTable();
 			
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 			TableColumnModel tcm = customerTable.getColumnModel();
-			for(int i=0; i<3; i++) tcm.getColumn(i).setCellRenderer(dtcr);
+			for(int i=0; i<4; i++) tcm.getColumn(i).setCellRenderer(dtcr);
 		}
 		return customerTable;
 	}
@@ -200,8 +202,9 @@ public class CustomerDialog extends JDialog{
 	public static void refreshTable() {
 		DefaultTableModel tableModel = (DefaultTableModel) customerTable.getModel();
 		tableModel.setNumRows(0);
-		for(CustomerDTO dto : CafeDAO.getInstance().getCustomerItems()) {
-			Object[] rowData = {dto.getCno(), dto.getPoint(),dto.getRecdate()};
+		for(CustomerDTO dto : CafeDAO.getInstance().getCustomerState()) {
+			String visibility = dto.getVisibility()==1 ? "회원" : "탈퇴";
+			Object[] rowData = {dto.getCno(), dto.getPoint(),dto.getRecdate(), visibility};
 			tableModel.addRow(rowData);
 		}
 	}

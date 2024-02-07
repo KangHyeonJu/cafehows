@@ -7,24 +7,31 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.security.auth.Refreshable;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-public class AddKind extends JFrame{
+import cafehows.model.CafeDAO;
+import cafehows.model.CategoryDTO;
 
+public class AddKind extends JDialog{
+
+	private TypeInquiry typeInquiry;
 	private JPanel notice, kind, pSouth;
 	private JTextField kindInput;
 	private JButton btnCancel, btnAdd;
 	
-	public AddKind() {
+	public AddKind(TypeInquiry typeInquiry) {
+		this.typeInquiry = typeInquiry;
 		this.setTitle("종류 추가");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(250,150);
-		
+		this.setModal(true); //상위 frame 클릭 불가
 		this.getContentPane().add(getNotice(),BorderLayout.NORTH);
 		this.getContentPane().add(getKindInput(),BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
@@ -76,8 +83,11 @@ public class AddKind extends JFrame{
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					
+					CategoryDTO category = new CategoryDTO();
+					category.setKind(kindInput.getText());
+					CafeDAO.getInstance().addCategory(category);
+					typeInquiry.refreshTable();
+					dispose();
 				}
 			});
 		}
@@ -108,4 +118,5 @@ public class AddKind extends JFrame{
 		int leftTopY = centerPoint.y - this.getHeight()/2;
 		this.setLocation(leftTopX, leftTopY);
 	}
+	
 }
