@@ -248,7 +248,7 @@ public class MenuMDS extends JDialog {
 	public JButton getBtnCancel() {
 		if (btnCancel == null) {
 			btnCancel = new JButton();
-			btnCancel.setText("취소");
+			btnCancel.setText("닫기");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {

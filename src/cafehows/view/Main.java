@@ -4,37 +4,26 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.event.CellEditorListener; 
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 
 import cafehows.model.CafeDAO;
 import cafehows.model.CategoryDTO;
@@ -85,7 +74,7 @@ public class Main extends JFrame{
 			category = CafeDAO.getInstance().getCategoryItems();			
 			
 			for(int i=0;i<category.size();i++) {
-				menuTab.addTab()
+				//menuTab.addTab();
 			}
 			
 			for(CategoryDTO dto : category) {
@@ -381,6 +370,21 @@ public class Main extends JFrame{
 			
 		return orderTable;
 	}
+	
+	//아이스/핫
+	public class SelectTableCellRenderer extends JCheckBox implements TableCellRenderer{
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			Boolean boolWrapper = (Boolean) value;
+			setSelected(boolWrapper.booleanValue());
+			setHorizontalAlignment(CENTER);
+			if(isSelected) {
+				setBackground(Color.RED);
+			}else {
+				setBackground(Color.BLUE);
+			}
+			return this;
+		}
+	}
 //	public JPanel getSelectPanel() {
 //		if(selectPanel == null) {
 //			selectPanel = new JPanel();
@@ -545,10 +549,11 @@ public class Main extends JFrame{
 		DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
 		tableModel.setNumRows(0);
 		totalPrice = 0;
+		SelectTableCellRenderer select = new SelectTableCellRenderer();
 		for(MenuDTO dto : orderList) {
 //			JTextField inputCount = new JTextField(4);
 //			JTextField inputIce = new JTextField(4);
-			Object[] rowData = {dto.getMname(), dto.getPrice(),dto.getCount(),dto.getIce()};
+			Object[] rowData = {dto.getMname(), dto.getPrice(),dto.getCount(), };
 			tableModel.addRow(rowData);
 			totalPrice+=dto.getPrice()*dto.getCount();
 			System.out.println(totalPrice);
@@ -557,7 +562,7 @@ public class Main extends JFrame{
 		priceField.setText(Integer.toString(totalPrice));
 	
 	}
-
+	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			Main main = new Main();
