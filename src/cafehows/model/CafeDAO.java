@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 
 public class CafeDAO {
@@ -122,7 +123,7 @@ public class CafeDAO {
 				item.setPrice(rs.getInt(3));
 				item.setVisibility(rs.getInt(4));
 				item.setCano(rs.getInt(5));
-				
+								
 				String sql2 = "select kind from category where cano = ? ";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(5));
@@ -736,5 +737,4 @@ public class CafeDAO {
 		}
 		return orderList;
 	}
-	
 }
