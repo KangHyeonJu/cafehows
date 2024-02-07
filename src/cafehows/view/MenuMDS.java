@@ -179,6 +179,7 @@ public class MenuMDS extends JDialog {
 						return;
 					} else {
 						MenuModify menuModify = new MenuModify(menuBoard, menuList.get(row).getMname());
+						menuModify.setModal(true);
 						menuModify.setVisible(true);
 					}
 				}
@@ -221,6 +222,7 @@ public class MenuMDS extends JDialog {
 					} else {
 						cafeDao.visibilityMenu0(menuList.get(row).getMname());
 						refreshTable();
+						//Main.refresh();
 					}
 				}
 			});
@@ -241,6 +243,7 @@ public class MenuMDS extends JDialog {
 					} else {
 						cafeDao.visibilityMenu1(menuList.get(row).getMname());
 						refreshTable();
+						//Main.refresh();
 					}
 				}
 			});

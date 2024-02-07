@@ -172,6 +172,7 @@ public class CustomerDialog extends JDialog{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					SendMessage sendMessage = new SendMessage();
+					sendMessage.setModal(true);
 					sendMessage.setVisible(true);
 				}
 			});

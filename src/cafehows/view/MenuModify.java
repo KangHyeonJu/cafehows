@@ -130,6 +130,7 @@ public class MenuModify extends JDialog{
 					mdto.setPrice(Integer.parseInt(txtPrice.getText()));
 					cafeDao.updateMenu(mdto, list.get(rowIndex).getMname());
 					
+					//Main.refresh();
 					MenuModify.this.dispose();
 				}
 			});
@@ -140,7 +141,7 @@ public class MenuModify extends JDialog{
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
 			btnCancel = new JButton();
-			btnCancel.setText("취소");
+			btnCancel.setText("닫기");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
