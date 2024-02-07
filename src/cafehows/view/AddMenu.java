@@ -48,13 +48,10 @@ public class AddMenu extends JDialog {
 
 	public JPanel getPCenter() {
 		if (pCenter == null) {
-			JPanel panel = new JPanel();
-			panel.setLayout(new GridLayout(3,1));
-			pCenter = new JPanel();
-			panel.add(getMenuName());
-			panel.add(getPrice());
-			panel.add(getInquiry());
-			pCenter.add(panel);
+			pCenter = new JPanel(new GridLayout(3,1));
+			pCenter.add(getMenuName());
+			pCenter.add(getPrice());
+			pCenter.add(getInquiry());
 		}
 		return pCenter;
 	}
