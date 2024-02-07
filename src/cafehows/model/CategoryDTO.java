@@ -6,6 +6,7 @@ import lombok.Data;
 public class CategoryDTO {
 	private int cano;
 	private String kind;
+	private int visibility;
 	
 
 	

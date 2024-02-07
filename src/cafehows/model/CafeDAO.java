@@ -151,6 +151,7 @@ public class CafeDAO {
 				CategoryDTO item = new CategoryDTO();
 				item.setCano(rs.getInt(1));
 				item.setKind(rs.getString(2));
+				item.setVisibility(rs.getInt(3));
 				items.add(item);
 			}
 			close();
