@@ -120,6 +120,7 @@ public class CafeDAO {
 				MenuDTO item = new MenuDTO();
 				item.setMname(rs.getString(2));
 				item.setPrice(rs.getInt(3));
+				item.setVisibility(rs.getInt(4));
 				item.setCano(rs.getInt(5));
 				
 				String sql2 = "select kind from category where cano = ? ";
@@ -684,13 +685,9 @@ public class CafeDAO {
 		}
 		return menuboard;
 	}
+	
 	//고객 검색창
-
-
 	public List<CustomerDTO> searchKeywordCustomer(String cno) {
-
-		System.out.println(cno);
-		
 		connect();
 		sql = "select cno, point, recdate from customer where cno like ?";
 		List<CustomerDTO> boards = new ArrayList<>();
@@ -714,5 +711,29 @@ public class CafeDAO {
 		return boards;
 	}
 
+	//주문번호 검색
+	public List<OrderDTO> searchOrderKeyword(String keyword){
+		connect();
+		sql = "select ono, date, price, finalprice from orderlist where ono like ?";
+		List<OrderDTO> orderList = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			System.out.println(keyword);
+			pstmt.setString(1, "%"+keyword+"%");
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				OrderDTO board = new OrderDTO();
+				board.setOno(rs.getInt("ono"));
+				board.setDate(rs.getDate("date"));
+				board.setPrice(rs.getInt("price"));
+				board.setFinalprice(rs.getInt("finalprice"));
+				orderList.add(board);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return orderList;
+	}
 	
 }
