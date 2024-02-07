@@ -805,23 +805,46 @@ public class CafeDAO {
 		}
 		return menuboard;
 	}
+	//고객 재가입
+	public void reSign(CustomerDTO customer) {
+		connect();
+		sql = """
+				update customer
+				set visibility ='1', point = '0'
+				where cno = ?;
+				""";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, customer.getCno());
+			int rows = pstmt.executeUpdate();
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"재등록이 되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"재등록이 불가능 합니다.","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		}catch(Exception e){
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"재등록이 불가능 합니다.","확인",JOptionPane.WARNING_MESSAGE);
+		}
+	}
 	
 	//고객 검색창
 	public List<CustomerDTO> searchKeywordCustomer(String cno) {
 		connect();
-		sql = "select cno, point, recdate from customer where cno like ?";
+		sql = "select cno, point, recdate, visibility  from customer where cno like ?";
 		List<CustomerDTO> boards = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, "%"+cno+"%");
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				CustomerDTO cDTO = new CustomerDTO();
-				cDTO.setCno(rs.getInt("cno"));
-				cDTO.setPoint(rs.getInt("point"));
-				cDTO.setRecdate(rs.getDate("recdate"));
-				
-				boards.add(cDTO);
+				CustomerDTO dto = new CustomerDTO();
+				dto.setCno(rs.getInt("cno"));
+				dto.setPoint(rs.getInt("point"));
+				dto.setRecdate(rs.getDate("recdate"));
+				dto.setVisibility(rs.getInt("visibility"));
+				boards.add(dto);
 			}
 			close();
 		}catch(SQLException e) {
