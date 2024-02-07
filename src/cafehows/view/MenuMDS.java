@@ -35,6 +35,7 @@ public class MenuMDS extends JDialog {
 	private static List<MenuDTO> menuList = CafeDAO.getInstance().getMDSItems();
 	private CafeDAO cafeDao = new CafeDAO();
 	private static MenuMDS menuBoard;
+	private Main main = new Main();
 
 	public MenuMDS() {
 		this.setTitle("메뉴 수정/숨김");
@@ -222,7 +223,7 @@ public class MenuMDS extends JDialog {
 					} else {
 						cafeDao.visibilityMenu0(menuList.get(row).getMname());
 						refreshTable();
-						//Main.refresh();
+						Main.refreshMenu(menuList.get(row).getCano(), main.getMenuTable());
 					}
 				}
 			});
@@ -243,7 +244,7 @@ public class MenuMDS extends JDialog {
 					} else {
 						cafeDao.visibilityMenu1(menuList.get(row).getMname());
 						refreshTable();
-						//Main.refresh();
+						Main.refreshMenu(menuList.get(row).getCano(), main.getMenuTable());
 					}
 				}
 			});

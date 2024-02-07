@@ -163,9 +163,7 @@ public class AddMenu extends JDialog {
 
 						menu.setCano(CafeDAO.getInstance().getCategoryBykind(kindTemp).getCano());
 						CafeDAO.getInstance().insertMenu(menu);
-
-						//Main.refresh();
-
+						Main.refreshMenu(CafeDAO.getInstance().getCategoryBykind(kindTemp).getCano(), main.getMenuTable());
 						dispose();
 					}
 				}

@@ -11,11 +11,12 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import cafehows.model.CafeDAO;
@@ -24,7 +25,7 @@ import cafehows.model.MenuDTO;
 import cafehows.model.OrderDTO;
 
 
-public class UsePoints extends JDialog{
+public class UsePoints extends JFrame{
 	private Main main;
 	private JPanel pCenter, pCono, pPoint, pUsePoint, pSouth;
 	private JTextField txtCono, txtPoint, txtUsePoint;
@@ -33,9 +34,14 @@ public class UsePoints extends JDialog{
 //	private CafeDAO dao = new CafeDAO();
 	private static List<OrderDTO> orderList = CafeDAO.getInstance().getOrderItems();
 	private static List<CustomerDTO> customerList = CafeDAO.getInstance().getCustomerItems();
+	private int cno, point,usePoint;
+	private PaymentDialog paymentDialog;
 	
-	public UsePoints(Main main) {
-		this.main = main;
+	
+	public UsePoints(PaymentDialog paymentDialog,Main main) {
+		this.paymentDialog = paymentDialog;
+		this.main =main;
+		
 		this.setTitle("회원 포인트 사용");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(350, 200);
@@ -44,6 +50,9 @@ public class UsePoints extends JDialog{
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 	}
 	
+	
+
+
 	public JPanel getPCenter() {
 		if(pCenter==null) {
 			pCenter = new JPanel(new GridLayout(3,1));
@@ -148,20 +157,28 @@ public class UsePoints extends JDialog{
 	public JButton getBtnOk() {
 		if(btnOk == null) {
 			btnOk = new JButton();
-			btnOk.setText("결제");
+			btnOk.setText("확인");
 			btnOk.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+
+					paymentDialog.setCno(Integer.parseInt(getTxtCono().getText()));
+					paymentDialog.setPoint(Integer.parseInt(getTxtPoint().getText()));
+					paymentDialog.setUsePoint(Integer.parseInt(getTxtUsePoint().getText()));
+
+					dispose();
+					
 					int cno = Integer.parseInt(getTxtCono().getText());
 					int point = Integer.parseInt(getTxtPoint().getText());
 					int usePoint = Integer.parseInt(getTxtUsePoint().getText());
 					
-					if(point>usePoint) {
+					if(point>=usePoint) {
 						// orderlist date 저장, ono 생성, cno,price, finalprice 저장
 						OrderDTO orderDTO= new OrderDTO();
 						orderDTO.setCno(cno);
-						orderDTO.setFinalprice(main.getTotalPrice());
-						orderDTO.setPrice(main.getTotalPrice()-usePoint);
+						
+						orderDTO.setPrice(main.getTotalPrice());
+						orderDTO.setFinalprice(main.getTotalPrice()-usePoint);
 						int ono = CafeDAO.getInstance().insertOrderList(orderDTO);
 						
 						//결제하면 menusales count++, ono 저장,mno
@@ -179,9 +196,11 @@ public class UsePoints extends JDialog{
 						main.getOrderList().clear();
 						main.refreshOrderList();
 						dispose();
+						paymentDialog.dispose();
 					}else {
 						JOptionPane.showMessageDialog(null, "사용할 포인트가 보유보인트보다 클 수 없습니다.","오류",JOptionPane.ERROR_MESSAGE);
 					}	
+
 				}
 			});
 		}

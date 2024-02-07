@@ -130,7 +130,8 @@ public class MenuModify extends JDialog{
 					mdto.setPrice(Integer.parseInt(txtPrice.getText()));
 					cafeDao.updateMenu(mdto, list.get(rowIndex).getMname());
 					
-					//Main.refresh();
+					Main main = new Main();
+					Main.refreshMenu(list.get(rowIndex).getCano(), main.getMenuTable());
 					MenuModify.this.dispose();
 				}
 			});
@@ -141,7 +142,7 @@ public class MenuModify extends JDialog{
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
 			btnCancel = new JButton();
-			btnCancel.setText("닫기");
+			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
