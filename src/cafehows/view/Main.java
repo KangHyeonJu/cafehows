@@ -364,21 +364,7 @@ public class Main extends JFrame{
 			
 		return orderTable;
 	}
-	
-	//아이스/핫
-	public class SelectTableCellRenderer extends JCheckBox implements TableCellRenderer{
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-			Boolean boolWrapper = (Boolean) value;
-			setSelected(boolWrapper.booleanValue());
-			setHorizontalAlignment(CENTER);
-			if(isSelected) {
-				setBackground(Color.RED);
-			}else {
-				setBackground(Color.BLUE);
-			}
-			return this;
-		}
-	}
+
 //	public JPanel getSelectPanel() {
 //		if(selectPanel == null) {
 //			selectPanel = new JPanel();
@@ -454,6 +440,7 @@ public class Main extends JFrame{
 			addBtn.setText("메뉴 추가");
 			addBtn.addActionListener(e->{
 				AddMenu addMenu = new AddMenu(main);
+				addMenu.setModal(true);
 				addMenu.setVisible(true);
 			});
 	
@@ -466,6 +453,7 @@ public class Main extends JFrame{
 			modBtn.setText("메뉴 수정/삭제/숨김");
 			modBtn.addActionListener(e->{
 				MenuMDS menuMDS= new MenuMDS();
+				menuMDS.setModal(true);
 				menuMDS.setVisible(true);
 			});
 	
@@ -478,6 +466,7 @@ public class Main extends JFrame{
 			customBtn.setText("고객 관리");
 			customBtn.addActionListener(e->{
 				CustomerDialog customerDialog = new CustomerDialog();
+				customerDialog.setModal(true);
 				customerDialog.setVisible(true);
 			});
 		
@@ -491,6 +480,7 @@ public class Main extends JFrame{
 			salesBtn.setText("매출 관리");
 			salesBtn.addActionListener(e->{
 				SalesDialog salesDialog = new SalesDialog();
+				salesDialog.setModal(true);
 				salesDialog.setVisible(true);
 			});
 		}
@@ -503,6 +493,7 @@ public class Main extends JFrame{
 			refundBtn.setText("환불");
 			refundBtn.addActionListener(e->{
 				Refund refund= new Refund();
+				refund.setModal(true);
 				refund.setVisible(true);
 			});
 		
@@ -516,6 +507,7 @@ public class Main extends JFrame{
 			paymentBtn.setText("결제");
 			paymentBtn.addActionListener(e->{
 				UsePoints usePoints= new UsePoints(main);
+				usePoints.setModal(true);
 				usePoints.setVisible(true);
 			});
 		}
@@ -529,7 +521,7 @@ public class Main extends JFrame{
 		this.setLocation(leftTopX, leftTopY);
 	}
 	
-	public void refreshMenu(int cano, JTable menuTable) {
+	public static void refreshMenu(int cano, JTable menuTable) {
 		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 		tableModel.setNumRows(0);
 		for(MenuDTO dto : CafeDAO.getInstance().getItems(cano)) {
@@ -543,11 +535,10 @@ public class Main extends JFrame{
 		DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
 		tableModel.setNumRows(0);
 		totalPrice = 0;
-		SelectTableCellRenderer select = new SelectTableCellRenderer();
 		for(MenuDTO dto : orderList) {
 //			JTextField inputCount = new JTextField(4);
 //			JTextField inputIce = new JTextField(4);
-			Object[] rowData = {dto.getMname(), dto.getPrice(),dto.getCount(), };
+			Object[] rowData = {dto.getMname(), dto.getPrice(),dto.getCount(), dto.getIce()};
 			tableModel.addRow(rowData);
 			totalPrice+=dto.getPrice()*dto.getCount();
 			System.out.println(totalPrice);

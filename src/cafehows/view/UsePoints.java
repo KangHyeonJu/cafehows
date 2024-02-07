@@ -11,12 +11,11 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import cafehows.model.CafeDAO;
@@ -25,7 +24,7 @@ import cafehows.model.MenuDTO;
 import cafehows.model.OrderDTO;
 
 
-public class UsePoints extends JFrame{
+public class UsePoints extends JDialog{
 	private Main main;
 	private JPanel pCenter, pCono, pPoint, pUsePoint, pSouth;
 	private JTextField txtCono, txtPoint, txtUsePoint;
