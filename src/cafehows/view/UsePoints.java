@@ -47,13 +47,10 @@ public class UsePoints extends JFrame{
 	
 	public JPanel getPCenter() {
 		if(pCenter==null) {
-			JPanel panel = new JPanel();
-			panel.setLayout(new GridLayout(3,1));
-			pCenter = new JPanel();
-			panel.add(getPCono());
-			panel.add(getPPoint());
-			panel.add(getPUsePoint());
-			pCenter.add(panel);
+			pCenter = new JPanel(new GridLayout(3,1));
+			pCenter.add(getPCono());
+			pCenter.add(getPPoint());
+			pCenter.add(getPUsePoint());
 			locationCenter();
 		}
 		return pCenter;

@@ -67,8 +67,9 @@ public class SendMessage extends JFrame{
 	public JPanel getPNorth() {
 		if(pNorth==null) {
 			pNorth = new JPanel();
-			pNorth.setPreferredSize(new Dimension(400,100));
-			pNorth.add(new JScrollPane(getRecDateTable()));
+			JScrollPane jScrollPane = new JScrollPane(getRecDateTable());
+			jScrollPane.setPreferredSize(new Dimension(400,100));
+			pNorth.add(jScrollPane);
 		}
 		return pNorth;
 	}
