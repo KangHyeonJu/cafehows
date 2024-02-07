@@ -83,7 +83,7 @@ public class CustomerDialog extends JDialog{
 			initBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					searchInput.setText("");
-					refreshBoard();
+					refreshTable();
 				}
 			});
 		}
@@ -94,20 +94,12 @@ public class CustomerDialog extends JDialog{
 		DefaultTableModel tableModel = (DefaultTableModel) customerTable.getModel();
 		tableModel.setNumRows(0);
 		for(CustomerDTO dto : CafeDAO.getInstance().searchKeywordCustomer(cno)) {
-			Object[] rowData = { dto.getCno(), dto.getPoint(), dto.getRecdate() };
+			String visibility = dto.getVisibility()==1 ? "회원" : "탈퇴";
+			Object[] rowData = { dto.getCno(), dto.getPoint(), dto.getRecdate(), visibility };
 			tableModel.addRow(rowData);
 		}
 	}
-	
-	public void refreshBoard() {
-		DefaultTableModel tableModel = (DefaultTableModel) customerTable.getModel();
-		tableModel.setNumRows(0);
-		for(CustomerDTO dto : CafeDAO.getInstance().getCustomerItems()) {
-			Object[] rowData = { dto.getCno(), dto.getPoint(), dto.getRecdate()  };
-			tableModel.addRow(rowData);
-		}
-	}
-	
+
 	
 	public JPanel getPCenter() {
 		if(pCenter == null) {
@@ -204,7 +196,7 @@ public class CustomerDialog extends JDialog{
 		tableModel.setNumRows(0);
 		for(CustomerDTO dto : CafeDAO.getInstance().getCustomerState()) {
 			String visibility = dto.getVisibility()==1 ? "회원" : "탈퇴";
-			Object[] rowData = {dto.getCno(), dto.getPoint(),dto.getRecdate(), visibility};
+			Object[] rowData = { dto.getCno(), dto.getPoint(), dto.getRecdate(), visibility };
 			tableModel.addRow(rowData);
 		}
 	}

@@ -40,7 +40,7 @@ public class MenuMDS extends JDialog {
 		this.setTitle("메뉴 수정/숨김");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
-
+		this.setModal(true); //상위 frame 클릭 불가
 		this.getContentPane().add(getSearchPanel(), BorderLayout.NORTH);
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
