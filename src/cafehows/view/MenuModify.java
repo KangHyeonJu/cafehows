@@ -28,7 +28,7 @@ public class MenuModify extends JDialog{
 	private JTextField txtMenuName, txtPrice;
 	private JButton btnOk, btnCancel;
 	private CafeDAO cafeDao = new CafeDAO();
-	
+	private Main main;
 
 	public MenuModify(MenuMDS menuMDS, String mname) {
 		this.menuMDS = menuMDS;
@@ -130,8 +130,7 @@ public class MenuModify extends JDialog{
 					mdto.setPrice(Integer.parseInt(txtPrice.getText()));
 					cafeDao.updateMenu(mdto, list.get(rowIndex).getMname());
 					
-					Main main = new Main();
-					Main.refreshMenu(list.get(rowIndex).getCano(), main.getMenuTable());
+					main.refreshTab();
 					MenuModify.this.dispose();
 				}
 			});

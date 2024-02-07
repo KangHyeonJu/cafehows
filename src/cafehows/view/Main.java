@@ -72,8 +72,6 @@ public class Main extends JFrame{
 		return menuDTO;
 	}
 
-	
-
 	private JTabbedPane getJTabbedPane() {
 		
 			menuTab = new JTabbedPane();
@@ -353,6 +351,7 @@ public class Main extends JFrame{
 			initBtn.addActionListener(e->{
 			orderList.clear();
 			refreshOrderList();
+			refreshTab();
 			});
 		}
 		return initBtn;
@@ -392,7 +391,7 @@ public class Main extends JFrame{
 			modBtn = new JButton();
 			modBtn.setText("메뉴 수정/삭제/숨김");
 			modBtn.addActionListener(e->{
-				MenuMDS menuMDS= new MenuMDS();
+				MenuMDS menuMDS= new MenuMDS(main);
 				menuMDS.setVisible(true);
 			});
 	
@@ -458,7 +457,7 @@ public class Main extends JFrame{
 		this.setLocation(leftTopX, leftTopY);
 	}
 	
-	public static void refreshMenu(int cano, JTable menuTable) {
+	public void refreshMenu(int cano, JTable menuTable) {
 		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 		tableModel.setNumRows(0);
 		for(MenuDTO dto : CafeDAO.getInstance().getItems(cano)) {
@@ -466,6 +465,17 @@ public class Main extends JFrame{
 			tableModel.addRow(rowData);
 			
 		}
+	}
+	
+	public void refreshTab() {
+		System.out.println("실행되니");
+		Main.this.menuTab.removeAll();
+		Main.this.remove(menuTab);
+		tabPanelList.clear();
+		menuTableList.clear();
+		category.clear();
+		this.getContentPane().add(getJTabbedPane(), BorderLayout.WEST);
+		Main.this.revalidate();
 	}
 	
 	public void refreshOrderList() {

@@ -35,13 +35,15 @@ public class MenuMDS extends JDialog {
 	private static List<MenuDTO> menuList = CafeDAO.getInstance().getMDSItems();
 	private CafeDAO cafeDao = new CafeDAO();
 	private static MenuMDS menuBoard;
-	private Main main = new Main();
+	//private Main main = new Main();
+	private Main main;
 
-	public MenuMDS() {
+	public MenuMDS(Main main) {
+		this.main = main;
 		this.setTitle("메뉴 수정/숨김");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
-		this.setModal(true); //상위 frame 클릭 불가
+		this.setModal(false); //상위 frame 클릭 불가
 		this.getContentPane().add(getSearchPanel(), BorderLayout.NORTH);
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
@@ -180,7 +182,7 @@ public class MenuMDS extends JDialog {
 						return;
 					} else {
 						MenuModify menuModify = new MenuModify(menuBoard, menuList.get(row).getMname());
-						menuModify.setModal(true);
+						menuModify.setModal(false);
 						menuModify.setVisible(true);
 					}
 				}
@@ -223,7 +225,10 @@ public class MenuMDS extends JDialog {
 					} else {
 						cafeDao.visibilityMenu0(menuList.get(row).getMname());
 						refreshTable();
-						Main.refreshMenu(menuList.get(row).getCano(), main.getMenuTable());
+						
+						System.out.println(menuList.get(row));
+						main.refreshTab();
+						//Main.refreshMenu(menuList.get(row).getCano(), main.getMenuTable());
 					}
 				}
 			});
@@ -244,7 +249,9 @@ public class MenuMDS extends JDialog {
 					} else {
 						cafeDao.visibilityMenu1(menuList.get(row).getMname());
 						refreshTable();
-						Main.refreshMenu(menuList.get(row).getCano(), main.getMenuTable());
+						main.refreshTab();
+
+
 					}
 				}
 			});
