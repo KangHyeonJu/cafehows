@@ -44,6 +44,7 @@ public class Main extends JFrame{
 	private String temp;
 	private int totalPrice=0;
 	private JLabel priceField;
+	private MenuDTO menuDTO ;
 
 
 	
@@ -67,6 +68,13 @@ public class Main extends JFrame{
 	
 
 
+
+	public MenuDTO getMenuDTO() {
+		return menuDTO;
+	}
+
+
+
 	private JTabbedPane getJTabbedPane() {
 		
 			menuTab = new JTabbedPane();
@@ -79,8 +87,6 @@ public class Main extends JFrame{
 				if(dto.getVisibility()==0) continue;
 				menuTab.addTab(dto.getKind(), getTabPanel());
 			}
-//			menuTab.addTab("커피", getTab1Panel());
-//			menuTab.addTab("스무디", getTab2Panel());
 			
 		return menuTab;
 		}
@@ -120,124 +126,60 @@ public class Main extends JFrame{
 			menuTable.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					
+					//클릭한 셀의 행 인덱스 받아옴
 					int rowIndex = menuTable.getSelectedRow();
+					//menuTable 의 선택한 행 첫번째 칼럼에 있는 mname 받아와서
+					//Menu 에 있는 데이터 찾기
 					if(rowIndex !=-1) {
 						String mname =(String) menuTable.getValueAt(rowIndex, 0);
-						MenuDTO dto = CafeDAO.getInstance().getMenuByName(mname);
-					for(MenuDTO dto2 : orderList) {
-						if(dto2.getMname().equals(dto.getMname())) {
-							dto2.setCount(dto2.getCount()+1);
-							refreshOrderList();
-							return;
+						menuDTO = CafeDAO.getInstance().getMenuByName(mname);
+						
+						//더블 클릭시
+						if(e.getClickCount()==2) {
+							//CountDialog에서 menuDTO 의 수량 변경
+							
+							CountDialog countDialog = new CountDialog(main);
+							countDialog.setVisible(true);
+							//orderList에 원래 menuDTO 가 있었으면 수량만 변경하고 종료
+//							for(MenuDTO dto2 : orderList) {
+//								if(dto2.getMname().equals(menuDTO.getMname())) {
+//									dto2.setCount(menuDTO.getCount());
+//									System.out.println("main에서 출력"+dto2);
+//									refreshOrderList();
+//									return;
+//								}}
+							//없었으면 orderList에 추가
+							System.out.println("더블클릭");
 						}
+						
+						if(e.getClickCount()==1) {
+							for(MenuDTO dto2 : orderList) {
+								if(dto2.getMname().equals(menuDTO.getMname())) {
+									dto2.setCount(dto2.getCount()+1);
+									refreshOrderList();
+									return;
+								}
+						}
+							orderList.add(menuDTO);
+							refreshOrderList();
+							System.out.println("한번클릭");
+						
+					
 					}
-						orderList.add(dto);
-						refreshOrderList();
+						//menuDTO의 수량 기본값은 1이지만 오른쪽클릭시 countDialog에서 수량 바꿨음
+				//		orderList.add(menuDTO);
+				//		refreshOrderList();
 
 					}
 				}		
 			});
+			menuTableList.add(menuTable);
 		
 			
 		return menuTable;
 	}
 	
 
-//	private JTable getMenuTable1() {
-//		if(menuTable1 == null) {
-//			//Table 수정 불가
-//			menuTable1 = new JTable() {
-//				@Override
-//				public boolean isCellEditable(int row, int col) {
-//					return false;
-//				}
-//			};
-//			menuTable1.setAutoCreateRowSorter(true);
-//			
-//			DefaultTableModel tableModel = (DefaultTableModel) menuTable1.getModel();
-//			tableModel.addColumn("메뉴명");
-//			tableModel.addColumn("가격");
-//			refreshMenu(1, menuTable1);
-//			
-//			menuTable1.getColumn("메뉴명").setPreferredWidth(50);
-//			menuTable1.getColumn("가격").setPreferredWidth(20);
-//			
-////			CenterTableCellRenderer ctcr = new CenterTableCellRenderer();
-////			menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
-////			menuTable.getColumn("가격").setCellRenderer(ctcr);
-////			
-//			//더블클릭하면 수량 선택 창 구현해야함
-//			menuTable1.addMouseListener(new MouseAdapter() {
-//				public void mouseClicked(MouseEvent e) {
-//					
-//					int rowIndex = menuTable1.getSelectedRow();
-//					if(rowIndex !=-1) {
-//						String mname =(String) menuTable1.getValueAt(rowIndex, 0);
-//						MenuDTO dto = CafeDAO.getInstance().getMenuByName(mname);
-//					for(MenuDTO dto2 : orderList) {
-//						if(dto2.getMname().equals(dto.getMname())) {
-//							dto2.setCount(dto2.getCount()+1);
-//							refreshOrderList();
-//							return;
-//						}
-//					}
-//						orderList.add(dto);
-//						refreshOrderList();
-//
-//					}
-//				}		
-//			});
-//		}
-//			
-//		return menuTable1;
-//	}
-//	private JTable getMenuTable2() {
-//		if(menuTable2 == null) {
-//			menuTable2 = new JTable() {
-//				@Override
-//				public boolean isCellEditable(int row, int col) {
-//					return false;
-//				}
-//			};
-//			menuTable2.setAutoCreateRowSorter(true);
-//			
-//			DefaultTableModel tableModel = (DefaultTableModel) menuTable2.getModel();
-//			tableModel.addColumn("메뉴명");
-//			tableModel.addColumn("가격");
-//			refreshMenu(2, menuTable2);
-//			
-//			menuTable2.getColumn("메뉴명").setPreferredWidth(50);
-//			menuTable2.getColumn("가격").setPreferredWidth(20);
-//			
-////			CenterTableCellRenderer ctcr = new CenterTableCellRenderer();
-////			menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
-////			menuTable.getColumn("가격").setCellRenderer(ctcr);
-////			
-//			menuTable2.addMouseListener(new MouseAdapter() {
-//				public void mouseClicked(MouseEvent e) {
-//					
-//					int rowIndex = menuTable2.getSelectedRow();
-//					if(rowIndex !=-1) {
-//						String mname =(String) menuTable2.getValueAt(rowIndex, 0);
-//						MenuDTO dto = CafeDAO.getInstance().getMenuByName(mname);
-//					for(MenuDTO dto2 : orderList) {
-//						if(dto2.getMname().equals(dto.getMname())) {
-//							dto2.setCount(dto2.getCount()+1);
-//							refreshOrderList();
-//							return;
-//						}
-//					}
-//						orderList.add(dto);
-//						refreshOrderList();
-//
-//					}
-//				}		
-//			});
-//		}
-//			
-//		return menuTable2;
-//	}
-//	
 
 //	public class CenterTableCellRenderer extends JLabel implements TableCellRenderer {
 //		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -496,6 +438,10 @@ public class Main extends JFrame{
 			paymentBtn = new JButton();
 			paymentBtn.setText("결제");
 			paymentBtn.addActionListener(e->{
+				
+		//		PaymentDialog paymentdialog = new PaymentDialog(main);
+		//		paymentdialog.setVisible(true);
+				
 				UsePoints usePoints= new UsePoints(main);
 				usePoints.setVisible(true);
 			});
