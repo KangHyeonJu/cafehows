@@ -3,11 +3,13 @@ package cafehows.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,7 +28,7 @@ public class UsePoints extends JFrame{
 	private Main main;
 	private JPanel pCenter, pCono, pPoint, pUsePoint, pSouth, pConoIn;
 	private JTextField txtCono, txtPoint, txtUsePoint;
-	private JButton btnOk, btnCancel;
+	private JButton btnOk, btnCancel, searchBtn;
 //	private CustomerDTO cDto = new CustomerDTO();
 //	private CafeDAO dao = new CafeDAO();
 	private static List<OrderDTO> orderList = CafeDAO.getInstance().getOrderItems();
@@ -36,21 +38,22 @@ public class UsePoints extends JFrame{
 		this.main = main;
 		this.setTitle("회원 포인트 사용");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(300, 200);
-
-		//this.getContentPane().setLayout(null).add(getPCenter(), BorderLayout.CENTER);
+		this.setSize(500, 400);
+		
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 	}
 	
 	public JPanel getPCenter() {
 		if(pCenter==null) {
+			JPanel panel = new JPanel();
+			panel.setLayout(new GridLayout(3,1));
 			pCenter = new JPanel();
-			pCenter.add(getPCono());
-			pCenter.add(getPPoint());
-			pCenter.add(getPUsePoint());
+			panel.add(getPCono());
+			panel.add(getPPoint());
+			panel.add(getPUsePoint());
+			pCenter.add(panel);
 			locationCenter();
-			//pCenter.setBounds(100, 50, 70, 60);
 		}
 		return pCenter;
 	}
@@ -62,6 +65,7 @@ public class UsePoints extends JFrame{
 			pConoIn.add(new JLabel("회원 번호", JLabel.CENTER));
 			pCono.add(pConoIn);
 			pCono.add(getTxtCono());
+			pPoint.add(getSerachBtn());
 		}
 		return pCono;
 	}	
@@ -87,27 +91,70 @@ public class UsePoints extends JFrame{
 	public JTextField getTxtCono() {
 		if(txtCono == null) {
 			txtCono = new JTextField(20);
+			int customerNum = Integer.parseInt(txtCono.getText());
 			txtCono.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int customerNum = Integer.parseInt(txtCono.getText());
+					
+					
+					System.out.println(customerNum);
 					int customerPoint = 0;
+					int i = 0;
+					int j = 0;
+//					if(txtCono.getText().length() == 8) {
+//						for(i=0;i<customerList.size();i++) {
+//							if(customerNum == customerList.get(i).getCno()){
+//								customerPoint = customerList.get(i).getPoint();
+//								j = i;
+//								getTxtPoint().setText(Integer.toString(customerPoint));
+//							}
+//						}
+//						if(customerPoint != customerList.get(j).getPoint()) {
+//							JOptionPane.showMessageDialog(null, "회원정보가 없습니다.","오류",JOptionPane.ERROR_MESSAGE);
+//						}
+//					}else {
+//						JOptionPane.showMessageDialog(null, "8자리를 입력해주세요.","오류",JOptionPane.ERROR_MESSAGE);
+//					}
 					
-					if(txtCono.getText().length() == 8) {
-						for(int i=0;i<customerList.size();i++) {
-							if(customerNum == customerList.get(i).getCno()){
-								customerPoint = customerList.get(i).getPoint();
-							}
+					for(i=0;i<customerList.size();i++) {
+						System.out.println(customerNum);
+						System.out.println(customerList.get(i).getCno());
+						if(customerNum == customerList.get(i).getCno()){
+							customerPoint = customerList.get(i).getPoint();
+							j = i;
+							getTxtPoint().setText(Integer.toString(customerPoint));
+							System.out.println("customerPoint: " + customerPoint);
+							System.out.println("i: " + i);
+							System.out.println("j: " + j);
 						}
-					}else {
-						JOptionPane.showMessageDialog(null, "8자리를 입력해주세요.","오류",JOptionPane.ERROR_MESSAGE);
 					}
+					System.out.println(customerPoint);
+					System.out.println(customerList.get(j).getPoint());
+					if(customerPoint == customerList.get(j).getPoint()) {
+						return;
+					}else JOptionPane.showMessageDialog(null, "회원정보가 없습니다.","오류",JOptionPane.ERROR_MESSAGE);
 					
-					getTxtPoint().setText(Integer.toString(customerPoint));
 				}
 			});
 		}
 		return txtCono;
+	}
+	
+	public JButton getSerachBtn() {
+		if (searchBtn == null) {
+			searchBtn = new JButton();
+			// searchBtn.setText("검색");
+			JLabel btnImage = new JLabel();
+			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
+			searchBtn.add(btnImage);
+			searchBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+				}
+			});
+		}
+		return searchBtn;
 	}
 	
 	public JTextField getTxtPoint() {
