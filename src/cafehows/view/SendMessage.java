@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,7 +25,7 @@ import javax.swing.table.TableColumnModel;
 import cafehows.model.CafeDAO;
 import cafehows.model.CustomerDTO;
 
-public class SendMessage extends JFrame{
+public class SendMessage extends JDialog{
 	private JTable recdateTable;
 	private JPanel pCenter, pSouth, pNorth;
 	private JTextArea txtMessage;
@@ -34,7 +35,7 @@ public class SendMessage extends JFrame{
 		this.setTitle("문자 전송");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 400);
-		
+		this.setModal(true); //상위 frame 클릭 불가
 		this.getContentPane().add(getPNorth(), BorderLayout.NORTH);
 		this.getContentPane().add(new JScrollPane(getPCenter()), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);

@@ -162,6 +162,7 @@ public class CafeDAO {
 		}
 		return items;
 	}
+	
 	public List<CustomerDTO> getCustomerItems() {
 		connect();
 		sql = "select * from customer where visibility=1 order by cno ";
@@ -183,6 +184,29 @@ public class CafeDAO {
 		}
 		return items;
 	}
+	
+	public List<CustomerDTO> getCustomerState() {
+		connect();
+		sql = "select * from customer order by cno ";
+		List<CustomerDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				CustomerDTO item = new CustomerDTO();
+				item.setCno(rs.getInt(1));
+				item.setPoint(rs.getInt(2));
+				item.setRecdate(rs.getDate(3));
+				item.setVisibility(rs.getInt(4));
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+
 	
 	public List<CustomerDTO> getRdcDate() {
 		connect();

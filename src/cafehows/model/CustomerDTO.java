@@ -9,12 +9,7 @@ public class CustomerDTO {
 	private int cno;
 	private int point;
 	private Date recdate;
-	private boolean visibility;
-	
-	public void setVisibility(int visibility) {
-		this.visibility = (visibility!=0);
-	}
-
+	private int visibility;
 }
 //boolean b = (i != 0);
 
