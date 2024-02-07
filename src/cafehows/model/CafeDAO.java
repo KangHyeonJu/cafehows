@@ -49,7 +49,7 @@ public class CafeDAO {
 
 	public List<MenuDTO> getItems(int cano) {
 		connect();
-		sql = "select * from menu where cano = ? order by mno ";
+		sql = "select * from menu where visibility=1 && cano = ? order by mno ";
 		List<MenuDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -175,6 +175,26 @@ public class CafeDAO {
 				item.setPoint(rs.getInt(2));
 				item.setRecdate(rs.getDate(3));
 				item.setVisibility(rs.getInt(4));
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+	
+	public List<CustomerDTO> getRdcDate() {
+		connect();
+		sql = "select * from customer where visibility=1 && datediff(now(), recdate) >= 365 order by cno ";
+		List<CustomerDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				CustomerDTO item = new CustomerDTO();
+				item.setCno(rs.getInt(1));
+				item.setRecdate(rs.getDate(3));
 				items.add(item);
 			}
 			close();
