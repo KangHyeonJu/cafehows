@@ -130,13 +130,7 @@ public class SalesDialog extends JDialog{
 				tableModel.addColumn("금액");
 				tableModel.addColumn("실결제금액");
 				setOrderListTable();
-				
-//				menuTable1.getColumn("메뉴명").setPreferredWidth(50);
-//				menuTable1.getColumn("가격").setPreferredWidth(20);
-				
-//				CenterTableCellRenderer ctcr = new CenterTableCellRenderer();
-//				menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
-//				menuTable.getColumn("가격").setCellRenderer(ctcr);
+
 //				
 			}
 			return orderListTable;
@@ -157,17 +151,7 @@ public class SalesDialog extends JDialog{
 				tableModel.addColumn("매출날짜");
 				tableModel.addColumn("매출액");
 				setDailySalesTable();
-				
-				
-				
-				
-//				menuTable1.getColumn("메뉴명").setPreferredWidth(50);
-//				menuTable1.getColumn("가격").setPreferredWidth(20);
-				
-//				CenterTableCellRenderer ctcr = new CenterTableCellRenderer();
-//				menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
-//				menuTable.getColumn("가격").setCellRenderer(ctcr);
-//				
+	
 				
 			}
 			return dailySalesTable;
@@ -179,7 +163,7 @@ public class SalesDialog extends JDialog{
 				tab2Panel = new JPanel();
 				tab2Panel.setLayout(new BorderLayout());
 				tab2Panel.add(new JScrollPane(getMenuSalesTable()),BorderLayout.CENTER);
-			//	tab2Panel.add(new JScrollPane(new SalesChart(menuList)),BorderLayout.SOUTH);
+	//			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
 				
 			
 			}
