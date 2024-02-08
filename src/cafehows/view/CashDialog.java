@@ -92,7 +92,7 @@ public class CashDialog extends JDialog{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int received = Integer.parseInt(getTxtReceived().getText());
-					String change = Integer.toString(received-main.getTotalPrice()-paymentDialog.getUsePoint());
+					String change = Integer.toString(received-main.getTotalPrice()-PaymentDialog.getUsePoint());
 					getTxtChange().setText(change);
 				}
 			});
@@ -130,7 +130,7 @@ public class CashDialog extends JDialog{
 					OrderDTO orderDTO= new OrderDTO();
 					orderDTO.setCno(paymentDialog.getCno());
 					orderDTO.setPrice(main.getTotalPrice());
-					orderDTO.setFinalprice(main.getTotalPrice()-paymentDialog.getUsePoint());
+					orderDTO.setFinalprice(main.getTotalPrice()-PaymentDialog.getUsePoint());
 					ono = CafeDAO.getInstance().insertOrderList(orderDTO);
 					onoField.setText(Integer.toString(ono));
 					
@@ -144,7 +144,7 @@ public class CashDialog extends JDialog{
 					
 					//customer point 차감, recdate 갱신
 					CustomerDTO cDTO = new CustomerDTO();
-					cDTO.setPoint(paymentDialog.getPoint()-paymentDialog.getUsePoint());
+					cDTO.setPoint(paymentDialog.getPoint()-PaymentDialog.getUsePoint());
 					CafeDAO.getInstance().updatePoint(cDTO, paymentDialog.getCno());
 					main.getOrderList().clear();
 					main.refreshOrderList();

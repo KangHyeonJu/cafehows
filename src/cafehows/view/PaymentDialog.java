@@ -25,7 +25,9 @@ public class PaymentDialog extends JDialog{
 	private JLabel priceField,onoField;
 	private JTable orderTable;
 
-	private int cno, point,usePoint,ono;
+	private int cno, point;
+	private static int usePoint;
+	private int ono;
 
 	private PaymentDialog paymentDialog;
 	
@@ -53,7 +55,7 @@ public class PaymentDialog extends JDialog{
 		return point;
 	}
 
-	public int getUsePoint() {
+	public static int getUsePoint() {
 		return usePoint;
 	}
 
