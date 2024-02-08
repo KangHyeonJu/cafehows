@@ -2,32 +2,26 @@ package cafehows.view;
 
 
 import java.awt.BorderLayout;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.*;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
-
-import cafehows.model.OrderDTO;
 import cafehows.model.CafeDAO;
 import cafehows.model.MenuDTO;
+import cafehows.model.OrderDTO;
 
 
 public class SalesDialog extends JDialog{
@@ -46,7 +40,7 @@ public class SalesDialog extends JDialog{
 			this.setModal(true);
 			this.setTitle("매출관리");					
 			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			this.setSize(800,800);
+			this.setSize(700,700);
 			this.setModal(true); //상위 frame 클릭 불가
 			this.setResizable(false); //사이즈 고정
 			this.getContentPane().add(getJTabbedPane());
@@ -83,6 +77,7 @@ public class SalesDialog extends JDialog{
 				endPeriod = new JTextField(10);
 				periodPanel.add(inputPeriod);
 				periodPanel.add(startPeriod);
+				periodPanel.add(new JLabel("~"));
 				periodPanel.add(endPeriod);
 				periodPanel.add(getEnterBtn());
 			}
@@ -91,7 +86,7 @@ public class SalesDialog extends JDialog{
 		
 		public JButton getEnterBtn() {
 			if(enterBtn==null) {
-				enterBtn = new JButton();
+				enterBtn = new RoundedButton();
 				enterBtn.setText("조회");
 				enterBtn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -107,9 +102,6 @@ public class SalesDialog extends JDialog{
 			}
 			return enterBtn;
 		}
-		
-
-		
 	
 		
 		public JTable getOrderListTable() {

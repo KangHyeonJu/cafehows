@@ -37,7 +37,7 @@ public class AddMenu extends JDialog {
 		this.main = main;
 		this.setTitle("메뉴 추가");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(300, 220);
+		this.setSize(400, 300);
 		this.setModal(true); //상위 frame 클릭 불가
 		this.setResizable(false); //사이즈 고정
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
