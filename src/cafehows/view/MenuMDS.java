@@ -43,7 +43,7 @@ public class MenuMDS extends JDialog {
 		this.setTitle("메뉴 수정/숨김");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
-		this.setModal(false); //상위 frame 클릭 불가
+		this.setModal(true); //상위 frame 클릭 불가
 		this.getContentPane().add(getSearchPanel(), BorderLayout.NORTH);
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
@@ -181,8 +181,8 @@ public class MenuMDS extends JDialog {
 					if (row == -1) {
 						return;
 					} else {
-						MenuModify menuModify = new MenuModify(menuBoard, menuList.get(row).getMname());
-						menuModify.setModal(false);
+						MenuModify menuModify = new MenuModify(menuBoard, menuList.get(row).getMname(), main);
+						menuModify.setModal(true);
 						menuModify.setVisible(true);
 					}
 				}

@@ -30,9 +30,10 @@ public class MenuModify extends JDialog{
 	private CafeDAO cafeDao = new CafeDAO();
 	private Main main;
 
-	public MenuModify(MenuMDS menuMDS, String mname) {
+	public MenuModify(MenuMDS menuMDS, String mname, Main main) {
 		this.menuMDS = menuMDS;
 		this.mname = mname;
+		this.main = main;
 		this.setTitle("메뉴수정");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(300, 200);
