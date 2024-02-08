@@ -17,7 +17,8 @@ public class MenuDTO {
 	private String kind;
 	private int cumCount;
 	private int count=1;
-	private String ice;
+	private int ice;
+	private int iceChangeable;
 
 //	public void setVisibility(int visibility) {
 //		this.visibility = (visibility!=0);

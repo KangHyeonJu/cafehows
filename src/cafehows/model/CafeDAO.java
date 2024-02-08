@@ -59,13 +59,18 @@ public class CafeDAO {
 				MenuDTO item = new MenuDTO();
 				item.setMname(rs.getString(2));
 				item.setPrice(rs.getInt(3));
+				item.setVisibility(rs.getInt(4));
 				item.setCano(rs.getInt(5));
+				item.setIce(rs.getInt(6));
+				item.setIceChangeable(rs.getInt(7));
 				
-				String sql2 = "select * from category where cano = ? ";
+				String sql2 = "select kind from category where cano = ? ";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(5));
-				
-				item.setKind(rs.getString(1));
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setKind(rs2.getString(1));}
+				else {}
 				items.add(item);
 			}
 			close();
@@ -76,12 +81,37 @@ public class CafeDAO {
 		return items;
 	}
 	
+	public MenuDTO getMenuByName(String mname) {
+		connect();
+		MenuDTO item = new MenuDTO();
+		sql = "select * from menu where mname = ?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, mname);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				item.setMno(rs.getInt(1));
+				item.setMname(rs.getString(2));
+				item.setPrice(rs.getInt(3));
+				item.setVisibility(rs.getInt(4));
+				item.setCano(rs.getInt(5));
+				item.setIce(rs.getInt(6));
+				item.setIceChangeable(rs.getInt(7));
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return item;
+	}
+	
 	public List<MenuDTO> getMenuSales() {
 		connect();
 		sql = """
 				select mno,sum(count) 
 				from menusales 
-				group by cumcount
+				group by mno
 				""";
 		List<MenuDTO> items = new ArrayList<>();
 		try {
@@ -185,6 +215,28 @@ public class CafeDAO {
 		return items;
 	}
 	
+
+	public CustomerDTO getCustomerItemByCno(int cno) {
+		connect();
+		CustomerDTO item = new CustomerDTO();
+		sql = "select * from customer where cno=? ";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, cno);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				item.setCno(rs.getInt(1));
+				item.setPoint(rs.getInt(2));
+				item.setRecdate(rs.getDate(3));
+				item.setVisibility(rs.getInt(4));
+		
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return item;
+	}
 	public List<CustomerDTO> getCustomerState() {
 		connect();
 		sql = "select * from customer order by cno ";
@@ -198,16 +250,18 @@ public class CafeDAO {
 				item.setPoint(rs.getInt(2));
 				item.setRecdate(rs.getDate(3));
 				item.setVisibility(rs.getInt(4));
+
 				items.add(item);
+
 			}
 			close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 		return items;
 	}
 
-	
 	public List<CustomerDTO> getRdcDate() {
 		connect();
 		sql = "select * from customer where visibility=1 && datediff(now(), recdate) >= 365 order by cno ";
@@ -220,12 +274,15 @@ public class CafeDAO {
 				item.setCno(rs.getInt(1));
 				item.setRecdate(rs.getDate(3));
 				items.add(item);
+
 			}
 			close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 		return items;
+
 	}
 	
 	public List<OrderDTO> getOrderItems() {
@@ -249,6 +306,28 @@ public class CafeDAO {
 			e.printStackTrace();
 		}
 		return items;
+	}
+	public OrderDTO getOrderItembyOno(int ono) {
+		connect();
+		OrderDTO item = new OrderDTO();
+		sql = "select * from orderlist where ono=? ";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, ono);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+			
+				item.setOno(rs.getInt(1));
+				item.setCno(rs.getInt(2));
+				item.setDate(rs.getDate(3));
+				item.setPrice(rs.getInt(4));
+				item.setFinalprice(rs.getInt(5));
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return item;
 	}
 	public List<OrderDTO> getOrderItemsbyPeriod(int start, int end){
 		connect();
@@ -340,7 +419,7 @@ public class CafeDAO {
 					.append("UPDATE customer SET ")
 					.append("recdate = now(),")
 					.append("point=? ")
-					.append("WHERE cno=?;")
+					.append("WHERE cno=?")
 					.toString();
 			
 			pstmt = conn.prepareStatement(sql);
@@ -359,18 +438,57 @@ public class CafeDAO {
 		}
 	}
 	
+	
+	//refund
+
 	public void deleteOrder(int ono) {
 		connect();
+		sql = "DELETE FROM orderlist WHERE ono=? ";
 		try {
-			sql = "DELETE FROM orderlist WHERE ono=?;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, ono);
+			int rows = pstmt.executeUpdate();
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"주문이 삭제되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"주문을 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"주문을 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	
+
+	public void deleteMenuSales(int ono) {
+		connect();
+		sql = "DELETE FROM menusales WHERE ono=? ";
+		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, ono);
 			pstmt.executeUpdate();
-		}catch(Exception e){
+		}
+		catch(Exception e){
 			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,"판매량을 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+		//	int rows = pstmt.executeUpdate();
+//			if(rows == 1) {
+//				JOptionPane.showMessageDialog(null,"판매량이 삭제되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
+//			}else {
+//				JOptionPane.showMessageDialog(null,"판매량 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+//			}
 		}
 	}
-
+	
+	
+	
 	public void deleteCustomer(CustomerDTO board, int cno) {
 		connect();
 		try {
@@ -417,19 +535,32 @@ public class CafeDAO {
 		}
 	}
 
-
 	public void deleteMenu(String menuName) {
 		connect();
+		sql = "DELETE FROM menu WHERE mname=?;";
 		try {
-			sql = "DELETE FROM menu WHERE mname=?;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, menuName);
-			pstmt.executeUpdate();
-		}catch(Exception e){
+			int rows = pstmt.executeUpdate();
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"메뉴가 삭제되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"메뉴를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		}catch(SQLException e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,"메뉴를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
 		}
 	}
 	
+
 	
 	public void visibilityMenu0(String menuName) {
 		connect();
@@ -557,29 +688,9 @@ public class CafeDAO {
 			}
 		}
 	}
+	//검색
 
-	public MenuDTO getMenuByName(String mname) {
-		connect();
-		MenuDTO item = new MenuDTO();
-		sql = "select * from menu where mname = ?";
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, mname);
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				item.setMno(rs.getInt(1));
-				item.setMname(rs.getString(2));
-				item.setPrice(rs.getInt(3));
-				item.setVisibility(rs.getInt(4));
-				item.setCano(rs.getInt(5));
-			}
-			close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return item;
-	}
+
 	public CategoryDTO getCategoryBykind(String kind) {
 		connect();
 		CategoryDTO item = new CategoryDTO();
@@ -621,18 +732,21 @@ public class CafeDAO {
 		
 		return item;
 	}
+
 	
 	public void insertMenu(MenuDTO menu) {
 		connect();
 		sql = """
-				insert into menu (mname,price,cano)
-				values (?,?,?)
+				insert into menu (mname,price,cano,ice,icechangeable)
+				values (?,?,?,?,?)
 				""";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, menu.getMname());
 			pstmt.setInt(2, menu.getPrice());
 			pstmt.setInt(3, menu.getCano());
+			pstmt.setInt(4, menu.getIce());
+			pstmt.setInt(5, menu.getIceChangeable());
 			int rows = pstmt.executeUpdate();
 			if(rows == 1) {
 				JOptionPane.showMessageDialog(null,"메뉴가 추가되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);

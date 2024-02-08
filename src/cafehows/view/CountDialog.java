@@ -18,9 +18,12 @@ public class CountDialog extends JDialog {
 	private JLabel txtMenuName, txtPrice,count;
 	private JTextField InputCount;
 	private JComboBox ComboInquiry;
+	private JComboBox comboIce;
 	private JButton btnOk, btnCancel, btnInquiry;
 	private String kindTemp = "커피";
+	private String iceTemp;
 	public int countInt=0;
+	
 	//private MenuDTO menuDTO;
 
 	
@@ -41,17 +44,19 @@ public class CountDialog extends JDialog {
 
 	public JPanel getPCenter() {
 		if (pCenter == null) {
-			JPanel panel = new JPanel();
-			panel.setLayout(new GridLayout(3,1));
 			pCenter = new JPanel();
+			pCenter.setLayout(new GridLayout(3,1));
 			
+			JPanel menuPanel = new JPanel();
 			txtMenuName = new JLabel();
 			txtMenuName.setText(main.getMenuDTO().getMname());
-			pCenter.add(txtMenuName);
+			menuPanel.add(txtMenuName);
 			
 			txtPrice = new JLabel();
 			txtPrice.setText(Integer.toString(main.getMenuDTO().getPrice()));
-			pCenter.add(txtPrice);
+			menuPanel.add(txtPrice);
+			
+			pCenter.add(menuPanel);
 			
 			JPanel countPanel = new JPanel();
 			JLabel countLabel = new JLabel("수량", JLabel.CENTER);
@@ -59,10 +64,47 @@ public class CountDialog extends JDialog {
 			countPanel.add(countLabel);
 			countPanel.add(InputCount);
 			pCenter.add(countPanel);
+			
+			pCenter.add(getIce());
 	
 		}
 		return pCenter;
 	}
+	
+	public JPanel getIce() {
+		JPanel pIce = new JPanel();
+		pIce.add(getComboIce());
+		return pIce;
+	}
+	
+	public JComboBox getComboIce() {
+			
+			iceTemp = main.getMenuDTO().getIce()==1? "ICE" : "HOT";
+			if(main.getMenuDTO().getIceChangeable()==0&&iceTemp.equals("ICE")){
+				String[] arrIce = {"ICE"};
+				comboIce = new JComboBox(arrIce);
+				return comboIce;
+			}
+			else if(main.getMenuDTO().getIceChangeable()==0&&iceTemp.equals("HOT")){
+				String[] arrIce = {"HOT"};
+				comboIce = new JComboBox(arrIce);
+				return comboIce;
+			}
+			else if(main.getMenuDTO().getIceChangeable()==1){
+				String[] arrIce = {"ICE","HOT"};
+				comboIce = new JComboBox(arrIce);
+				
+				comboIce.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						iceTemp = comboIce.getSelectedItem().toString();
+					}
+				});
+				return comboIce;
+			}
+	
+		return comboIce;
+	}
+
 
 	public JPanel getPSouth() {
 		if (pSouth == null) {
@@ -85,7 +127,11 @@ public class CountDialog extends JDialog {
 					System.out.println(InputCount.getText());
 					
 					for(MenuDTO dto2 : main.getOrderList()) {
-						if(dto2.getMname().equals(main.getMenuDTO().getMname())) {
+						if(dto2.getMname().equals(main.getMenuDTO().getMname())
+								&&dto2.getIce()==main.getMenuDTO().getIce()) {
+							
+							int ice = iceTemp.equals("ICE") ? 1 : 0;
+							dto2.setIce(ice);
 							dto2.setCount(main.getMenuDTO().getCount());
 							System.out.println("countdialog에서 출력"+main.getMenuDTO());
 							main.refreshOrderList();

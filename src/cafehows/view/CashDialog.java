@@ -21,13 +21,16 @@ import cafehows.model.OrderDTO;
 
 public class CashDialog extends JDialog{
 	private Main main;
+	private PaymentDialog paymentDialog;
 	private JPanel pCenter, pSouth, pAmount, pReceived, pChange;
 	private JButton btnOk, btnCancel;
 	private JTextField txtReceived, txtChange;
 	private int ono;
 	private JLabel onoField;
 	
-	public CashDialog() {
+	public CashDialog( Main main,PaymentDialog paymentDialog) {
+		this.paymentDialog = paymentDialog;
+		this.main = main;
 		this.setTitle("현금결제");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(300, 200);
@@ -89,7 +92,7 @@ public class CashDialog extends JDialog{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int received = Integer.parseInt(getTxtReceived().getText());
-					String change = Integer.toString(received-main.getTotalPrice()-PaymentDialog.getUsePoint());
+					String change = Integer.toString(received-main.getTotalPrice()-paymentDialog.getUsePoint());
 					getTxtChange().setText(change);
 				}
 			});
@@ -125,9 +128,9 @@ public class CashDialog extends JDialog{
 				public void actionPerformed(ActionEvent e) {
 					// orderlist date 저장, ono 생성, cno,price, finalprice 저장
 					OrderDTO orderDTO= new OrderDTO();
-					orderDTO.setCno(PaymentDialog.getCno());
+					orderDTO.setCno(paymentDialog.getCno());
 					orderDTO.setPrice(main.getTotalPrice());
-					orderDTO.setFinalprice(main.getTotalPrice()-PaymentDialog.getUsePoint());
+					orderDTO.setFinalprice(main.getTotalPrice()-paymentDialog.getUsePoint());
 					ono = CafeDAO.getInstance().insertOrderList(orderDTO);
 					onoField.setText(Integer.toString(ono));
 					
@@ -141,8 +144,8 @@ public class CashDialog extends JDialog{
 					
 					//customer point 차감, recdate 갱신
 					CustomerDTO cDTO = new CustomerDTO();
-					cDTO.setPoint(PaymentDialog.getPoint()-PaymentDialog.getUsePoint());
-					CafeDAO.getInstance().updatePoint(cDTO, PaymentDialog.getCno());
+					cDTO.setPoint(paymentDialog.getPoint()-paymentDialog.getUsePoint());
+					CafeDAO.getInstance().updatePoint(cDTO, paymentDialog.getCno());
 					main.getOrderList().clear();
 					main.refreshOrderList();
 					CashDialog.this.dispose();
