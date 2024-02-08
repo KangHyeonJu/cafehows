@@ -115,7 +115,12 @@ public class CustomerDialog extends JDialog{
 	}
 	public static JTable getCustomerTable() {
 		if(customerTable == null) {
-			customerTable = new JTable();
+			customerTable = new JTable() {
+				@Override
+				public boolean isCellEditable(int row, int col) {
+					return false;
+				}
+			};
 			customerTable.setAutoCreateRowSorter(true);
 			customerTable.getTableHeader().setReorderingAllowed(false);
 			customerTable.getTableHeader().setResizingAllowed(false);
