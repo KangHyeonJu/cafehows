@@ -207,7 +207,6 @@ public class UsePoints extends JDialog{
 //						main.refreshOrderList();
 						paymentDialog.setCno(customerNum);
 						paymentDialog.setPoint(customerPoint);
-						int usePoint = Integer.parseInt(getTxtUsePoint().getText());
 						paymentDialog.setUsePoint(usePoint);
 						paymentDialog.getPointField().setText(Integer.toString(usePoint));
 						

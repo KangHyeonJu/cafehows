@@ -835,7 +835,7 @@ public class CafeDAO {
 			pstmt.setInt(3, menu.getMno());
 			int rows = pstmt.executeUpdate();
 			if(rows == 1) {
-				JOptionPane.showMessageDialog(null,"판매량이 저장되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+				//JOptionPane.showMessageDialog(null,"판매량이 저장되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
 			}else {
 				JOptionPane.showMessageDialog(null,"판매량을 저장할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 			}
