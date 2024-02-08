@@ -32,7 +32,7 @@ public class UpdateMenuKind extends JDialog{
 		this.setTitle("종류 수정");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(250,150);
-		
+		this.setModal(true);
 		this.getContentPane().add(getNotice(),BorderLayout.NORTH);
 		this.getContentPane().add(getKindInput(),BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);

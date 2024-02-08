@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import cafehows.model.CafeDAO;
@@ -26,7 +27,7 @@ import cafehows.model.OrderDTO;
 
 public class UsePoints extends JFrame{
 	private Main main;
-	private JPanel pCenter, pCono, pPoint, pUsePoint, pSouth, pConoIn;
+	private JPanel pCenter, pCono, pPoint, pUsePoint, pSouth;
 	private JTextField txtCono, txtPoint, txtUsePoint;
 	private JButton btnOk, btnCancel, searchBtn;
 //	private CustomerDTO cDto = new CustomerDTO();
@@ -37,11 +38,13 @@ public class UsePoints extends JFrame{
 	private PaymentDialog paymentDialog;
 	
 	
-	public UsePoints(PaymentDialog paymentDialog) {
+	public UsePoints(PaymentDialog paymentDialog,Main main) {
 		this.paymentDialog = paymentDialog;
+		this.main =main;
+		
 		this.setTitle("회원 포인트 사용");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(500, 400);
+		this.setSize(350, 200);
 		
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
@@ -52,13 +55,10 @@ public class UsePoints extends JFrame{
 
 	public JPanel getPCenter() {
 		if(pCenter==null) {
-			JPanel panel = new JPanel();
-			panel.setLayout(new GridLayout(3,1));
-			pCenter = new JPanel();
-			panel.add(getPCono());
-			panel.add(getPPoint());
-			panel.add(getPUsePoint());
-			pCenter.add(panel);
+			pCenter = new JPanel(new GridLayout(3,1));
+			pCenter.add(getPCono());
+			pCenter.add(getPPoint());
+			pCenter.add(getPUsePoint());
 			locationCenter();
 		}
 		return pCenter;
@@ -67,11 +67,9 @@ public class UsePoints extends JFrame{
 	public JPanel getPCono() {
 		if(pCono==null) {
 			pCono = new JPanel();
-			pConoIn = new JPanel();
-			pConoIn.add(new JLabel("회원 번호", JLabel.CENTER));
-			pCono.add(pConoIn);
+			pCono.add(new JLabel("회원 번호", JLabel.CENTER));
 			pCono.add(getTxtCono());
-			pPoint.add(getSerachBtn());
+			pCono.add(getSerachBtn());
 		}
 		return pCono;
 	}	
@@ -97,49 +95,9 @@ public class UsePoints extends JFrame{
 	public JTextField getTxtCono() {
 		if(txtCono == null) {
 			txtCono = new JTextField(20);
-			int customerNum = Integer.parseInt(txtCono.getText());
 			txtCono.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {
-					
-					
-					System.out.println(customerNum);
-					int customerPoint = 0;
-					int i = 0;
-					int j = 0;
-//					if(txtCono.getText().length() == 8) {
-//						for(i=0;i<customerList.size();i++) {
-//							if(customerNum == customerList.get(i).getCno()){
-//								customerPoint = customerList.get(i).getPoint();
-//								j = i;
-//								getTxtPoint().setText(Integer.toString(customerPoint));
-//							}
-//						}
-//						if(customerPoint != customerList.get(j).getPoint()) {
-//							JOptionPane.showMessageDialog(null, "회원정보가 없습니다.","오류",JOptionPane.ERROR_MESSAGE);
-//						}
-//					}else {
-//						JOptionPane.showMessageDialog(null, "8자리를 입력해주세요.","오류",JOptionPane.ERROR_MESSAGE);
-//					}
-					
-					for(i=0;i<customerList.size();i++) {
-						System.out.println(customerNum);
-						System.out.println(customerList.get(i).getCno());
-						if(customerNum == customerList.get(i).getCno()){
-							customerPoint = customerList.get(i).getPoint();
-							j = i;
-							getTxtPoint().setText(Integer.toString(customerPoint));
-							System.out.println("customerPoint: " + customerPoint);
-							System.out.println("i: " + i);
-							System.out.println("j: " + j);
-						}
-					}
-					System.out.println(customerPoint);
-					System.out.println(customerList.get(j).getPoint());
-					if(customerPoint == customerList.get(j).getPoint()) {
-						return;
-					}else JOptionPane.showMessageDialog(null, "회원정보가 없습니다.","오류",JOptionPane.ERROR_MESSAGE);
-					
+				public void actionPerformed(ActionEvent e) {					
 				}
 			});
 		}
@@ -149,14 +107,23 @@ public class UsePoints extends JFrame{
 	public JButton getSerachBtn() {
 		if (searchBtn == null) {
 			searchBtn = new JButton();
-			// searchBtn.setText("검색");
 			JLabel btnImage = new JLabel();
 			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
 			searchBtn.add(btnImage);
 			searchBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					int customerNum = Integer.parseInt(txtCono.getText().trim());
+					int customerPoint = -1;
+					for(int i=0;i<customerList.size();i++) {
+						if(customerNum == customerList.get(i).getCno()){
+							customerPoint = customerList.get(i).getPoint();
+							getTxtPoint().setText(Integer.toString(customerPoint));
+						}
+					}
+					if(customerPoint == -1) {
+						JOptionPane.showMessageDialog(null, "회원정보가 없습니다.","오류",JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			});
 		}
@@ -194,12 +161,46 @@ public class UsePoints extends JFrame{
 			btnOk.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+
 					paymentDialog.setCno(Integer.parseInt(getTxtCono().getText()));
 					paymentDialog.setPoint(Integer.parseInt(getTxtPoint().getText()));
 					paymentDialog.setUsePoint(Integer.parseInt(getTxtUsePoint().getText()));
 
 					dispose();
 					
+					int cno = Integer.parseInt(getTxtCono().getText());
+					int point = Integer.parseInt(getTxtPoint().getText());
+					int usePoint = Integer.parseInt(getTxtUsePoint().getText());
+					
+					if(point>=usePoint) {
+						// orderlist date 저장, ono 생성, cno,price, finalprice 저장
+						OrderDTO orderDTO= new OrderDTO();
+						orderDTO.setCno(cno);
+						
+						orderDTO.setPrice(main.getTotalPrice());
+						orderDTO.setFinalprice(main.getTotalPrice()-usePoint);
+						int ono = CafeDAO.getInstance().insertOrderList(orderDTO);
+						
+						//결제하면 menusales count++, ono 저장,mno
+						for(MenuDTO m : main.getOrderList()) {
+							m.setOno(ono);
+							m.setCumCount(m.getCumCount()+m.getCount());
+							System.out.println(m);
+							CafeDAO.getInstance().insertMenuSales(m);
+						}
+						
+						//customer point 차감, recdate 갱신
+						CustomerDTO cDTO = new CustomerDTO();
+						cDTO.setPoint(point-usePoint);
+						CafeDAO.getInstance().updatePoint(cDTO, cno);
+						main.getOrderList().clear();
+						main.refreshOrderList();
+						dispose();
+						paymentDialog.dispose();
+					}else {
+						JOptionPane.showMessageDialog(null, "사용할 포인트가 보유보인트보다 클 수 없습니다.","오류",JOptionPane.ERROR_MESSAGE);
+					}	
+
 				}
 			});
 		}

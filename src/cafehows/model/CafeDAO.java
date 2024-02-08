@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 
 public class CafeDAO {
@@ -48,7 +49,7 @@ public class CafeDAO {
 
 	public List<MenuDTO> getItems(int cano) {
 		connect();
-		sql = "select * from menu where cano = ? order by mno ";
+		sql = "select * from menu where visibility=1 && cano = ? order by mno ";
 		List<MenuDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -80,7 +81,7 @@ public class CafeDAO {
 		sql = """
 				select mno,sum(count) 
 				from menusales 
-				group by cumcount
+				group by mno
 				""";
 		List<MenuDTO> items = new ArrayList<>();
 		try {
@@ -122,7 +123,7 @@ public class CafeDAO {
 				item.setPrice(rs.getInt(3));
 				item.setVisibility(rs.getInt(4));
 				item.setCano(rs.getInt(5));
-				
+								
 				String sql2 = "select kind from category where cano = ? ";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(5));
@@ -183,6 +184,7 @@ public class CafeDAO {
 		return items;
 	}
 	
+
 	public CustomerDTO getCustomerItemByCno(int cno) {
 		connect();
 		CustomerDTO item = new CustomerDTO();
@@ -203,6 +205,28 @@ public class CafeDAO {
 			e.printStackTrace();
 		}
 		return item;
+	}
+	public List<CustomerDTO> getRdcDate() {
+		connect();
+		sql = "select * from customer where visibility=1 && datediff(now(), recdate) >= 365 order by cno ";
+		List<CustomerDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				CustomerDTO item = new CustomerDTO();
+				item.setCno(rs.getInt(1));
+				item.setRecdate(rs.getDate(3));
+				items.add(item);
+
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return items;
+
 	}
 	
 	public List<OrderDTO> getOrderItems() {
@@ -519,6 +543,57 @@ public class CafeDAO {
 			}
 		}
 	}
+	
+	public void hideCategory(String kind) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE category SET ")
+					.append("visibility=? ")
+					.append("WHERE kind=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, 0);
+			pstmt.setString(2, kind);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void showCategory(String kind) {
+		connect();
+		try {
+			sql = new StringBuilder()
+					.append("UPDATE category SET ")
+					.append("visibility=? ")
+					.append("WHERE kind=?;")
+					.toString();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, 1);
+			pstmt.setString(2, kind);
+			
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public void updateMenu(MenuDTO menu, String mname) {
 		connect();
 		try {
@@ -717,6 +792,30 @@ public class CafeDAO {
 		}
 	}
 	
+	//카테고리 추가
+	public void addCategory(CategoryDTO category) {
+		connect();
+		sql = """
+				insert into category (kind, visibility)
+				values (?,1)
+				""";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, category.getKind());
+			int rows = pstmt.executeUpdate();
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null, "추가되었습니다.", "확인", JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"종류를 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"종류를 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	
+	
 	public void updateCategory(CategoryDTO category) {
 		connect();
 		sql = """
@@ -761,7 +860,6 @@ public class CafeDAO {
 			JOptionPane.showMessageDialog(null,"종류를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 		}
 	}
-	
 	
 
 
@@ -842,5 +940,4 @@ public class CafeDAO {
 		}
 		return orderList;
 	}
-	
 }

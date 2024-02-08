@@ -1,5 +1,6 @@
 package cafehows.view;
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
@@ -16,6 +17,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -37,9 +39,8 @@ public class AddMenu extends JDialog {
 		this.main = main;
 		this.setTitle("메뉴 추가");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
 		this.setSize(300, 200);
-
+		this.setModal(true); //상위 frame 클릭 불가
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 		locationCenter();
@@ -47,13 +48,10 @@ public class AddMenu extends JDialog {
 
 	public JPanel getPCenter() {
 		if (pCenter == null) {
-			JPanel panel = new JPanel();
-			panel.setLayout(new GridLayout(3,1));
-			pCenter = new JPanel();
-			panel.add(getMenuName());
-			panel.add(getPrice());
-			panel.add(getInquiry());
-			pCenter.add(panel);
+			pCenter = new JPanel(new GridLayout(3,1));
+			pCenter.add(getMenuName());
+			pCenter.add(getPrice());
+			pCenter.add(getInquiry());
 		}
 		return pCenter;
 	}
@@ -156,16 +154,19 @@ public class AddMenu extends JDialog {
 			btnOk.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					MenuDTO menu = new MenuDTO();
-					menu.setMname(txtMenuName.getText());
-					menu.setPrice(Integer.parseInt(txtPrice.getText()));
+					if(txtMenuName.getText().equals("") || Integer.parseInt(txtPrice.getText())==0) {
+						JOptionPane.showMessageDialog(null, "빈칸을 입력해주세요.");
+					}else {
+						MenuDTO menu = new MenuDTO();
+						menu.setMname(txtMenuName.getText());
+						menu.setPrice(Integer.parseInt(txtPrice.getText()));
 
-					menu.setCano(CafeDAO.getInstance().getCategoryBykind(kindTemp).getCano());
-					CafeDAO.getInstance().insertMenu(menu);
+						menu.setCano(CafeDAO.getInstance().getCategoryBykind(kindTemp).getCano());
+						CafeDAO.getInstance().insertMenu(menu);
 
-					// main.refreshMenu();
-					dispose();
-
+						// main.refreshMenu();
+						dispose();
+					}
 				}
 			});
 		}
