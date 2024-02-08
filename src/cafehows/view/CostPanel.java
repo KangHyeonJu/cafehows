@@ -3,6 +3,7 @@ package cafehows.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -38,7 +39,7 @@ public class CostPanel extends JPanel{
 	//화면 구성
 	public JPanel getPCenter() {
 		if(pCenter == null) {
-			pCenter = new JPanel();
+			pCenter = new JPanel(new GridLayout(4,1));
 			pCenter.add(getRent());
 			pCenter.add(getpayrollCost());
 			pCenter.add(getMaterialCost());
@@ -130,11 +131,9 @@ public class CostPanel extends JPanel{
 	public JPanel getPSouth() {
 		if(pSouth == null) {
 			pSouth = new JPanel();
-			JPanel pButton = new JPanel();
-			pButton.add(getBtnCal());
-			pButton.add(getBtnInsert());
-			pButton.add(getBtnCancel());
-			pSouth.add(pButton);
+			pSouth.add(getBtnCal());
+			pSouth.add(getBtnInsert());
+			pSouth.add(getBtnCancel());
 		}
 		return pSouth;
 	}

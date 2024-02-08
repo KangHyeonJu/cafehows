@@ -2,6 +2,7 @@ package cafehows.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -79,9 +80,9 @@ public class MenuMDS extends JDialog {
 		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 		tableModel.setNumRows(0);
 		for (MenuDTO dto : CafeDAO.getInstance().searchKeyword(keyword)) {
-			Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice() };
+			String visibility = dto.getVisibility()==1 ? "표시" : "숨김";
+			Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice(), visibility };			
 			tableModel.addRow(rowData);
-
 		}
 	}
 
@@ -92,12 +93,14 @@ public class MenuMDS extends JDialog {
 			JLabel btnImage = new JLabel();
 			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
 			searchBtn.add(btnImage);
+			if(searchInput.getText().equals("")) {}else {
 			searchBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					searchKeyword(searchInput.getText());
 				}
 			});
+			}
 		}
 		return searchBtn;
 	}
@@ -119,7 +122,10 @@ public class MenuMDS extends JDialog {
 	public JPanel getPCenter() {
 		if (pCenter == null) {
 			pCenter = new JPanel();
-			pCenter.add(new JScrollPane(getMenuTable()));
+
+			JScrollPane jScrollPane = new JScrollPane(getMenuTable());
+			jScrollPane.setPreferredSize(new Dimension(450,380));
+			pCenter.add(jScrollPane);
 		}
 		return pCenter;
 	}
@@ -138,8 +144,8 @@ public class MenuMDS extends JDialog {
 			tableModel.addColumn("종류");
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("가격");
-			tableModel.addColumn("표시여부");
-
+			tableModel.addColumn("상태");
+			
 			for (MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
 				String visibility = dto.getVisibility()==1 ? "표시" : "숨김";
 				Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice(), visibility };
