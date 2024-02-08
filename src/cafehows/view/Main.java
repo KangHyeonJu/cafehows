@@ -162,14 +162,13 @@ public class Main extends JFrame{
 							}
 							orderList.add(menuDTO);
 							
-							for(MenuDTO dto3 : orderList) {
+							for(MenuDTO dto2 : orderList) {
 								System.out.println(dto2);
 							}
 						
 								refreshOrderList();
 								System.out.println("한번클릭");
-							
-						
+		
 						}
 						//menuDTO의 수량 기본값은 1이지만 오른쪽클릭시 countDialog에서 수량 바꿨음
 				//		orderList.add(menuDTO);
@@ -178,10 +177,10 @@ public class Main extends JFrame{
 						}
 						
 						
-					}		
+						
 				
 				menuTableList.add(menuTable);
-				}
+			}
 			
 		});
 		return menuTable;
@@ -527,5 +526,5 @@ public class Main extends JFrame{
 			Main main = new Main();
 			main.setVisible(true);
 		});
-}
+	}
 }
