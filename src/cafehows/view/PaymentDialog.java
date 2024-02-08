@@ -4,8 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -22,7 +24,9 @@ public class PaymentDialog extends JDialog{
 	private JPanel orderPanel;
 	private JLabel priceField,onoField;
 	private JTable orderTable;
+
 	private int cno, point,usePoint,ono;
+
 	private PaymentDialog paymentDialog;
 	
 
@@ -41,6 +45,7 @@ public class PaymentDialog extends JDialog{
 	}
 	
 	
+
 	public int getCno() {
 		return cno;
 	}
@@ -52,8 +57,6 @@ public class PaymentDialog extends JDialog{
 		return usePoint;
 	}
 
-	
-	
 	public void setCno(int cno) {
 		this.cno = cno;
 	}
@@ -145,8 +148,14 @@ public class PaymentDialog extends JDialog{
 			
 			JPanel orderBtnPanel = new JPanel();	
 			orderBtnPanel.add(getUsePointBtn());
-			orderBtnPanel.add(getOkBtn());
+
+		//	orderBtnPanel.add(getOkBtn());
 			southPanel.add(	orderBtnPanel);
+
+			orderBtnPanel.add(getCardBtn());
+			orderBtnPanel.add(getCashBtn());
+			southPanel.add(orderBtnPanel);
+
 		
 		return southPanel;
 	}
@@ -162,11 +171,11 @@ public class PaymentDialog extends JDialog{
 		
 		return usePointBtn;
 	}
-	
-	public JButton getOkBtn() {
-			JButton okBtn = new JButton();
-			okBtn.setText("결제");
-			okBtn.addActionListener(e->{
+
+	public JButton getCardBtn() {
+			JButton cardBtn = new JButton();
+			cardBtn.setText("카드결제");
+			cardBtn.addActionListener(e->{
 
 				// orderlist date 저장, ono 생성, cno,price, finalprice 저장
 				OrderDTO orderDTO= new OrderDTO();
@@ -192,7 +201,20 @@ public class PaymentDialog extends JDialog{
 				main.refreshOrderList();
 				dispose();
 			});
-		return okBtn;
+
+		return cardBtn;
+	}
+	
+	public JButton getCashBtn() {
+		JButton cashBtn = new JButton();
+		cashBtn.setText("현금결제");
+		cashBtn.addActionListener(e -> {
+			CashDialog cashDialog = new CashDialog(main,paymentDialog);
+			cashDialog.setModal(true);
+			cashDialog.setVisible(true);
+		});
+		return cashBtn;
+
 	}
 	
 

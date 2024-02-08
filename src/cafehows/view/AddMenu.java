@@ -31,9 +31,11 @@ public class AddMenu extends JDialog {
 	private Main main;
 	private JPanel pCenter, pMenuName, pInquiry, pPrice, pSouth, pInquiryIn, pPriceIn;
 	private JTextField txtMenuName, txtPrice;
-	private JComboBox ComboInquiry;
+	private JComboBox ComboInquiry,comboIce;
 	private JButton btnOk, btnCancel, btnInquiry;
 	private String kindTemp = "커피";
+	private String iceTemp = "ice";
+	private String iceChangeableTemp = "변경가능";
 
 	public AddMenu(Main main) {
 		this.main = main;
@@ -48,23 +50,16 @@ public class AddMenu extends JDialog {
 
 	public JPanel getPCenter() {
 		if (pCenter == null) {
-			pCenter = new JPanel(new GridLayout(3,1));
-			pCenter.add(getMenuName());
-			pCenter.add(getPrice());
+			pCenter = new JPanel(new GridLayout(4,1));
 			pCenter.add(getInquiry());
+			pCenter.add(getMenuName());
+			pCenter.add(getIce());
+			pCenter.add(getPrice());
+			
 		}
 		return pCenter;
 	}
 
-	public JPanel getMenuName() {
-		if (pMenuName == null) {
-			pMenuName = new JPanel();
-			pMenuName.add(new JLabel("메뉴명", JLabel.CENTER));
-			pMenuName.add(getTxtMenuName());
-
-		}
-		return pMenuName;
-	}
 
 	public JPanel getInquiry() {
 		if (pInquiry == null) {
@@ -78,6 +73,16 @@ public class AddMenu extends JDialog {
 		return pInquiry;
 	}
 
+	public JPanel getMenuName() {
+		if (pMenuName == null) {
+			pMenuName = new JPanel();
+			pMenuName.add(new JLabel("메뉴명", JLabel.CENTER));
+			pMenuName.add(getTxtMenuName());
+
+		}
+		return pMenuName;
+	}
+
 	public JPanel getPrice() {
 		if (pPrice == null) {
 			pPrice = new JPanel();
@@ -87,6 +92,44 @@ public class AddMenu extends JDialog {
 			pPrice.add(getTxtPrice());
 		}
 		return pPrice;
+	}
+	
+	public JPanel getIce() {
+			JPanel pIce = new JPanel();
+			pIce = new JPanel();
+			pIce.add(getComboIce());
+			pIce.add(getComboIceChangeable());
+
+		return pIce;
+	}
+	
+	public JComboBox getComboIce() {
+		if (comboIce == null) {
+
+			String[] arrIce = {"ICE","HOT"};
+			comboIce = new JComboBox(arrIce);
+			
+			comboIce.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					iceTemp = comboIce.getSelectedItem().toString();
+				}
+			});
+		}
+		return comboIce;
+	}
+
+	public JComboBox getComboIceChangeable() {
+	
+			String[] arrIceChangeable = {"변경가능","변경불가"};
+			JComboBox comboIceChangeable = new JComboBox(arrIceChangeable);
+			
+			comboIceChangeable.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					iceChangeableTemp = comboIceChangeable.getSelectedItem().toString();
+				}
+			});
+	
+		return comboIceChangeable;
 	}
 
 	public JTextField getTxtMenuName() {
@@ -162,9 +205,15 @@ public class AddMenu extends JDialog {
 						menu.setPrice(Integer.parseInt(txtPrice.getText()));
 
 						menu.setCano(CafeDAO.getInstance().getCategoryBykind(kindTemp).getCano());
+						int ice = iceTemp.equals("ice") ? 1 : 0;
+						menu.setIce(ice);
+						
+						int iceChangeable = iceChangeableTemp.equals("변경가능") ? 1 : 0;
+						menu.setIceChangeable(iceChangeable);
+						
 						CafeDAO.getInstance().insertMenu(menu);
-
-						// main.refreshMenu();
+						
+						main.refreshTab();
 						dispose();
 					}
 				}

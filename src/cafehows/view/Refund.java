@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -23,10 +23,9 @@ import javax.swing.table.TableColumnModel;
 
 import cafehows.model.CafeDAO;
 import cafehows.model.CustomerDTO;
-import cafehows.model.MenuDTO;
 import cafehows.model.OrderDTO;
 
-public class Refund extends JFrame{
+public class Refund extends JDialog{
 	private JPanel orderNum, pSouth, pNorth;
 	private JTextField txtOrderNum;
 	private JButton btnOk, btnCancel, btnOrderList, btnreload;

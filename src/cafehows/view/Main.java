@@ -35,7 +35,9 @@ public class Main extends JFrame{
 //	private static final Main instance = new Main();
 	private JTabbedPane menuTab;
 	private JPanel tab1Panel,tab2Panel,orderPanel,selectPanel,orderBtnPanel,btnPanel;
+
 	private JTable menuTable1,menuTable2,orderTable;
+	private static JTable menuTable;
 	private ArrayList<JPanel> tabPanelList = new ArrayList<>();
 	private ArrayList<JTable> menuTableList = new ArrayList<>();
 	private List<CategoryDTO> category= new ArrayList<>();
@@ -71,7 +73,6 @@ public class Main extends JFrame{
 		return menuDTO;
 	}
 
-	
 
 	private JTabbedPane getJTabbedPane() {
 		
@@ -97,8 +98,9 @@ public class Main extends JFrame{
 		return tabPanel;
 	}
 	
+
 	private JTable getMenuTable() {
-		
+
 			//Table 수정 불가
 			JTable menuTable = new JTable() {
 				@Override
@@ -153,6 +155,8 @@ public class Main extends JFrame{
 						if(e.getClickCount()==1) {
 							for(MenuDTO dto2 : orderList) {
 								if(dto2.getMname().equals(menuDTO.getMname())) {
+								if(dto2.getMname().equals(menuDTO.getMname()
+										)&&dto2.getIce()==menuDTO.getIce()) {
 									dto2.setCount(dto2.getCount()+1);
 									refreshOrderList();
 									return;
@@ -352,6 +356,7 @@ public class Main extends JFrame{
 			initBtn.addActionListener(e->{
 			orderList.clear();
 			refreshOrderList();
+			refreshTab();
 			});
 		}
 		return initBtn;
@@ -391,7 +396,7 @@ public class Main extends JFrame{
 			modBtn = new JButton();
 			modBtn.setText("메뉴 수정/삭제/숨김");
 			modBtn.addActionListener(e->{
-				MenuMDS menuMDS= new MenuMDS();
+				MenuMDS menuMDS= new MenuMDS(main);
 				menuMDS.setVisible(true);
 			});
 	
@@ -467,6 +472,17 @@ public class Main extends JFrame{
 		}
 	}
 	
+	public void refreshTab() {
+		System.out.println("실행되니");
+		Main.this.menuTab.removeAll();
+		Main.this.remove(menuTab);
+		tabPanelList.clear();
+		menuTableList.clear();
+		category.clear();
+		this.getContentPane().add(getJTabbedPane(), BorderLayout.WEST);
+		Main.this.revalidate();
+	}
+	
 	public void refreshOrderList() {
 		DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
 		tableModel.setNumRows(0);
@@ -474,7 +490,8 @@ public class Main extends JFrame{
 		for(MenuDTO dto : orderList) {
 //			JTextField inputCount = new JTextField(4);
 //			JTextField inputIce = new JTextField(4);
-			Object[] rowData = {dto.getMname(), dto.getPrice(),dto.getCount(),dto.getIce()};
+			String ice = dto.getIce()==1 ? "ICE" : "HOT";
+			Object[] rowData = {dto.getMname(), dto.getPrice(),dto.getCount(),ice};
 			tableModel.addRow(rowData);
 			totalPrice+=dto.getPrice()*dto.getCount();
 			System.out.println(totalPrice);
