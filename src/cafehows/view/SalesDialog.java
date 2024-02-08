@@ -163,7 +163,7 @@ public class SalesDialog extends JDialog{
 				tab2Panel = new JPanel();
 				tab2Panel.setLayout(new BorderLayout());
 				tab2Panel.add(new JScrollPane(getMenuSalesTable()),BorderLayout.CENTER);
-				tab2Panel.add(new JScrollPane(new SalesChart(menuList)),BorderLayout.SOUTH);
+			//	tab2Panel.add(new JScrollPane(new SalesChart(menuList)),BorderLayout.SOUTH);
 				
 			
 			}

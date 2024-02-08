@@ -174,7 +174,7 @@ public class Refund extends JDialog{
 					int price = orderDTO.getPrice();
 					int finalPrice = orderDTO.getFinalprice();
 					CustomerDTO cDTO = CafeDAO.getInstance().getCustomerItemByCno(cno);
-					cDTO.setPoint(cDTO.getPoint()+(price-finalPrice));
+					cDTO.setPoint(cDTO.getPoint()+(price-finalPrice)-(int)(finalPrice*0.05));
 					CafeDAO.getInstance().updatePoint(cDTO, cno);
 					
 					dispose();

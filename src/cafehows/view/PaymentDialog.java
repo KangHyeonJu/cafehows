@@ -22,10 +22,11 @@ import cafehows.model.OrderDTO;
 public class PaymentDialog extends JDialog{
 	private Main main;
 	private JPanel orderPanel;
-	private JLabel priceField,onoField;
+	private JLabel priceField,onoField,pointField,finalPriceField;
 	private JTable orderTable;
+	
 
-	private int cno, point,usePoint,ono;
+	private int cno, point,usePoint,ono,finalPrice;
 
 	private PaymentDialog paymentDialog;
 	
@@ -33,6 +34,7 @@ public class PaymentDialog extends JDialog{
 	public PaymentDialog(Main main) {
 		this.paymentDialog = this;
 		this.main = main;
+		finalPrice = main.getTotalPrice();
 	//	this.menuDTO = menuDTO;
 		this.setTitle("결제");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -45,6 +47,42 @@ public class PaymentDialog extends JDialog{
 	}
 	
 	
+
+	public int getFinalPrice() {
+		return finalPrice;
+	}
+
+
+
+	public void setFinalPrice(int finalPrice) {
+		this.finalPrice = finalPrice;
+	}
+
+
+
+	public JLabel getPointField() {
+		return pointField;
+	}
+
+
+
+	public void setPointField(JLabel pointField) {
+		this.pointField = pointField;
+	}
+
+
+
+	public JLabel getFinalPriceField() {
+		return finalPriceField;
+	}
+
+
+
+	public void setFinalPriceField(JLabel finalPriceField) {
+		this.finalPriceField = finalPriceField;
+	}
+
+
 
 	public int getCno() {
 		return cno;
@@ -70,6 +108,19 @@ public class PaymentDialog extends JDialog{
 	public void setUsePoint(int usePoint) {
 		this.usePoint = usePoint;
 	}
+
+	
+	
+	public JLabel getOnoField() {
+		return onoField;
+	}
+
+
+
+	public void setOnoField(JLabel onoField) {
+		this.onoField = onoField;
+	}
+
 
 
 	public JPanel getOrderPanel() {
@@ -134,14 +185,14 @@ public class PaymentDialog extends JDialog{
 			
 			JPanel point = new JPanel();
 			JLabel pointLabel = new JLabel("포인트");
-			JLabel pointField = new JLabel(Integer.toString(usePoint));
+			pointField = new JLabel(Integer.toString(usePoint));
 			point.add(pointLabel);
 			point.add(pointField);
 			southPanel.add(point);
 			
 			JPanel finalPrice = new JPanel();
 			JLabel finalPriceLabel = new JLabel("최종 가격");
-			JLabel finalPriceField = new JLabel(Integer.toString(main.getTotalPrice()-usePoint));
+			finalPriceField = new JLabel(Integer.toString(main.getTotalPrice()-usePoint));
 			finalPrice.add( finalPriceLabel);
 			finalPrice.add( finalPriceField);
 			southPanel.add(	finalPrice);
@@ -194,9 +245,10 @@ public class PaymentDialog extends JDialog{
 				}
 				
 				//customer point 차감, recdate 갱신
+				if(cno!=0 &&cno!=-1) {
 				CustomerDTO cDTO = new CustomerDTO();
-				cDTO.setPoint(point-usePoint);
-				CafeDAO.getInstance().updatePoint(cDTO, cno);
+				cDTO.setPoint(point-usePoint+(int)(finalPrice*0.05));
+				CafeDAO.getInstance().updatePoint(cDTO, cno);}
 				main.getOrderList().clear();
 				main.refreshOrderList();
 				dispose();

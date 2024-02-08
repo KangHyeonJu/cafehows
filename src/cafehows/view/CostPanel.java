@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -16,13 +17,17 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import cafehows.model.CafeDAO;
+
 public class CostPanel extends JPanel{
 
 	//test
 	private CostPanel board;
 	private JPanel pSouth, pCenter, prent, pPayrollCost, pMaterialCost, pProfit;
 	private JButton btnInsert, btnCancel, btnCal;
+	private JTextField txtRevenue= new JTextField();
 	private JTextField txtRent, txtPayrollCost, txtMaterialCost, resultField;
+	private int monthTemp,yearTemp,monthlySales;
 	
 	
 	public CostPanel() {
@@ -39,7 +44,9 @@ public class CostPanel extends JPanel{
 	//화면 구성
 	public JPanel getPCenter() {
 		if(pCenter == null) {
-			pCenter = new JPanel(new GridLayout(4,1));
+			pCenter = new JPanel(new GridLayout(6,1));
+			pCenter.add(getMonth());
+			pCenter.add(getRevenue());
 			pCenter.add(getRent());
 			pCenter.add(getpayrollCost());
 			pCenter.add(getMaterialCost());
@@ -47,6 +54,84 @@ public class CostPanel extends JPanel{
 		}
 		return pCenter;
 	}
+	public int getMonthTemp() {
+		return monthTemp;
+	}
+
+	public void setMonthTemp(int monthTemp) {
+		this.monthTemp = monthTemp;
+	}
+
+	public int getYearTemp() {
+		return yearTemp;
+	}
+
+	public void setYearTemp(int yearTemp) {
+		this.yearTemp = yearTemp;
+	}
+
+	//월 선택
+	public JPanel getMonth() {
+		JPanel pMonth = new JPanel();
+		pMonth.add(getComboYear());
+		pMonth.add(getComboMonth());
+	
+		
+
+	return pMonth;
+	}
+	
+	public JComboBox getComboYear() {
+		
+		String[] arrYear = {"2024년"};
+		
+		JComboBox<String> comboYear = new JComboBox<String>(arrYear);
+		yearTemp = Integer.parseInt(comboYear.getSelectedItem().toString().substring(0,4));
+		comboYear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				yearTemp = Integer.parseInt(comboYear.getSelectedItem().toString().substring(0,4));
+				
+			}
+		});
+	
+	return comboYear;
+
+}
+	
+	public JComboBox getComboMonth() {
+		
+			String[] arrMonth = {"1월","2월","3월","4월","5월","6월",
+					"7월","8월","9월","10월","11월"};
+			
+			JComboBox<String> comboMonth = new JComboBox<String>(arrMonth);
+			monthTemp = comboMonth.getSelectedIndex()+1;
+			comboMonth.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					monthTemp = comboMonth.getSelectedIndex()+1;
+					txtRevenue.setText(Integer.toString(CafeDAO.getInstance().getMonthlySales(yearTemp, monthTemp)));
+					monthlySales = CafeDAO.getInstance().getMonthlySales(yearTemp, monthTemp);
+				//	System.out.println(monthlySales);
+//					System.out.println(yearTemp);
+//					System.out.println(monthTemp);
+				}
+			});
+		
+		return comboMonth;
+	
+	}
+	//매출 불러오기
+	public JPanel getRevenue() {
+			JPanel pRevenue = new JPanel();
+			JLabel label = new JLabel("매출액",JLabel.CENTER);
+			label.setPreferredSize(new Dimension(50,30));
+			pRevenue.add(label);
+	
+			txtRevenue.setPreferredSize(new Dimension(250,30));
+			pRevenue.add(txtRevenue);
+	
+		return pRevenue;
+	}
+	
 	
 	//임대료 입력
 	public JPanel getRent() {
@@ -119,7 +204,7 @@ public class CostPanel extends JPanel{
 			double material = Double.parseDouble(txtMaterialCost.getText());
 			double payroll = Double.parseDouble(txtPayrollCost.getText());
 			//총액 받아오기
-			double result = rent - payroll - material ; //임시
+			double result = monthlySales- rent - payroll - material ; //임시
 			resultField.setText(Double.toString(result));
 		}catch (NumberFormatException e) {
 			

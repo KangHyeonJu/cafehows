@@ -72,6 +72,7 @@ public class Main extends JFrame{
 	public MenuDTO getMenuDTO() {
 		return menuDTO;
 	}
+	
 
 
 	private JTabbedPane getJTabbedPane() {
@@ -154,7 +155,6 @@ public class Main extends JFrame{
 						
 						if(e.getClickCount()==1) {
 							for(MenuDTO dto2 : orderList) {
-								if(dto2.getMname().equals(menuDTO.getMname())) {
 								if(dto2.getMname().equals(menuDTO.getMname()
 										)&&dto2.getIce()==menuDTO.getIce()) {
 									dto2.setCount(dto2.getCount()+1);

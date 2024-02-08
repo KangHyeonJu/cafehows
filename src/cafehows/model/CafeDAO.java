@@ -380,6 +380,33 @@ public class CafeDAO {
 		return items;
 		
 	}
+	//DailySalesTable
+	public int getMonthlySales(int year,int month){
+		connect();
+		int monthlySales=0;
+		sql = """
+			select sum(finalprice) from orderlist 
+			where year(date)=? and month(date)=? 
+			group by date_format(date,'%Y-%m')
+				""";
+		List<OrderDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, year);
+			pstmt.setInt(2, month);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				monthlySales =rs.getInt(1);
+				
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return monthlySales;
+		
+	}
+	
 	
 	
 	public List<OrderDTO> getDailySalesbyPeriod(int start,int end){
