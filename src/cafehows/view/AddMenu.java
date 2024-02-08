@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -49,10 +50,17 @@ public class AddMenu extends JDialog {
 
 	public JPanel getPCenter() {
 		if (pCenter == null) {
-			pCenter = new JPanel(new GridLayout(4,1));
+			pCenter = new JPanel(new GridLayout(4,2));
+			pCenter.add(new JLabel("종류", JLabel.CENTER));
 			pCenter.add(getInquiry());
+			
+			pCenter.add(new JLabel("메뉴명", JLabel.CENTER));
 			pCenter.add(getMenuName());
+			
+			pCenter.add(new JLabel());
 			pCenter.add(getIce());
+			
+			pCenter.add(new JLabel("가격", JLabel.CENTER));
 			pCenter.add(getPrice());
 			
 		}
@@ -64,8 +72,8 @@ public class AddMenu extends JDialog {
 		if (pInquiry == null) {
 			pInquiry = new JPanel();
 			pInquiryIn = new JPanel();
-			pInquiryIn.add(new JLabel("종류", JLabel.CENTER));
-			pInquiry.add(pInquiryIn);
+			//pInquiryIn.add(new JLabel("종류", JLabel.CENTER));
+			//pInquiry.add(pInquiryIn);
 			pInquiry.add(getComboInquiry());
 			pInquiry.add(getBtnInquiry());
 		}
@@ -75,7 +83,7 @@ public class AddMenu extends JDialog {
 	public JPanel getMenuName() {
 		if (pMenuName == null) {
 			pMenuName = new JPanel();
-			pMenuName.add(new JLabel("메뉴명", JLabel.CENTER));
+			//pMenuName.add(new JLabel("메뉴명", JLabel.CENTER));
 			pMenuName.add(getTxtMenuName());
 
 		}
@@ -86,8 +94,8 @@ public class AddMenu extends JDialog {
 		if (pPrice == null) {
 			pPrice = new JPanel();
 			pPriceIn = new JPanel();
-			pPriceIn.add(new JLabel("가격", JLabel.CENTER));
-			pPrice.add(pPriceIn);
+			//pPriceIn.add(new JLabel("가격", JLabel.CENTER));
+			//pPrice.add(pPriceIn);
 			pPrice.add(getTxtPrice());
 		}
 		return pPrice;
@@ -167,7 +175,10 @@ public class AddMenu extends JDialog {
 	public JButton getBtnInquiry() {
 		if (btnInquiry == null) {
 			btnInquiry = new JButton();
-			btnInquiry.setText("종류 조회");
+			//btnInquiry.setText("조회");
+			JLabel btnImage = new JLabel();
+			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
+			btnInquiry.add(btnImage);
 			btnInquiry.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {

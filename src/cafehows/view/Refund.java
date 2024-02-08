@@ -41,7 +41,7 @@ public class Refund extends JDialog{
 	public Refund() {
 		this.setTitle("환불-주문번호입력");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(500, 300);
+		this.setSize(500, 500);
 		this.setModal(true);
 		this.setResizable(false); //사이즈 고정
 		this.getContentPane().add(getPNorth(), BorderLayout.NORTH);
@@ -84,7 +84,7 @@ public class Refund extends JDialog{
 	
 	public JButton getReloadBtn() {
 		if (btnreload == null) {
-			btnreload = new JButton();
+			btnreload = new RoundedButton();
 			btnreload.setText("초기화");
 			btnreload.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -133,7 +133,7 @@ public class Refund extends JDialog{
 	
 	public JButton getBtnOk() {
 		if(btnOk == null) {
-			btnOk = new JButton();
+			btnOk = new RoundedButton();
 			btnOk.setText("환불");
 			btnOk.addActionListener(new ActionListener() {
 				@Override
@@ -192,7 +192,7 @@ public class Refund extends JDialog{
 	
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
@@ -208,7 +208,7 @@ public class Refund extends JDialog{
 		if(pCenter == null) {
 			pCenter = new JPanel();
 			JScrollPane jScrollPane = new JScrollPane(orderTable());
-			jScrollPane.setPreferredSize(new Dimension(450,180));
+			jScrollPane.setPreferredSize(new Dimension(450,380));
 			pCenter.add(jScrollPane);
 			refreshTable();
 		}
