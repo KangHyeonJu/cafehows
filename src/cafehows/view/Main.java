@@ -164,7 +164,7 @@ public class Main extends JFrame{
 							}
 							orderList.add(menuDTO);
 							
-							for(MenuDTO dto2 : orderList) {
+							for(MenuDTO dto3 : orderList) {
 								System.out.println(dto2);
 							}
 						
@@ -177,14 +177,18 @@ public class Main extends JFrame{
 				//		orderList.add(menuDTO);
 				//		refreshOrderList();
 
-					}
-				}		
-			});
-			menuTableList.add(menuTable);
-		
+						}
+						
+						
+					}		
+				
+				menuTableList.add(menuTable);
+				}
 			
+		});
 		return menuTable;
 	}
+
 	
 
 
