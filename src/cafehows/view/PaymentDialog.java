@@ -38,9 +38,9 @@ public class PaymentDialog extends JDialog{
 	//	this.menuDTO = menuDTO;
 		this.setTitle("결제");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
+		this.setModal(true); //상위 frame 클릭 불가
 		this.setSize(500,500);
-
+		this.setResizable(false); //사이즈 고정
 		this.getContentPane().add(getOrderPanel(), BorderLayout.CENTER);
 		this.getContentPane().add(getSouthPanel(), BorderLayout.SOUTH);
 		locationCenter();
