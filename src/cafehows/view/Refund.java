@@ -43,6 +43,7 @@ public class Refund extends JDialog{
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 300);
 		this.setModal(true);
+		this.setResizable(false); //사이즈 고정
 		this.getContentPane().add(getPNorth(), BorderLayout.NORTH);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
