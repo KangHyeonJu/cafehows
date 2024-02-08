@@ -124,7 +124,7 @@ public class CashDialog extends JDialog{
 	
 	public JButton getBtnOk() {
 		if(btnOk == null) {
-			btnOk = new JButton();
+			btnOk = new RoundedButton();
 			btnOk.setText("결제");
 			btnOk.addActionListener(new ActionListener() {
 				@Override
@@ -172,7 +172,7 @@ public class CashDialog extends JDialog{
 	
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override

@@ -217,7 +217,7 @@ public class PaymentDialog extends JDialog{
 	
 	public JButton getUsePointBtn() {
 			JButton usePointBtn = new RoundedButton();
-			usePointBtn.setText("포인트 사용");
+			usePointBtn.setText("포인트 적립/사용");
 			usePointBtn.addActionListener(e->{
 				UsePoints usePoints= new UsePoints(paymentDialog,main);
 				usePoints.setVisible(true);

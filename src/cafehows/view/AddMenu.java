@@ -26,7 +26,7 @@ import cafehows.model.MenuDTO;
 
 public class AddMenu extends JDialog {
 	private Main main;
-	private JPanel pCenter, pMenuName, pInquiry, pPrice, pSouth, pInquiryIn, pPriceIn;
+	private JPanel pCenter, pMenuName, pInquiry, pPrice, pSouth, pInquiryIn, pPriceIn, pIceIn;
 	private JTextField txtMenuName, txtPrice;
 	private JComboBox ComboInquiry,comboIce;
 	private JButton btnOk, btnCancel, btnInquiry;
@@ -38,7 +38,7 @@ public class AddMenu extends JDialog {
 		this.main = main;
 		this.setTitle("메뉴 추가");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(400, 300);
+		this.setSize(300, 300);
 		this.setModal(true); //상위 frame 클릭 불가
 		this.setResizable(false); //사이즈 고정
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
@@ -50,17 +50,17 @@ public class AddMenu extends JDialog {
 
 	public JPanel getPCenter() {
 		if (pCenter == null) {
-			pCenter = new JPanel(new GridLayout(4,2));
-			pCenter.add(new JLabel("종류", JLabel.CENTER));
+			pCenter = new JPanel(new GridLayout(4,1));
+			//pCenter.add(new JLabel("종류", JLabel.CENTER));
 			pCenter.add(getInquiry());
 			
-			pCenter.add(new JLabel("메뉴명", JLabel.CENTER));
+			//pCenter.add(new JLabel("메뉴명", JLabel.CENTER));
 			pCenter.add(getMenuName());
 			
-			pCenter.add(new JLabel());
+			//pCenter.add(new JLabel("아이스/핫", JLabel.CENTER));
 			pCenter.add(getIce());
 			
-			pCenter.add(new JLabel("가격", JLabel.CENTER));
+			//pCenter.add(new JLabel("가격", JLabel.CENTER));
 			pCenter.add(getPrice());
 			
 		}
@@ -72,10 +72,10 @@ public class AddMenu extends JDialog {
 		if (pInquiry == null) {
 			pInquiry = new JPanel();
 			pInquiryIn = new JPanel();
-			//pInquiryIn.add(new JLabel("종류", JLabel.CENTER));
-			//pInquiry.add(pInquiryIn);
-			pInquiry.add(getComboInquiry());
-			pInquiry.add(getBtnInquiry());
+			pInquiryIn.add(new JLabel("종류", JLabel.CENTER));
+			pInquiry.add(pInquiryIn);
+			pInquiry.add(getComboInquiry(), BorderLayout.CENTER);
+			pInquiry.add(getBtnInquiry(), BorderLayout.CENTER);
 		}
 		return pInquiry;
 	}
@@ -83,8 +83,8 @@ public class AddMenu extends JDialog {
 	public JPanel getMenuName() {
 		if (pMenuName == null) {
 			pMenuName = new JPanel();
-			//pMenuName.add(new JLabel("메뉴명", JLabel.CENTER));
-			pMenuName.add(getTxtMenuName());
+			pMenuName.add(new JLabel("메뉴명", JLabel.CENTER));
+			pMenuName.add(getTxtMenuName(), BorderLayout.CENTER);
 
 		}
 		return pMenuName;
@@ -94,9 +94,9 @@ public class AddMenu extends JDialog {
 		if (pPrice == null) {
 			pPrice = new JPanel();
 			pPriceIn = new JPanel();
-			//pPriceIn.add(new JLabel("가격", JLabel.CENTER));
-			//pPrice.add(pPriceIn);
-			pPrice.add(getTxtPrice());
+			pPriceIn.add(new JLabel("가격", JLabel.CENTER));
+			pPrice.add(pPriceIn);
+			pPrice.add(getTxtPrice(), BorderLayout.CENTER);
 		}
 		return pPrice;
 	}
@@ -104,6 +104,9 @@ public class AddMenu extends JDialog {
 	public JPanel getIce() {
 			JPanel pIce = new JPanel();
 			pIce = new JPanel();
+			pIceIn = new JPanel();
+			pIceIn.add(new JLabel("아이스/핫", JLabel.CENTER));
+			pIce.add(pIceIn);
 			pIce.add(getComboIce());
 			pIce.add(getComboIceChangeable());
 
@@ -141,7 +144,7 @@ public class AddMenu extends JDialog {
 
 	public JTextField getTxtMenuName() {
 		if (txtMenuName == null) {
-			txtMenuName = new JTextField(20);
+			txtMenuName = new JTextField(14);
 		}
 		return txtMenuName;
 	}
@@ -167,7 +170,7 @@ public class AddMenu extends JDialog {
 
 	public JTextField getTxtPrice() {
 		if (txtPrice == null) {
-			txtPrice = new JTextField(20);
+			txtPrice = new JTextField(14);
 		}
 		return txtPrice;
 	}
@@ -175,7 +178,7 @@ public class AddMenu extends JDialog {
 	public JButton getBtnInquiry() {
 		if (btnInquiry == null) {
 			btnInquiry = new JButton();
-			//btnInquiry.setText("조회");
+			btnInquiry.setText("조회");
 			JLabel btnImage = new JLabel();
 			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
 			btnInquiry.add(btnImage);
@@ -193,7 +196,7 @@ public class AddMenu extends JDialog {
 	public JPanel getPSouth() {
 		if (pSouth == null) {
 			pSouth = new JPanel();
-			pSouth.setBackground(Color.WHITE);
+			//pSouth.setBackground(Color.WHITE);
 			pSouth.add(getBtnOk());
 			pSouth.add(getBtnCancel());
 		}
@@ -202,7 +205,7 @@ public class AddMenu extends JDialog {
 
 	public JButton getBtnOk() {
 		if (btnOk == null) {
-			btnOk = new JButton();
+			btnOk = new RoundedButton();
 			btnOk.setText("추가");
 			btnOk.addActionListener(new ActionListener() {
 				@Override
@@ -234,7 +237,7 @@ public class AddMenu extends JDialog {
 
 	public JButton getBtnCancel() {
 		if (btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override

@@ -48,7 +48,7 @@ public class CustomerModify extends JDialog{
 	public JPanel getNotice() {
 		if(pNotice == null){
 			pNotice = new JPanel();
-			pNotice.add(new JLabel("010과 '-'를 제외한 번호 8자리를 입력해주세요."));
+			pNotice.add(new JLabel("010을 제외한 번호 8자리를 입력해주세요."));
 		}
 		return pNotice;
 	}
@@ -74,7 +74,7 @@ public class CustomerModify extends JDialog{
 	
 	public JTextField getTxtCustomerNum() {
 		if(txtCustomerNum==null) {
-			txtCustomerNum = new JTextField(20);
+			txtCustomerNum = new JTextField(19);
 		}
 		return txtCustomerNum;
 	}
@@ -82,7 +82,7 @@ public class CustomerModify extends JDialog{
 	public JPanel getPSouth() {
 		if(pSouth == null) {
 			pSouth = new JPanel();
-			pSouth.setBackground(Color.WHITE);
+			//pSouth.setBackground(Color.WHITE);
 			pSouth.add(getBtnOk());
 			pSouth.add(getBtnDelete());
 			pSouth.add(getBtnCancel());
@@ -92,7 +92,7 @@ public class CustomerModify extends JDialog{
 	
 	public JButton getBtnOk() {
 		if(btnOk == null) {
-			btnOk = new JButton();
+			btnOk = new RoundedButton();
 			btnOk.setText("등록");
 			btnOk.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -123,7 +123,7 @@ public class CustomerModify extends JDialog{
 	
 	public JButton getBtnDelete() {
 		if(btnDelete == null) {
-			btnDelete = new JButton();
+			btnDelete = new RoundedButton();
 			btnDelete.setText("삭제");
 			btnDelete.addActionListener(new ActionListener() {
 				@Override
@@ -146,7 +146,7 @@ public class CustomerModify extends JDialog{
 	
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override

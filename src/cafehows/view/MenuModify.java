@@ -107,7 +107,7 @@ public class MenuModify extends JDialog{
 	public JPanel getPSouth() {
 		if(pSouth == null) {
 			pSouth = new JPanel();
-			pSouth.setBackground(Color.WHITE);
+			//pSouth.setBackground(Color.WHITE);
 			pSouth.add(getBtnOk());
 			pSouth.add(getBtnCancel());
 		}
@@ -116,7 +116,7 @@ public class MenuModify extends JDialog{
 	
 	public JButton getBtnOk() {
 		if(btnOk == null) {
-			btnOk = new JButton();
+			btnOk = new RoundedButton();
 			btnOk.setText("수정");
 			
 			btnOk.addActionListener(new ActionListener() {
@@ -156,7 +156,7 @@ public class MenuModify extends JDialog{
 	
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
