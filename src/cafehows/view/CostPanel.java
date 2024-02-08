@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -83,14 +85,24 @@ public class CostPanel extends JPanel{
 	
 	public JComboBox getComboYear() {
 		
-		String[] arrYear = {"2024년"};
+		LocalDate now = LocalDate.now();
+		int startYear = 2023;
+		int year = now.getYear();
+		Vector arrYear = new Vector();
 		
-		JComboBox<String> comboYear = new JComboBox<String>(arrYear);
-		yearTemp = Integer.parseInt(comboYear.getSelectedItem().toString().substring(0,4));
+		for(int i=startYear;i<=year;i++) {
+			String yearString = i+"년";
+			arrYear.add(yearString);
+			System.out.println(yearString);
+		}
+		
+		
+		JComboBox comboYear = new JComboBox(arrYear);
+		yearTemp = comboYear.getSelectedIndex()+startYear;
+
 		comboYear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				yearTemp = Integer.parseInt(comboYear.getSelectedItem().toString().substring(0,4));
-				
+				yearTemp = comboYear.getSelectedIndex()+startYear;
 			}
 		});
 	
