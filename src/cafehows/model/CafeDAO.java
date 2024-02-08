@@ -366,8 +366,15 @@ public class CafeDAO {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, ono);
 			pstmt.executeUpdate();
-		}catch(Exception e){
+		}
+		catch(Exception e){
 			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -427,6 +434,12 @@ public class CafeDAO {
 			pstmt.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
