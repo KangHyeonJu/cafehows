@@ -468,7 +468,6 @@ public class CafeDAO {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, ono);
 			pstmt.executeUpdate();
-<<<<<<< HEAD
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -477,19 +476,14 @@ public class CafeDAO {
 				close();
 			} catch (SQLException e) {
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,"판매량을 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 			}
-=======
 		//	int rows = pstmt.executeUpdate();
 //			if(rows == 1) {
 //				JOptionPane.showMessageDialog(null,"판매량이 삭제되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
 //			}else {
 //				JOptionPane.showMessageDialog(null,"판매량 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 //			}
-			close();
-		}catch(SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,"판매량을 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
->>>>>>> d4e813a4630ea1d55e34bc2946296b46b0559a64
 		}
 	}
 	
@@ -556,16 +550,13 @@ public class CafeDAO {
 			close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-<<<<<<< HEAD
 		}finally {
 			try {
 				close();
 			} catch (SQLException e) {
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,"메뉴를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 			}
-=======
-			JOptionPane.showMessageDialog(null,"메뉴를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
->>>>>>> d4e813a4630ea1d55e34bc2946296b46b0559a64
 		}
 	}
 	
