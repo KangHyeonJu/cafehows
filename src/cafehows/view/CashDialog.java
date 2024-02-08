@@ -28,6 +28,7 @@ public class CashDialog extends JDialog{
 	private int ono;
 	private JLabel onoField;
 	
+	
 	public CashDialog( Main main,PaymentDialog paymentDialog) {
 		this.paymentDialog = paymentDialog;
 		this.main = main;
@@ -149,6 +150,7 @@ public class CashDialog extends JDialog{
 					main.getOrderList().clear();
 					main.refreshOrderList();
 					CashDialog.this.dispose();
+					paymentDialog.dispose();
 				}
 			});
 		}

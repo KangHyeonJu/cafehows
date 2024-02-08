@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.ImageIcon;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -19,7 +19,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -48,6 +47,7 @@ public class MenuMDS extends JDialog {
 		this.getContentPane().add(getSearchPanel(), BorderLayout.NORTH);
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
+		this.getContentPane().setBackground(Color.WHITE);
 
 		locationCenter();
 	}
@@ -56,6 +56,7 @@ public class MenuMDS extends JDialog {
 		if (searchPanel == null) {
 			searchPanel = new JPanel();
 			searchPanel.add(new JLabel("메뉴명", JLabel.CENTER));
+			//searchPanel.setBackground(Color.WHITE);
 			searchPanel.add(getSearchBar());
 			searchPanel.add(getSerachBtn());
 			searchPanel.add(getInitBtn());
@@ -89,11 +90,11 @@ public class MenuMDS extends JDialog {
 
 	public JButton getSerachBtn() {
 		if (searchBtn == null) {
-			searchBtn = new JButton();
-			// searchBtn.setText("검색");
-			JLabel btnImage = new JLabel();
-			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
-			searchBtn.add(btnImage);
+			searchBtn = new RoundedButton();
+			searchBtn.setText("검색");
+			//JLabel btnImage = new JLabel();
+			//btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
+			//searchBtn.add(btnImage);
 			if(searchInput.getText().equals("")) {}else {
 			searchBtn.addActionListener(new ActionListener() {
 				@Override
@@ -108,7 +109,7 @@ public class MenuMDS extends JDialog {
 
 	public JButton getInitBtn() {
 		if (initBtn == null) {
-			initBtn = new JButton();
+			initBtn = new RoundedButton();
 			initBtn.setText("초기화");
 			initBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -123,9 +124,11 @@ public class MenuMDS extends JDialog {
 	public JPanel getPCenter() {
 		if (pCenter == null) {
 			pCenter = new JPanel();
-
+			//pCenter.setBackground(Color.WHITE);
 			JScrollPane jScrollPane = new JScrollPane(getMenuTable());
 			jScrollPane.setPreferredSize(new Dimension(450,380));
+			//jScrollPane.getVerticalScrollBar().setBackground(Color.WHITE);
+			
 			pCenter.add(jScrollPane);
 		}
 		return pCenter;
@@ -149,6 +152,7 @@ public class MenuMDS extends JDialog {
 			tableModel.addColumn("가격");
 			tableModel.addColumn("상태");
 			
+			
 			for (MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
 				String visibility = dto.getVisibility()==1 ? "표시" : "숨김";
 				Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice(), visibility };
@@ -168,6 +172,7 @@ public class MenuMDS extends JDialog {
 	public JPanel getPSouth() {
 		if (pSouth == null) {
 			pSouth = new JPanel();
+			//pSouth.setBackground(Color.WHITE);
 			pSouth.add(getBtnModify());
 			pSouth.add(getBtnVisible0());
 			pSouth.add(getBtnVisible1());
@@ -179,7 +184,7 @@ public class MenuMDS extends JDialog {
 
 	public JButton getBtnModify() {
 		if (btnModify == null) {
-			btnModify = new JButton();
+			btnModify = new RoundedButton();
 			btnModify.setText("수정");
 			btnModify.addActionListener(new ActionListener() {
 				@Override
@@ -223,7 +228,7 @@ public class MenuMDS extends JDialog {
 
 	public JButton getBtnVisible0() {
 		if (btnVisible0 == null) {
-			btnVisible0 = new JButton();
+			btnVisible0 = new RoundedButton();
 			btnVisible0.setText("숨김");
 			btnVisible0.addActionListener(new ActionListener() {
 				@Override
@@ -247,7 +252,7 @@ public class MenuMDS extends JDialog {
 
 	public JButton getBtnVisible1() {
 		if (btnVisible1 == null) {
-			btnVisible1 = new JButton();
+			btnVisible1 = new RoundedButton();
 			btnVisible1.setText("해제");
 			btnVisible1.addActionListener(new ActionListener() {
 				@Override
@@ -270,7 +275,7 @@ public class MenuMDS extends JDialog {
 
 	public JButton getBtnCancel() {
 		if (btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("닫기");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override

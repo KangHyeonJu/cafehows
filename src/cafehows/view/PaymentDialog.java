@@ -163,7 +163,7 @@ public class PaymentDialog extends JDialog{
 	}
 	
 	public JButton getUsePointBtn() {
-			JButton usePointBtn = new JButton();
+			JButton usePointBtn = new RoundedButton();
 			usePointBtn.setText("포인트 사용");
 			usePointBtn.addActionListener(e->{
 				UsePoints usePoints= new UsePoints(paymentDialog,main);
@@ -175,7 +175,7 @@ public class PaymentDialog extends JDialog{
 	}
 
 	public JButton getCardBtn() {
-			JButton cardBtn = new JButton();
+			JButton cardBtn = new RoundedButton();
 			cardBtn.setText("카드결제");
 			cardBtn.addActionListener(e->{
 
@@ -208,13 +208,12 @@ public class PaymentDialog extends JDialog{
 	}
 	
 	public JButton getCashBtn() {
-		JButton cashBtn = new JButton();
+		JButton cashBtn = new RoundedButton();
 		cashBtn.setText("현금결제");
 		cashBtn.addActionListener(e -> {
 			CashDialog cashDialog = new CashDialog(main,paymentDialog);
 			cashDialog.setModal(true);
 			cashDialog.setVisible(true);
-			dispose();
 		});
 		return cashBtn;
 
