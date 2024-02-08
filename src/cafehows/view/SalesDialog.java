@@ -47,6 +47,8 @@ public class SalesDialog extends JDialog{
 			this.setTitle("매출관리");					
 			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setSize(800,800);
+			this.setModal(true); //상위 frame 클릭 불가
+			this.setResizable(false); //사이즈 고정
 			this.getContentPane().add(getJTabbedPane());
 			locationCenter();
 
@@ -112,8 +114,15 @@ public class SalesDialog extends JDialog{
 		
 		public JTable getOrderListTable() {
 			if(orderListTable == null) {
-				orderListTable = new JTable();
+				orderListTable = new JTable() {
+					@Override
+					public boolean isCellEditable(int row, int col) {
+						return false;
+					}
+				};
 				orderListTable.setAutoCreateRowSorter(true);
+				orderListTable.getTableHeader().setReorderingAllowed(false);
+				orderListTable.getTableHeader().setResizingAllowed(false);
 				
 				DefaultTableModel tableModel = (DefaultTableModel)orderListTable.getModel();
 				tableModel.addColumn("날짜");
@@ -135,9 +144,15 @@ public class SalesDialog extends JDialog{
 		
 		public JTable getDailySalesTable() {
 			if(dailySalesTable == null) {
-				dailySalesTable = new JTable();
+				dailySalesTable = new JTable() {
+					@Override
+					public boolean isCellEditable(int row, int col) {
+						return false;
+					}
+				};
 				dailySalesTable.setAutoCreateRowSorter(true);
-				
+				dailySalesTable.getTableHeader().setReorderingAllowed(false);
+				dailySalesTable.getTableHeader().setResizingAllowed(false);
 				DefaultTableModel tableModel = (DefaultTableModel)dailySalesTable.getModel();
 				tableModel.addColumn("매출날짜");
 				tableModel.addColumn("매출액");
@@ -172,9 +187,15 @@ public class SalesDialog extends JDialog{
 		}
 		public JTable getMenuSalesTable() {
 			if(menuSalesTable==null) {
-				menuSalesTable = new JTable();
+				menuSalesTable = new JTable() {
+					@Override
+					public boolean isCellEditable(int row, int col) {
+						return false;
+					}
+				};
 				menuSalesTable.setAutoCreateRowSorter(true);
-				
+				menuSalesTable.getTableHeader().setReorderingAllowed(false);
+				menuSalesTable.getTableHeader().setResizingAllowed(false);
 				DefaultTableModel tableModel = (DefaultTableModel)menuSalesTable.getModel();
 				tableModel.addColumn("메뉴명");
 				tableModel.addColumn("판매량");

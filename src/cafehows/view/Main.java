@@ -115,6 +115,8 @@ public class Main extends JFrame{
 				}
 			};
 			menuTable.setAutoCreateRowSorter(true);
+			menuTable.getTableHeader().setReorderingAllowed(false);
+			menuTable.getTableHeader().setResizingAllowed(false);
 			
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 			tableModel.addColumn("메뉴명");

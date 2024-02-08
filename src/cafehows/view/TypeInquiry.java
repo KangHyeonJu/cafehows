@@ -164,9 +164,10 @@ public class TypeInquiry extends JDialog{
 	
 	public JPanel getPCenter() {
 		if(pCenter == null) {
-			pCenter = new JPanel();
-			pCenter.setLayout(new BorderLayout());
-			pCenter.add(new JScrollPane(getTypeTable()));
+			pCenter = new JPanel(); 
+			JScrollPane jScrollPane = new JScrollPane(getTypeTable());
+			jScrollPane.setPreferredSize(new Dimension(450,380));
+			pCenter.add(jScrollPane);
 		}
 		return pCenter;
 	}

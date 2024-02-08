@@ -37,6 +37,7 @@ public class CustomerDialog extends JDialog{
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
 		this.setModal(true); //상위 frame 클릭 불가
+		this.setResizable(false); //사이즈 고정
 		this.getContentPane().add(getSearchPanel(),BorderLayout.NORTH);
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
@@ -114,7 +115,12 @@ public class CustomerDialog extends JDialog{
 	}
 	public static JTable getCustomerTable() {
 		if(customerTable == null) {
-			customerTable = new JTable();
+			customerTable = new JTable() {
+				@Override
+				public boolean isCellEditable(int row, int col) {
+					return false;
+				}
+			};
 			customerTable.setAutoCreateRowSorter(true);
 			customerTable.getTableHeader().setReorderingAllowed(false);
 			customerTable.getTableHeader().setResizingAllowed(false);
