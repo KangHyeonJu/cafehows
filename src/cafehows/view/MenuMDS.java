@@ -81,7 +81,8 @@ public class MenuMDS extends JDialog {
 		tableModel.setNumRows(0);
 		for (MenuDTO dto : CafeDAO.getInstance().searchKeyword(keyword)) {
 			String visibility = dto.getVisibility()==1 ? "표시" : "숨김";
-			Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice(), visibility };			
+			Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice(), visibility };		
+			
 			tableModel.addRow(rowData);
 		}
 	}
@@ -139,6 +140,8 @@ public class MenuMDS extends JDialog {
 				}
 			};
 			menuTable.setAutoCreateRowSorter(true);
+			menuTable.getTableHeader().setReorderingAllowed(false);
+			menuTable.getTableHeader().setResizingAllowed(false);
 
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 			tableModel.addColumn("종류");

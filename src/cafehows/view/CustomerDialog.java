@@ -116,6 +116,8 @@ public class CustomerDialog extends JDialog{
 		if(customerTable == null) {
 			customerTable = new JTable();
 			customerTable.setAutoCreateRowSorter(true);
+			customerTable.getTableHeader().setReorderingAllowed(false);
+			customerTable.getTableHeader().setResizingAllowed(false);
 			
 			DefaultTableModel tableModel = (DefaultTableModel) customerTable.getModel();
 			tableModel.addColumn("전화번호");
