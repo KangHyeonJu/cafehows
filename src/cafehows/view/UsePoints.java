@@ -115,12 +115,12 @@ public class UsePoints extends JDialog{
 				public void actionPerformed(ActionEvent e) {
 					customerNum = Integer.parseInt(txtCono.getText().trim());
 					customerPoint = -1;
-					
-					
+	
 					customerList = CafeDAO.getInstance().getCustomerItems();
 					for(CustomerDTO cDTO: customerList) {
 						if(customerNum==cDTO.getCno()) {
 							customerPoint = cDTO.getPoint();
+							
 							getTxtPoint().setText(Integer.toString(customerPoint));
 							break;
 						}
@@ -174,7 +174,7 @@ public class UsePoints extends JDialog{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 
-			
+					int usePoint = Integer.parseInt(getTxtUsePoint().getText());
 
 					//dispose();
 					
@@ -182,7 +182,7 @@ public class UsePoints extends JDialog{
 					point = Integer.parseInt(getTxtPoint().getText());
 					usePoint = Integer.parseInt(getTxtUsePoint().getText());
 					
-					if(point>=usePoint) {
+					if(customerPoint>=usePoint) {
 						// orderlist date 저장, ono 생성, cno,price, finalprice 저장
 //						OrderDTO orderDTO= new OrderDTO();
 //						orderDTO.setCno(cno);
@@ -207,13 +207,13 @@ public class UsePoints extends JDialog{
 //						main.refreshOrderList();
 						paymentDialog.setCno(customerNum);
 						paymentDialog.setPoint(customerPoint);
+
 						paymentDialog.setUsePoint(usePoint);
 						paymentDialog.getPointField().setText(Integer.toString(usePoint));
 						
 						paymentDialog.setFinalPrice(main.getTotalPrice()-usePoint);
 						paymentDialog.getFinalPriceField().setText(Integer.toString(paymentDialog.getFinalPrice()));
 						dispose();
-						//paymentDialog.dispose();
 					}else {
 						JOptionPane.showMessageDialog(null, "사용할 포인트가 보유보인트보다 클 수 없습니다.","오류",JOptionPane.ERROR_MESSAGE);
 					}	
