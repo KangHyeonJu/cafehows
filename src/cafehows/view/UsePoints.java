@@ -178,9 +178,9 @@ public class UsePoints extends JDialog{
 
 					//dispose();
 					
-//					int cno = Integer.parseInt(getTxtCono().getText());
-//					int point = Integer.parseInt(getTxtPoint().getText());
-				
+					cno = Integer.parseInt(getTxtCono().getText());
+					point = Integer.parseInt(getTxtPoint().getText());
+					usePoint = Integer.parseInt(getTxtUsePoint().getText());
 					
 					if(point>=usePoint) {
 						// orderlist date 저장, ono 생성, cno,price, finalprice 저장
