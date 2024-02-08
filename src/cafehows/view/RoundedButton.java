@@ -24,7 +24,8 @@ public class RoundedButton extends JButton {
        Color o=new Color(0,0,0); //글자색 결정
        int width = getWidth(); 
        int height = getHeight(); 
-       Graphics2D graphics = (Graphics2D) g; 
+       Graphics2D graphics = (Graphics2D) g;
+       
        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); 
        if (getModel().isArmed()) { graphics.setColor(c.darker()); } 
        else if (getModel().isRollover()) { graphics.setColor(c.brighter()); } 
