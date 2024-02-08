@@ -204,7 +204,7 @@ public class CostPanel extends JPanel{
 			double material = Double.parseDouble(txtMaterialCost.getText());
 			double payroll = Double.parseDouble(txtPayrollCost.getText());
 			//총액 받아오기
-			double result = monthlySales- rent - payroll - material ; //임시
+			double result = monthlySales- rent - payroll - material ;
 			resultField.setText(Double.toString(result));
 		}catch (NumberFormatException e) {
 			
