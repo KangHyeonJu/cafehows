@@ -617,13 +617,12 @@ public class CafeDAO {
 		try {
 			sql = new StringBuilder()
 					.append("UPDATE category SET ")
-					.append("visibility=? ")
+					.append("visibility=0 ")
 					.append("WHERE kind=?;")
 					.toString();
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, 0);
-			pstmt.setString(2, kind);
+			pstmt.setString(1, kind);
 			
 			pstmt.executeUpdate();
 		}catch (SQLException e) {
@@ -642,13 +641,12 @@ public class CafeDAO {
 		try {
 			sql = new StringBuilder()
 					.append("UPDATE category SET ")
-					.append("visibility=? ")
+					.append("visibility=1 ")
 					.append("WHERE kind=?;")
 					.toString();
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, 1);
-			pstmt.setString(2, kind);
+			pstmt.setString(1, kind);
 			
 			pstmt.executeUpdate();
 		}catch (SQLException e) {
