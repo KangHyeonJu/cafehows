@@ -46,6 +46,7 @@ public class TypeInquiry extends JDialog{
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(540, 300);
 		this.setModal(true); //상위 frame 클릭 불가
+		this.setResizable(false); //사이즈 고정
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 		this.getContentPane().add(getPEast(),BorderLayout.EAST);
@@ -125,6 +126,8 @@ public class TypeInquiry extends JDialog{
 						JOptionPane.showMessageDialog(null, "숨길 카테고리를 선택해 주세요.");
 					}else {
 						CafeDAO.getInstance().hideCategory(categoryList.get(row).getKind());
+						// main의 탭 reFresh
+						
 						refreshTable();
 						main.refreshTab();
 					}
@@ -147,6 +150,8 @@ public class TypeInquiry extends JDialog{
 						JOptionPane.showMessageDialog(null, "숨김 해제할 카테고리를 선택해 주세요.");
 					}else {
 						CafeDAO.getInstance().showCategory(categoryList.get(row).getKind());
+						// main의 탭 reFresh
+						
 						refreshTable();
 						main.refreshTab();
 					}
@@ -160,11 +165,8 @@ public class TypeInquiry extends JDialog{
 	public JPanel getPCenter() {
 		if(pCenter == null) {
 			pCenter = new JPanel();
-//			pCenter.setLayout(new BorderLayout());
-//			pCenter.add(new JScrollPane(getTypeTable()));
-			JScrollPane jScrollPane = new JScrollPane(getTypeTable());
-			jScrollPane.setPreferredSize(new Dimension(450,300));
-			pCenter.add(jScrollPane);
+			pCenter.setLayout(new BorderLayout());
+			pCenter.add(new JScrollPane(getTypeTable()));
 		}
 		return pCenter;
 	}
