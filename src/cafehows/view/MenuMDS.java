@@ -96,14 +96,13 @@ public class MenuMDS extends JDialog {
 			//JLabel btnImage = new JLabel();
 			//btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
 			//searchBtn.add(btnImage);
-			if(searchInput.getText().equals("")) {}else {
 			searchBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					searchKeyword(searchInput.getText());
 				}
 			});
-			}
+			
 		}
 		return searchBtn;
 	}

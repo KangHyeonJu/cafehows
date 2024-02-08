@@ -900,6 +900,7 @@ public class CafeDAO {
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				MenuDTO board = new MenuDTO();
+				board.setVisibility(rs.getInt("visibility"));
 				board.setMname(rs.getString(2));
 				board.setPrice(rs.getInt(3));
 				board.setCano(rs.getInt(5));
