@@ -104,6 +104,7 @@ public class CustomerDialog extends JDialog{
 	public JPanel getPCenter() {
 		if(pCenter == null) {
 			pCenter = new JPanel();
+			pCenter.setLayout(new BorderLayout());
 			pCenter.add(new JScrollPane(getCustomerTable()));
 		}
 		return pCenter;

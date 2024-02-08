@@ -119,6 +119,7 @@ public class MenuMDS extends JDialog {
 	public JPanel getPCenter() {
 		if (pCenter == null) {
 			pCenter = new JPanel();
+			pCenter.setLayout(new BorderLayout());
 			pCenter.add(new JScrollPane(getMenuTable()));
 		}
 		return pCenter;
