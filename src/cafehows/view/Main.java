@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import cafehows.model.CafeDAO;
 import cafehows.model.CategoryDTO;
 import cafehows.model.MenuDTO;
+import lombok.Data;
 
 
 public class Main extends JFrame{
@@ -59,6 +60,12 @@ public class Main extends JFrame{
 		locationCenter();
 	}
 	
+	
+	public void setOrderList(ArrayList<MenuDTO> orderList) {
+		this.orderList = orderList;
+	}
+
+
 	public int getTotalPrice() {
 		return totalPrice;
 	}
@@ -128,6 +135,16 @@ public class Main extends JFrame{
 			menuTable.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					
+					if(SwingUtilities.isRightMouseButton(e)) {
+						int rowIndex = menuTable.rowAtPoint(e.getPoint());
+						String mname =(String) menuTable.getValueAt(rowIndex, 0);
+						menuDTO = CafeDAO.getInstance().getMenuByName(mname);
+						System.out.println(rowIndex);
+						CountDialog countDialog = new CountDialog(main);
+						countDialog.setVisible(true);
+						return;
+					}
+		
 					//클릭한 셀의 행 인덱스 받아옴
 					int rowIndex = menuTable.getSelectedRow();
 					//menuTable 의 선택한 행 첫번째 칼럼에 있는 mname 받아와서
@@ -136,50 +153,27 @@ public class Main extends JFrame{
 						String mname =(String) menuTable.getValueAt(rowIndex, 0);
 						menuDTO = CafeDAO.getInstance().getMenuByName(mname);
 						
-						//더블 클릭시
-						
-						if(SwingUtilities.isRightMouseButton(e)) {}
-						
-						
-						if(e.getClickCount()==2) {
-							//CountDialog에서 menuDTO 의 수량 변경
-							
-							CountDialog countDialog = new CountDialog(main);
-							countDialog.setVisible(true);
-							//orderList에 원래 menuDTO 가 있었으면 수량만 변경하고 종료
-//							for(MenuDTO dto2 : orderList) {
-//								if(dto2.getMname().equals(menuDTO.getMname())) {
-//									dto2.setCount(menuDTO.getCount());
-//									System.out.println("main에서 출력"+dto2);
-//									refreshOrderList();
-//									return;
-//								}}
-							//없었으면 orderList에 추가
-							System.out.println("더블클릭");
-						}
 						
 						if(e.getClickCount()==1) {
 							for(MenuDTO dto2 : orderList) {
 								if(dto2.getMname().equals(menuDTO.getMname()
 										)&&dto2.getIce()==menuDTO.getIce()) {
+									System.out.print("main 결과");
+									System.out.println(dto2.getMname().equals(menuDTO.getMname()
+										)&&dto2.getIce()==menuDTO.getIce());
 									dto2.setCount(dto2.getCount()+1);
 									refreshOrderList();
 									return;
 								}
 							}
 							orderList.add(menuDTO);
+							refreshOrderList();
 							
 							for(MenuDTO dto2 : orderList) {
 								System.out.println(dto2);
-							}
-						
-								refreshOrderList();
-								System.out.println("한번클릭");
-		
+							}	
+								
 						}
-						//menuDTO의 수량 기본값은 1이지만 오른쪽클릭시 countDialog에서 수량 바꿨음
-				//		orderList.add(menuDTO);
-				//		refreshOrderList();
 
 						}
 						

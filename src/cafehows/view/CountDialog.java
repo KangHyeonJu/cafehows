@@ -162,22 +162,32 @@ public class CountDialog extends JDialog {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					main.getMenuDTO().setCount(Integer.parseInt(InputCount.getText()));
-					System.out.println(InputCount.getText());
+		//			System.out.println(InputCount.getText());
+					
+					int ice = iceTemp.equals("ICE") ? 1 : 0;
+					System.out.println("iceTemp "+iceTemp);
+					main.getMenuDTO().setIce(ice);
 					
 					for(MenuDTO dto2 : main.getOrderList()) {
 						if(dto2.getMname().equals(main.getMenuDTO().getMname())
 								&&dto2.getIce()==main.getMenuDTO().getIce()) {
 							
-							int ice = iceTemp.equals("ICE") ? 1 : 0;
-							dto2.setIce(ice);
-							dto2.setCount(main.getMenuDTO().getCount());
+							//dto2.setIce(ice);
+							//System.out.println("ice"+ice);
+							dto2.setCount(Integer.parseInt(InputCount.getText()));
 							System.out.println("countdialog에서 출력"+main.getMenuDTO());
 							main.refreshOrderList();
 							dispose();
-							return;
-						}}
+							
+							return;}
 					
-					
+						 
+								
+//						else {main.getOrderList().add(main.getMenuDTO());	}
+							}
+						
+						
+					main.getOrderList().add(main.getMenuDTO());		
 					main.refreshOrderList();
 					dispose();
 
