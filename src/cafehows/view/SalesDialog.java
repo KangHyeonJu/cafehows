@@ -43,6 +43,7 @@ public class SalesDialog extends JDialog{
 		
 
 		public SalesDialog() {
+			this.setModal(true);
 			this.setTitle("매출관리");					
 			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setSize(800,800);

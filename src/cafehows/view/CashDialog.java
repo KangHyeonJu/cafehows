@@ -133,7 +133,7 @@ public class CashDialog extends JDialog{
 					OrderDTO orderDTO= new OrderDTO();
 					orderDTO.setCno(paymentDialog.getCno());
 					orderDTO.setPrice(main.getTotalPrice());
-					orderDTO.setFinalprice(main.getTotalPrice()-PaymentDialog.getUsePoint());
+					orderDTO.setFinalprice(main.getTotalPrice()-paymentDialog.getUsePoint());
 					ono = CafeDAO.getInstance().insertOrderList(orderDTO);
 					
 					paymentDialog.getOnoField().setText(Integer.toString(ono));
@@ -160,12 +160,14 @@ public class CashDialog extends JDialog{
 
 
 					paymentDialog.dispose();
+					}
+				
+		
 				}
 			});
 		}
 		return btnOk;
 	}
-
 	
 	
 	public JButton getBtnCancel() {
