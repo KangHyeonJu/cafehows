@@ -2,6 +2,7 @@ package cafehows.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -119,7 +120,9 @@ public class MenuMDS extends JDialog {
 	public JPanel getPCenter() {
 		if (pCenter == null) {
 			pCenter = new JPanel();
-			pCenter.add(new JScrollPane(getMenuTable()));
+			JScrollPane jScrollPane = new JScrollPane(getMenuTable());
+			jScrollPane.setPreferredSize(new Dimension(450,380));
+			pCenter.add(jScrollPane);
 		}
 		return pCenter;
 	}

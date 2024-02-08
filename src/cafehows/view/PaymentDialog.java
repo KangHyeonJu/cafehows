@@ -200,6 +200,7 @@ public class PaymentDialog extends JDialog{
 			CashDialog cashDialog = new CashDialog();
 			cashDialog.setModal(true);
 			cashDialog.setVisible(true);
+			dispose();
 		});
 		return cashBtn;
 	}
