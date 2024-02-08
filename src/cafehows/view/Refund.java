@@ -175,7 +175,7 @@ public class Refund extends JFrame{
 					int price = orderDTO.getPrice();
 					int finalPrice = orderDTO.getFinalprice();
 					CustomerDTO cDTO = CafeDAO.getInstance().getCustomerItemByCno(cno);
-					cDTO.setPoint(cDTO.getPoint()-(price-finalPrice));
+					cDTO.setPoint(cDTO.getPoint()+(price-finalPrice));
 					CafeDAO.getInstance().updatePoint(cDTO, cno);
 					
 					dispose();

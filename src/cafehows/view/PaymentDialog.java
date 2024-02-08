@@ -155,7 +155,7 @@ public class PaymentDialog extends JDialog{
 			JButton usePointBtn = new JButton();
 			usePointBtn.setText("포인트 사용");
 			usePointBtn.addActionListener(e->{
-				UsePoints usePoints= new UsePoints(paymentDialog);
+				UsePoints usePoints= new UsePoints(paymentDialog,main);
 				usePoints.setVisible(true);
 			});
 		
@@ -171,8 +171,8 @@ public class PaymentDialog extends JDialog{
 				// orderlist date 저장, ono 생성, cno,price, finalprice 저장
 				OrderDTO orderDTO= new OrderDTO();
 				orderDTO.setCno(cno);
-				orderDTO.setFinalprice(main.getTotalPrice());
-				orderDTO.setPrice(main.getTotalPrice()-usePoint);
+				orderDTO.setPrice(main.getTotalPrice());
+				orderDTO.setFinalprice(main.getTotalPrice()-usePoint);
 				ono = CafeDAO.getInstance().insertOrderList(orderDTO);
 				onoField.setText(Integer.toString(ono));
 				
