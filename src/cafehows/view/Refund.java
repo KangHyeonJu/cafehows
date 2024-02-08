@@ -2,10 +2,13 @@ package cafehows.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -26,7 +29,7 @@ import cafehows.model.CustomerDTO;
 import cafehows.model.OrderDTO;
 
 public class Refund extends JDialog{
-	private JPanel orderNum, pSouth, pNorth;
+	private JPanel orderNum, pSouth, pNorth, pCenter;
 	private JTextField txtOrderNum;
 	private JButton btnOk, btnCancel, btnOrderList, btnreload;
 	private static JTable OrderListTable;
@@ -42,7 +45,7 @@ public class Refund extends JDialog{
 		
 		this.getContentPane().add(getPNorth(), BorderLayout.NORTH);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
-		this.getContentPane().add(new JScrollPane(orderTable()), BorderLayout.CENTER);
+		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		locationCenter();
 	}
 
@@ -50,7 +53,7 @@ public class Refund extends JDialog{
 		if(pNorth==null) {
 			pNorth = new JPanel();
 			pNorth.add(getOrderNum());
-			pNorth.add(getOrderNumBtn());
+			//pNorth.add(getOrderNumBtn());
 			pNorth.add(getReloadBtn());
 		}
 		return pNorth;
@@ -68,26 +71,12 @@ public class Refund extends JDialog{
 	public JTextField getTxtOrderNum() {
 		if(txtOrderNum==null) {
 			txtOrderNum = new JTextField(20);
-			txtOrderNum.addActionListener(new ActionListener() {
-				
+			txtOrderNum.addKeyListener(new KeyAdapter() {
 				@Override
-				public void actionPerformed(ActionEvent e) {
+				public void keyReleased(KeyEvent e) {
 					searchOrderKeyword(txtOrderNum.getText());
 				}
 			});
-//			txtOrderNum.addActionListener(new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					int ono = Integer.parseInt(txtOrderNum.getText());
-//					for(int i=0;i<orderList.size();i++) {
-//						if(ono == orderList.get(i).getOno()){
-//							final DefaultTableModel tableModel = (DefaultTableModel) OrderListTable.getModel();
-//							Object[] rowData = {orderList.get(i).getOno(), orderList.get(i).getDate(), orderList.get(i).getPrice(), orderList.get(i).getFinalprice()};
-//							tableModel.addRow(rowData);
-//						}
-//					}
-//				}
-//			});
 		}
 		return txtOrderNum;
 	}
@@ -107,24 +96,23 @@ public class Refund extends JDialog{
 	}
 	
 	
-	public JButton getOrderNumBtn() {
-		if(btnOrderList == null) {
-			btnOrderList = new JButton();
-			btnOrderList.setText("검색");
-			btnOrderList.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					searchOrderKeyword(txtOrderNum.getText());
-				}
-			});
-		}
-		return btnOrderList;
-	}
+//	public JButton getOrderNumBtn() {
+//		if(btnOrderList == null) {
+//			btnOrderList = new JButton();
+//			btnOrderList.setText("검색");
+//			btnOrderList.addActionListener(new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					searchOrderKeyword(txtOrderNum.getText());
+//				}
+//			});
+//		}
+//		return btnOrderList;
+//	}
 	
 	public void searchOrderKeyword(String keyword) {
 		DefaultTableModel tableModel = (DefaultTableModel) OrderListTable.getModel();
 		tableModel.setNumRows(0);
-//		System.out.println(keyword);
 		for (OrderDTO dto : CafeDAO.getInstance().searchOrderKeyword(keyword)) {
 			Object[] rowData = { dto.getOno(), dto.getDate(), dto.getPrice(), dto.getFinalprice() };
 			tableModel.addRow(rowData);
@@ -215,6 +203,16 @@ public class Refund extends JDialog{
 		return btnCancel;
 	}
 
+	public JPanel getPCenter() {
+		if(pCenter == null) {
+			pCenter = new JPanel();
+			JScrollPane jScrollPane = new JScrollPane(orderTable());
+			jScrollPane.setPreferredSize(new Dimension(450,180));
+			pCenter.add(jScrollPane);
+			refreshTable();
+		}
+		return pCenter;
+	}
 	public static JTable orderTable() {
 		if(OrderListTable == null) {
 			OrderListTable = new JTable() {

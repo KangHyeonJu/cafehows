@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -143,8 +142,8 @@ public class MenuMDS extends JDialog {
 			JScrollPane jScrollPane = new JScrollPane(getMenuTable());
 			jScrollPane.setPreferredSize(new Dimension(450,380));
 			//jScrollPane.getVerticalScrollBar().setBackground(Color.WHITE);
-			
 			pCenter.add(jScrollPane);
+			refreshTable();
 		}
 		return pCenter;
 	}
