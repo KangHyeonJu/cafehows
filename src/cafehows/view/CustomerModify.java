@@ -31,7 +31,8 @@ public class CustomerModify extends JDialog{
 	private JButton btnOk, btnCancel, btnDelete;
 	private CafeDAO cafeDao = new CafeDAO();
 	private CustomerDTO cDto = new CustomerDTO();
-	private static List<CustomerDTO> customerList = CafeDAO.getInstance().getCustomerState();
+	private static List<CustomerDTO> customerList = CafeDAO.getInstance().getCustomerItems();
+	private static List<CustomerDTO> customerList2 = CafeDAO.getInstance().getCustomerState();
 	
 	public CustomerModify() {
 		this.setTitle("고객-등록/삭제");					
@@ -98,20 +99,19 @@ public class CustomerModify extends JDialog{
 					//입력제한
 					if(txtCustomerNum.getText().length() == 8) {
 						boolean flag = false;
-						for(CustomerDTO c : customerList) {
+						for(CustomerDTO c : customerList2) {
 							if(c.getCno() == Integer.parseInt(txtCustomerNum.getText()))
 								flag = true;
 						}
 						if(flag) {
+							cDto.setCno(Integer.parseInt(txtCustomerNum.getText()));
 							cafeDao.reSign(cDto);
-							CustomerDialog.refreshTable();
-							CustomerModify.this.dispose();
 						}else {
 							cDto.setCno(Integer.parseInt(txtCustomerNum.getText()));
 							cafeDao.insertCustomer(cDto);
-							CustomerDialog.refreshTable();
-							CustomerModify.this.dispose();
 						}
+						CustomerDialog.refreshTable();
+						CustomerModify.this.dispose();
 					}else {
 						JOptionPane.showMessageDialog(null, "다시 입력해 주세요.","오류",JOptionPane.ERROR_MESSAGE);
 					}
