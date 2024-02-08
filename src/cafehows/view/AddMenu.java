@@ -172,7 +172,7 @@ public class AddMenu extends JDialog {
 			btnInquiry.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					TypeInquiry typeInquiry = new TypeInquiry();
+					TypeInquiry typeInquiry = new TypeInquiry(main);
 					typeInquiry.setVisible(true);
 				}
 			});

@@ -25,8 +25,10 @@ public class AddKind extends JDialog{
 	private JPanel notice, kind, pSouth;
 	private JTextField kindInput;
 	private JButton btnCancel, btnAdd;
+	private Main main;
 	
-	public AddKind(TypeInquiry typeInquiry) {
+	public AddKind(TypeInquiry typeInquiry, Main main) {
+		this.main = main;
 		this.typeInquiry = typeInquiry;
 		this.setTitle("종류 추가");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -87,6 +89,7 @@ public class AddKind extends JDialog{
 					category.setKind(kindInput.getText());
 					CafeDAO.getInstance().addCategory(category);
 					typeInquiry.refreshTable();
+					main.refreshTab();
 					dispose();
 				}
 			});

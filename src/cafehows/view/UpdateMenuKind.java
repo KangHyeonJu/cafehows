@@ -26,7 +26,8 @@ public class UpdateMenuKind extends JDialog{
 	private int cano;
 	private Main main;
 	
-	public UpdateMenuKind(TypeInquiry typeInquiry, int cano) {
+	public UpdateMenuKind(TypeInquiry typeInquiry, int cano, Main main) {
+		this.main = main;
 		this.typeInquiry = typeInquiry;
 		this.cano = cano;
 		this.setTitle("종류 수정");
@@ -90,6 +91,7 @@ public class UpdateMenuKind extends JDialog{
 					category.setKind(kindInput.getText());
 					CafeDAO.getInstance().updateCategory(category);
 					typeInquiry.refreshTable();
+					main.refreshTab();
 					dispose();
 					
 				}
