@@ -226,7 +226,7 @@ public class CostPanel extends JPanel{
 	//계산 버튼
 	public JButton getBtnCal() {
 		if(btnCal == null) {
-			btnCal = new JButton();
+			btnCal = new RoundedButton();
 			btnCal.setText("계산");
 			btnCal.addActionListener(new ActionListener() {
 				@Override
@@ -242,7 +242,7 @@ public class CostPanel extends JPanel{
 	//등록 버튼
 	public JButton getBtnInsert() {
 		if(btnInsert == null) {
-			btnInsert = new JButton();
+			btnInsert = new RoundedButton();
 			btnInsert.setText("등록");
 			btnInsert.addActionListener(new ActionListener() {
 				
@@ -261,7 +261,7 @@ public class CostPanel extends JPanel{
 	//취소 버튼
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
 				
