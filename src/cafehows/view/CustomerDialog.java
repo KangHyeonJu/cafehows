@@ -105,6 +105,7 @@ public class CustomerDialog extends JDialog{
 	public JPanel getPCenter() {
 		if(pCenter == null) {
 			pCenter = new JPanel();
+
 			JScrollPane jScrollPane = new JScrollPane(getCustomerTable());
 			jScrollPane.setPreferredSize(new Dimension(450,380));
 			pCenter.add(jScrollPane);

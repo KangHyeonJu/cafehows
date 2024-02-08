@@ -120,6 +120,7 @@ public class MenuMDS extends JDialog {
 	public JPanel getPCenter() {
 		if (pCenter == null) {
 			pCenter = new JPanel();
+
 			JScrollPane jScrollPane = new JScrollPane(getMenuTable());
 			jScrollPane.setPreferredSize(new Dimension(450,380));
 			pCenter.add(jScrollPane);
