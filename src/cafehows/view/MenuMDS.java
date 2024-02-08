@@ -80,9 +80,9 @@ public class MenuMDS extends JDialog {
 		DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 		tableModel.setNumRows(0);
 		for (MenuDTO dto : CafeDAO.getInstance().searchKeyword(keyword)) {
-			Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice() };
+			String visibility = dto.getVisibility()==1 ? "표시" : "숨김";
+			Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice(), visibility };			
 			tableModel.addRow(rowData);
-
 		}
 	}
 
@@ -93,12 +93,14 @@ public class MenuMDS extends JDialog {
 			JLabel btnImage = new JLabel();
 			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
 			searchBtn.add(btnImage);
+			if(searchInput.getText().equals("")) {}else {
 			searchBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					searchKeyword(searchInput.getText());
 				}
 			});
+			}
 		}
 		return searchBtn;
 	}
@@ -142,8 +144,8 @@ public class MenuMDS extends JDialog {
 			tableModel.addColumn("종류");
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("가격");
-			tableModel.addColumn("표시여부");
-
+			tableModel.addColumn("상태");
+			
 			for (MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
 				String visibility = dto.getVisibility()==1 ? "표시" : "숨김";
 				Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice(), visibility };
