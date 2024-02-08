@@ -38,6 +38,7 @@ public class SalesDialog extends JDialog{
 		private JTable orderListTable,dailySalesTable,menuSalesTable;
 		private JTextField startPeriod,endPeriod;
 		private JButton enterBtn;
+		private ArrayList<MenuDTO> menuList= new ArrayList<>();
 //		private ArrayList<OrderDTO> orderList= new ArrayList<>();
 		
 
@@ -162,7 +163,7 @@ public class SalesDialog extends JDialog{
 				tab2Panel = new JPanel();
 				tab2Panel.setLayout(new BorderLayout());
 				tab2Panel.add(new JScrollPane(getMenuSalesTable()),BorderLayout.CENTER);
-	//			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
+				tab2Panel.add(new JScrollPane(new SalesChart(menuList)),BorderLayout.SOUTH);
 				
 			
 			}
@@ -270,8 +271,8 @@ public class SalesDialog extends JDialog{
 			tableModel.setNumRows(0);
 	
 			for(MenuDTO dto :CafeDAO.getInstance().getMenuSales()) {
-				Object[] rowData = {dto.getMname(),dto.getCumCount()};
-				
+				menuList.add(dto);
+				Object[] rowData = {dto.getMname(),dto.getCumCount()};			
 				tableModel.addRow(rowData);
 				
 			}
