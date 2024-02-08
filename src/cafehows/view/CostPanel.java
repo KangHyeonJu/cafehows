@@ -34,7 +34,6 @@ public class CostPanel extends JPanel{
 		this.board = this;
 
 		this.add(getPCenter(),BorderLayout.CENTER);
-		this.add(getPSouth(), BorderLayout.SOUTH);
 		this.setSize(600, 450);
 	}
 	
@@ -44,13 +43,14 @@ public class CostPanel extends JPanel{
 	//화면 구성
 	public JPanel getPCenter() {
 		if(pCenter == null) {
-			pCenter = new JPanel(new GridLayout(6,1));
+			pCenter = new JPanel(new GridLayout(7,1));
 			pCenter.add(getMonth());
 			pCenter.add(getRevenue());
 			pCenter.add(getRent());
 			pCenter.add(getpayrollCost());
 			pCenter.add(getMaterialCost());
 			pCenter.add(getProfit());
+			pCenter.add(getPSouth());
 		}
 		return pCenter;
 	}
@@ -126,7 +126,7 @@ public class CostPanel extends JPanel{
 			label.setPreferredSize(new Dimension(50,30));
 			pRevenue.add(label);
 	
-			txtRevenue.setPreferredSize(new Dimension(250,30));
+			txtRevenue.setPreferredSize(new Dimension(200,30));
 			pRevenue.add(txtRevenue);
 	
 		return pRevenue;
@@ -142,7 +142,7 @@ public class CostPanel extends JPanel{
 			prent.add(label);
 			if(txtRent == null) {
 				txtRent = new JTextField();
-				txtRent.setPreferredSize(new Dimension(250,30));
+				txtRent.setPreferredSize(new Dimension(200,30));
 			}
 			prent.add(txtRent);
 		}
@@ -158,7 +158,7 @@ public class CostPanel extends JPanel{
 			pPayrollCost.add(label);
 			if(txtPayrollCost == null) {
 				txtPayrollCost = new JTextField();
-				txtPayrollCost.setPreferredSize(new Dimension(250,30));
+				txtPayrollCost.setPreferredSize(new Dimension(200,30));
 			}
 			pPayrollCost.add(txtPayrollCost);
 		}
@@ -174,7 +174,7 @@ public class CostPanel extends JPanel{
 			pMaterialCost.add(label);
 			if(txtMaterialCost == null) {
 				txtMaterialCost = new JTextField();
-				txtMaterialCost.setPreferredSize(new Dimension(250,30));
+				txtMaterialCost.setPreferredSize(new Dimension(200,30));
 			}
 			pMaterialCost.add(txtMaterialCost);
 		}
@@ -190,7 +190,7 @@ public class CostPanel extends JPanel{
 			pProfit.add(label);
 			if(resultField == null) {
 				resultField = new JTextField();
-				resultField.setPreferredSize(new Dimension(250,30));
+				resultField.setPreferredSize(new Dimension(200,30));
 			}
 			pProfit.add(resultField);
 		}

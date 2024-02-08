@@ -42,7 +42,7 @@ public class Refund extends JDialog{
 		this.setTitle("환불-주문번호입력");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 300);
-		
+		this.setModal(true);
 		this.getContentPane().add(getPNorth(), BorderLayout.NORTH);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);

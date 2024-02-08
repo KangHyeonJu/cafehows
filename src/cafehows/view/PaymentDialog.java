@@ -31,6 +31,7 @@ public class PaymentDialog extends JDialog{
 	
 
 	public PaymentDialog(Main main) {
+		this.setModal(true);
 		this.paymentDialog = this;
 		this.main = main;
 		finalPrice = main.getTotalPrice();
