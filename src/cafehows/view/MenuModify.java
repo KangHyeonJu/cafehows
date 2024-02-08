@@ -27,12 +27,16 @@ public class MenuModify extends JDialog{
 	private JPanel pCenter, pMenuName, pPrice, pSouth, pPriceIn;
 	private JTextField txtMenuName, txtPrice;
 	private JButton btnOk, btnCancel;
-	private CafeDAO cafeDao = new CafeDAO();
+//	private CafeDAO cafeDao = new CafeDAO();
+	private MenuDTO menuDTO;
 	private Main main;
 
-	public MenuModify(MenuMDS menuMDS, String mname, Main main) {
+
+	public MenuModify(Main main, MenuMDS menuMDS) {
+		
 		this.menuMDS = menuMDS;
-		this.mname = mname;
+		this.menuDTO = menuMDS.getMenuDTO();
+		this.mname = menuMDS.getMenuDTO().getMname();
 		this.main = main;
 		this.setTitle("메뉴수정");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -50,11 +54,11 @@ public class MenuModify extends JDialog{
 	}
 
 	public void setBoard() {
-		int rowIndex = MenuMDS.getMenuTable().getSelectedRow();
+		int rowIndex = menuMDS.getMenuTable().getSelectedRow();
 		
-		List<MenuDTO> list = cafeDao.getMDSItems();
-		getTxtMenuName().setText(list.get(rowIndex).getMname());
-		getTxtPrice().setText(Integer.toString(list.get(rowIndex).getPrice()));
+		List<MenuDTO> list = CafeDAO.getInstance().getMDSItems();
+		getTxtMenuName().setText(menuDTO.getMname());
+		getTxtPrice().setText(Integer.toString(menuDTO.getPrice()));
 	}
 	
 	public JPanel getPCenter() {
@@ -114,25 +118,36 @@ public class MenuModify extends JDialog{
 		if(btnOk == null) {
 			btnOk = new JButton();
 			btnOk.setText("수정");
-			int rowIndex = MenuMDS.getMenuTable().getSelectedRow();
+			
 			btnOk.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					DefaultTableModel tableModel = (DefaultTableModel) MenuMDS.getMenuTable().getModel();
-					Vector<Vector> rows = tableModel.getDataVector();
-					Vector row = rows.elementAt(rowIndex);
-					row.set(1, txtMenuName.getText());
-					row.set(2, txtPrice.getText());
-					tableModel.fireTableDataChanged();
+//					DefaultTableModel tableModel = (DefaultTableModel) MenuMDS.getMenuTable().getModel();
+//					Vector<Vector> rows = tableModel.getDataVector();
+//					Vector row = rows.elementAt(rowIndex);
+//					row.set(1, txtMenuName.getText());
+//					row.set(2, txtPrice.getText());
+//					tableModel.fireTableDataChanged();
+//					
+//					List<MenuDTO> list = CafeDAO.getInstance().getMDSItems();
+//					MenuDTO mdto= new MenuDTO();
+//					mdto.setMname(txtMenuName.getText());
+//					mdto.setPrice(Integer.parseInt(txtPrice.getText()));
 					
-					List<MenuDTO> list = CafeDAO.getInstance().getMDSItems();
-					MenuDTO mdto= new MenuDTO();
-					mdto.setMname(txtMenuName.getText());
-					mdto.setPrice(Integer.parseInt(txtPrice.getText()));
-					cafeDao.updateMenu(mdto, list.get(rowIndex).getMname());
+					menuDTO.setMname(txtMenuName.getText());
+					menuDTO.setPrice(Integer.parseInt(txtPrice.getText()));
+					CafeDAO.getInstance().updateMenu(menuDTO,mname );
+//					
+//					
+//					MenuModify.this.dispose();
 					
+					
+			
+					
+					menuMDS.refreshTable();
 					main.refreshTab();
-					MenuModify.this.dispose();
+					dispose();
+					
 				}
 			});
 		}

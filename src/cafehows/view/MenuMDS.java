@@ -30,16 +30,20 @@ import cafehows.model.MenuDTO;
 public class MenuMDS extends JDialog {
 	private JPanel pCenter, pSouth, searchPanel;
 	private JButton btnModify, btnVisible0, btnVisible1, btnCancel, initBtn, searchBtn;
-	private static JTable menuTable;
+	private JTable menuTable;
 	private JTextField searchInput;
-	private static List<MenuDTO> menuList = CafeDAO.getInstance().getMDSItems();
-	private CafeDAO cafeDao = new CafeDAO();
-	private static MenuMDS menuBoard;
+//	private static List<MenuDTO> menuList = CafeDAO.getInstance().getMDSItems();
+//	private CafeDAO cafeDao = new CafeDAO();
+	//private static MenuMDS menuBoard;
 	//private Main main = new Main();
 	private Main main;
+	private MenuDTO menuDTO ;
+	private MenuMDS menuMDS;
+	
 
 	public MenuMDS(Main main) {
 		this.main = main;
+		this.menuMDS = this;
 		this.setTitle("메뉴 수정/숨김");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
@@ -52,6 +56,17 @@ public class MenuMDS extends JDialog {
 
 		locationCenter();
 	}
+	
+
+	public MenuDTO getMenuDTO() {
+		return menuDTO;
+	}
+
+
+	public void setMenuDTO(MenuDTO menuDTO) {
+		this.menuDTO = menuDTO;
+	}
+
 
 	private JPanel getSearchPanel() {
 		if (searchPanel == null) {
@@ -134,7 +149,7 @@ public class MenuMDS extends JDialog {
 		return pCenter;
 	}
 
-	public static JTable getMenuTable() {		
+	public JTable getMenuTable() {		
 		if (menuTable == null) {
 			menuTable = new JTable() {
 				@Override
@@ -152,12 +167,7 @@ public class MenuMDS extends JDialog {
 			tableModel.addColumn("가격");
 			tableModel.addColumn("상태");
 			
-			
-			for (MenuDTO dto : CafeDAO.getInstance().getMDSItems()) {
-				String visibility = dto.getVisibility()==1 ? "표시" : "숨김";
-				Object[] rowData = { dto.getKind(), dto.getMname(), dto.getPrice(), visibility };
-				tableModel.addRow(rowData);
-			}
+			refreshTable();
 			
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
@@ -190,41 +200,22 @@ public class MenuMDS extends JDialog {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 
-					int row = menuTable.getSelectedRow();
-					System.out.println(row);
-					if (row == -1) {
-						return;
-					} else {
-						MenuModify menuModify = new MenuModify(menuBoard, menuList.get(row).getMname(), main);
+					int rowIndex = menuTable.getSelectedRow();
+					
+					if (rowIndex != -1) {
+						String mname =(String) menuTable.getValueAt(rowIndex, 1);
+						menuDTO = CafeDAO.getInstance().getMenuByName(mname);
+						MenuModify menuModify = new MenuModify(main,menuMDS);
 						menuModify.setModal(true);
 						menuModify.setVisible(true);
+					} else {
+						JOptionPane.showMessageDialog(null, "수정할 메뉴를 선택해 주세요.");
 					}
 				}
 			});
 		}
 		return btnModify;
 	}
-
-//	public JButton getBtnDel() {
-//		if(btnDel == null) {
-//			btnDel = new JButton();
-//			btnDel.setText("삭제");
-//			btnDel.addActionListener(new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					int row = menuTable.getSelectedRow();
-//					DefaultTableModel tableModel = (DefaultTableModel) getMenuTable().getModel();
-//					if(row == -1) {
-//						return;
-//					}else {
-//						tableModel.removeRow(row);
-//						cafeDao.deleteMenu(menuList.get(row).getMname());
-//					}
-//				}
-//			});
-//		}
-//		return btnDel;
-//	}
 
 	public JButton getBtnVisible0() {
 		if (btnVisible0 == null) {
@@ -233,18 +224,22 @@ public class MenuMDS extends JDialog {
 			btnVisible0.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int row = menuTable.getSelectedRow();
-					if (row == -1) {
-						JOptionPane.showMessageDialog(null, "숨길 메뉴를 선택해 주세요.");
-					} else {
-						cafeDao.visibilityMenu0(menuList.get(row).getMname());
+					int rowIndex = menuTable.getSelectedRow();
+					
+					if (rowIndex != -1) {
+						String mname =(String) menuTable.getValueAt(rowIndex, 1);
+						menuDTO = CafeDAO.getInstance().getMenuByName(mname);
+						CafeDAO.getInstance().visibilityMenu0(menuDTO.getMname());
 						refreshTable();
-						
-						System.out.println(menuList.get(row));
+					
+					} else {
+						JOptionPane.showMessageDialog(null, "숨길 메뉴를 선택해 주세요.");
+					}
+			
 						main.refreshTab();
 						//Main.refreshMenu(menuList.get(row).getCano(), main.getMenuTable());
 					}
-				}
+				
 			});
 		}
 		return btnVisible0;
@@ -257,17 +252,22 @@ public class MenuMDS extends JDialog {
 			btnVisible1.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int row = menuTable.getSelectedRow();
-					if (row == -1) {
-						JOptionPane.showMessageDialog(null, "숨김 해제할 메뉴를 선택해 주세요.");
-					} else {
-						cafeDao.visibilityMenu1(menuList.get(row).getMname());
+					int rowIndex = menuTable.getSelectedRow();
+					
+					if (rowIndex != -1) {
+						String mname =(String) menuTable.getValueAt(rowIndex, 1);
+						menuDTO = CafeDAO.getInstance().getMenuByName(mname);
+						CafeDAO.getInstance().visibilityMenu1(menuDTO.getMname());
 						refreshTable();
-						main.refreshTab();
-
-
+					
+					} else {
+						JOptionPane.showMessageDialog(null, "숨길 메뉴를 선택해 주세요.");
 					}
-				}
+			
+						main.refreshTab();
+						//Main.refreshMenu(menuList.get(row).getCano(), main.getMenuTable());
+					}
+				
 			});
 		}
 		return btnVisible1;
@@ -297,6 +297,7 @@ public class MenuMDS extends JDialog {
 		}
 	}
 
+	
 
 	private void locationCenter() {
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
