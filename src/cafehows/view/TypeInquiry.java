@@ -39,9 +39,8 @@ public class TypeInquiry extends JDialog{
 	private Main main;
 	private static List<CategoryDTO> categoryList = CafeDAO.getInstance().getCategoryItems();
 	
-
-
-	public TypeInquiry() {
+	public TypeInquiry(Main main) {
+		this.main = main;
 		this.typeInquiry = this;
 		this.setTitle("종류 조회");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -104,7 +103,7 @@ public class TypeInquiry extends JDialog{
 					if(row == -1 ) {
 						JOptionPane.showMessageDialog(null, "카테고리를 선택해 주세요.");
 					}else {
-					UpdateMenuKind updatekind = new UpdateMenuKind(typeInquiry,cano);
+					UpdateMenuKind updatekind = new UpdateMenuKind(typeInquiry, cano, main);
 					updatekind.setVisible(true);
 					}
 				}
@@ -130,6 +129,7 @@ public class TypeInquiry extends JDialog{
 						// main의 탭 reFresh
 						
 						refreshTable();
+						main.refreshTab();
 					}
 				}
 			});
@@ -153,6 +153,7 @@ public class TypeInquiry extends JDialog{
 						// main의 탭 reFresh
 						
 						refreshTable();
+						main.refreshTab();
 					}
 				}
 			});
@@ -220,27 +221,10 @@ public class TypeInquiry extends JDialog{
 		if(pSouth == null) {
 			pSouth = new JPanel();
 			pSouth.add(getBtnAdd());
-			pSouth.add(getBtnDel());
 			pSouth.add(getBtnCancel());
 			
 		}
 		return pSouth;
-	}
-	
-	public JButton getBtnDel() {
-		if(btnDel == null) {
-			btnDel = new JButton();
-			btnDel.setText("삭제");
-			btnDel.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					CafeDAO.getInstance().deleteCategory(cano);
-					refreshTable();
-					
-				}
-			});
-		}
-		return btnDel;
 	}
 	
 	public JButton getBtnAdd() {
@@ -250,7 +234,7 @@ public class TypeInquiry extends JDialog{
 			btnAdd.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					AddKind addKind = new AddKind(typeInquiry);
+					AddKind addKind = new AddKind(typeInquiry, main);
 					addKind.setVisible(true);
 				}
 			});
