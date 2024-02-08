@@ -14,7 +14,7 @@ import cafehows.model.MenuDTO;
 
 public class CountDialog extends JDialog {
 	private Main main;
-	private JPanel pCenter, pMenuName, pInquiry, pPrice, pSouth, pInquiryIn, pPriceIn;
+	private JPanel pCenter, pMenuName, pInquiry, pPrice, pSouth, pInquiryIn, pPriceIn, pCenterGrid, countPanel;
 	private JLabel txtMenuName, txtPrice,count;
 	private JTextField InputCount;
 	private JComboBox ComboInquiry;
@@ -32,9 +32,9 @@ public class CountDialog extends JDialog {
 	//	this.menuDTO = menuDTO;
 		this.setTitle("수량 선택");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
-		this.setSize(300, 200);
-
+		this.setModal(true); //상위 frame 클릭 불가
+		this.setSize(200, 200);
+		this.setResizable(false); //사이즈 고정
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 		locationCenter();
@@ -46,30 +46,68 @@ public class CountDialog extends JDialog {
 		if (pCenter == null) {
 			pCenter = new JPanel();
 			pCenter.setLayout(new GridLayout(3,1));
-			
-			JPanel menuPanel = new JPanel();
-			txtMenuName = new JLabel();
-			txtMenuName.setText(main.getMenuDTO().getMname());
-			menuPanel.add(txtMenuName);
-			
-			txtPrice = new JLabel();
-			txtPrice.setText(Integer.toString(main.getMenuDTO().getPrice()));
-			menuPanel.add(txtPrice);
-			
-			pCenter.add(menuPanel);
-			
-			JPanel countPanel = new JPanel();
-			JLabel countLabel = new JLabel("수량", JLabel.CENTER);
-			InputCount = new JTextField(3);
-			countPanel.add(countLabel);
-			countPanel.add(InputCount);
-			pCenter.add(countPanel);
-			
+			pCenter.add(getPCenterGrid());
+			pCenter.add(getCountPanel());
 			pCenter.add(getIce());
-	
 		}
 		return pCenter;
 	}
+			
+	public JPanel getPCenterGrid() {
+		if (pCenterGrid == null) {
+			pCenterGrid = new JPanel();
+			pCenterGrid.setLayout(new GridLayout(2,1));
+			
+			JPanel pCenterGrid1 = new JPanel();
+			txtMenuName = new JLabel();
+			txtMenuName.setText("메뉴: " + main.getMenuDTO().getMname());
+			pCenterGrid1.add(txtMenuName);
+			
+			JPanel pCenterGrid2 = new JPanel();
+			txtPrice = new JLabel();
+			txtPrice.setText("가격: " + main.getMenuDTO().getPrice());
+			pCenterGrid2.add(txtPrice);
+			
+			pCenterGrid.add(pCenterGrid1);
+			pCenterGrid.add(pCenterGrid2);
+		}
+		return pCenterGrid;
+	}
+	
+	public JPanel getCountPanel() {
+		if(countPanel == null) {
+			countPanel = new JPanel();
+			JLabel countLabel = new JLabel("수량", JLabel.CENTER);
+			InputCount = new JTextField(5);
+			countPanel.add(countLabel);
+			countPanel.add(InputCount);
+		}
+		return countPanel;
+	}
+		
+//			JPanel menuPanel = new JPanel();
+//			txtMenuName = new JLabel();
+//			txtMenuName.setText("메뉴: " + main.getMenuDTO().getMname());
+//			menuPanel.add(txtMenuName);
+//			
+//			txtPrice = new JLabel();
+//			txtPrice.setText("가격: " + main.getMenuDTO().getPrice());
+//			menuPanel.add(txtPrice);
+//			
+//			pCenter.add(menuPanel);
+			
+//			JPanel countPanel = new JPanel();
+//			JLabel countLabel = new JLabel("수량", JLabel.CENTER);
+//			InputCount = new JTextField(5);
+//			countPanel.add(countLabel);
+//			countPanel.add(InputCount);
+//			pCenter.add(countPanel);
+//			
+//			pCenter.add(getIce());
+//	
+//		}
+//		return pCenter;
+//	}
 	
 	public JPanel getIce() {
 		JPanel pIce = new JPanel();
