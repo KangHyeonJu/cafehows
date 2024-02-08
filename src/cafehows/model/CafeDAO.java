@@ -495,16 +495,22 @@ public class CafeDAO {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, ono);
 			pstmt.executeUpdate();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,"판매량을 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
 		//	int rows = pstmt.executeUpdate();
 //			if(rows == 1) {
 //				JOptionPane.showMessageDialog(null,"판매량이 삭제되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
 //			}else {
 //				JOptionPane.showMessageDialog(null,"판매량 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 //			}
-			close();
-		}catch(SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,"판매량을 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 		}
 	}
 	
@@ -571,7 +577,13 @@ public class CafeDAO {
 			close();
 		}catch(SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,"메뉴를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,"메뉴를 삭제할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
 		}
 	}
 	
@@ -632,13 +644,12 @@ public class CafeDAO {
 		try {
 			sql = new StringBuilder()
 					.append("UPDATE category SET ")
-					.append("visibility=? ")
+					.append("visibility=0 ")
 					.append("WHERE kind=?;")
 					.toString();
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, 0);
-			pstmt.setString(2, kind);
+			pstmt.setString(1, kind);
 			
 			pstmt.executeUpdate();
 		}catch (SQLException e) {
@@ -657,13 +668,12 @@ public class CafeDAO {
 		try {
 			sql = new StringBuilder()
 					.append("UPDATE category SET ")
-					.append("visibility=? ")
+					.append("visibility=1 ")
 					.append("WHERE kind=?;")
 					.toString();
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, 1);
-			pstmt.setString(2, kind);
+			pstmt.setString(1, kind);
 			
 			pstmt.executeUpdate();
 		}catch (SQLException e) {

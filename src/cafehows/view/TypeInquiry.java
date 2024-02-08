@@ -47,6 +47,7 @@ public class TypeInquiry extends JDialog{
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(540, 300);
 		this.setModal(true); //상위 frame 클릭 불가
+		this.setResizable(false); //사이즈 고정
 		this.getContentPane().add(getPCenter(), BorderLayout.CENTER);
 		this.getContentPane().add(getPSouth(), BorderLayout.SOUTH);
 		this.getContentPane().add(getPEast(),BorderLayout.EAST);
@@ -126,6 +127,8 @@ public class TypeInquiry extends JDialog{
 						JOptionPane.showMessageDialog(null, "숨길 카테고리를 선택해 주세요.");
 					}else {
 						CafeDAO.getInstance().hideCategory(categoryList.get(row).getKind());
+						// main의 탭 reFresh
+						
 						refreshTable();
 					}
 				}
@@ -147,6 +150,8 @@ public class TypeInquiry extends JDialog{
 						JOptionPane.showMessageDialog(null, "숨김 해제할 카테고리를 선택해 주세요.");
 					}else {
 						CafeDAO.getInstance().showCategory(categoryList.get(row).getKind());
+						// main의 탭 reFresh
+						
 						refreshTable();
 					}
 				}
@@ -173,15 +178,13 @@ public class TypeInquiry extends JDialog{
 				}
 			};
 			typeTable.setAutoCreateRowSorter(true);
+			typeTable.getTableHeader().setReorderingAllowed(false);
+			typeTable.getTableHeader().setResizingAllowed(false);
 			
 			DefaultTableModel tableModel = (DefaultTableModel) typeTable.getModel();
 			tableModel.addColumn("번호");
 			tableModel.addColumn("종류");
 			tableModel.addColumn("상태");
-				
-			typeTable.getColumn("번호").setPreferredWidth(10);
-			typeTable.getColumn("종류").setPreferredWidth(40);
-			typeTable.getColumn("상태").setPreferredWidth(10);
 			
 			for(CategoryDTO dto : CafeDAO.getInstance().getCategoryItems()) {
 				String visibility = dto.getVisibility()==1 ? "표시" : "숨김";

@@ -164,7 +164,6 @@ public class UsePoints extends JFrame{
 	public JPanel getPSouth() {
 		if(pSouth == null) {
 			pSouth = new JPanel();
-			pSouth.setBackground(Color.WHITE);
 			pSouth.add(getBtnOk());
 			pSouth.add(getBtnCancel());
 		}

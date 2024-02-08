@@ -79,7 +79,7 @@ public class CustomerDialog extends JDialog{
 	
 	public JButton getInitBtn() {
 		if(initBtn==null) {
-			initBtn = new JButton();
+			initBtn = new RoundedButton();
 			initBtn.setText("초기화");
 			initBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -116,6 +116,8 @@ public class CustomerDialog extends JDialog{
 		if(customerTable == null) {
 			customerTable = new JTable();
 			customerTable.setAutoCreateRowSorter(true);
+			customerTable.getTableHeader().setReorderingAllowed(false);
+			customerTable.getTableHeader().setResizingAllowed(false);
 			
 			DefaultTableModel tableModel = (DefaultTableModel) customerTable.getModel();
 			tableModel.addColumn("전화번호");
@@ -146,7 +148,7 @@ public class CustomerDialog extends JDialog{
 	
 	public JButton getBtnAD() {
 		if(btnAD == null) {
-			btnAD = new JButton();
+			btnAD = new RoundedButton();
 			btnAD.setText("등록/삭제");
 			btnAD.addActionListener(new ActionListener() {
 				@Override
@@ -162,7 +164,7 @@ public class CustomerDialog extends JDialog{
 	
 	public JButton getBtnSend() {
 		if(btnSend == null) {
-			btnSend = new JButton();
+			btnSend = new RoundedButton();
 			btnSend.setText("문자 전송");
 			btnSend.addActionListener(new ActionListener() {
 				@Override
@@ -181,7 +183,7 @@ public class CustomerDialog extends JDialog{
 	
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override

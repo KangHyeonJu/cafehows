@@ -2,28 +2,26 @@ package cafehows.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.event.CellEditorListener; 
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 
 import cafehows.model.CafeDAO;
 import cafehows.model.CategoryDTO;
@@ -164,7 +162,7 @@ public class Main extends JFrame{
 							}
 							orderList.add(menuDTO);
 							
-							for(MenuDTO dto2 : orderList) {
+							for(MenuDTO dto3 : orderList) {
 								System.out.println(dto2);
 							}
 						
@@ -177,14 +175,18 @@ public class Main extends JFrame{
 				//		orderList.add(menuDTO);
 				//		refreshOrderList();
 
-					}
-				}		
-			});
-			menuTableList.add(menuTable);
-		
+						}
+						
+						
+					}		
+				
+				menuTableList.add(menuTable);
+				}
 			
+		});
 		return menuTable;
 	}
+
 	
 
 
@@ -331,8 +333,9 @@ public class Main extends JFrame{
 	
 	public JButton getDelBtn() {
 		if(delBtn==null) {
-			delBtn = new JButton();
+			delBtn = new RoundedButton();
 			delBtn.setText("항목 삭제");
+			//delBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 			delBtn.addActionListener(e->{
 				
 				for(MenuDTO dto2 : orderList) {
@@ -351,7 +354,7 @@ public class Main extends JFrame{
 	
 	public JButton getInitBtn() {
 		if(initBtn==null) {
-			initBtn = new JButton();
+			initBtn = new RoundedButton();
 			initBtn.setText("초기화");
 			initBtn.addActionListener(e->{
 			orderList.clear();
@@ -383,6 +386,9 @@ public class Main extends JFrame{
 		if(addBtn==null) {
 			addBtn = new JButton();
 			addBtn.setText("메뉴 추가");
+			addBtn.setBackground(new Color(200, 221, 242));
+			addBtn.setBorder(BorderFactory.createLineBorder(new Color(99, 130, 191)));
+			addBtn.setPreferredSize(new Dimension(130,130));
 			addBtn.addActionListener(e->{
 				AddMenu addMenu = new AddMenu(main);
 				addMenu.setVisible(true);
@@ -394,7 +400,10 @@ public class Main extends JFrame{
 	public JButton getModBtn() {
 		if(modBtn==null) {
 			modBtn = new JButton();
-			modBtn.setText("메뉴 수정/삭제/숨김");
+			modBtn.setText("메뉴 수정/숨김");
+			modBtn.setBackground(new Color(200, 221, 242));
+			modBtn.setBorder(BorderFactory.createLineBorder(new Color(99, 130, 191)));
+			modBtn.setPreferredSize(new Dimension(130,130));
 			modBtn.addActionListener(e->{
 				MenuMDS menuMDS= new MenuMDS(main);
 				menuMDS.setVisible(true);
@@ -407,6 +416,9 @@ public class Main extends JFrame{
 		if(customBtn==null) {
 			customBtn = new JButton();
 			customBtn.setText("고객 관리");
+			customBtn.setBackground(new Color(200, 221, 242));
+			customBtn.setBorder(BorderFactory.createLineBorder(new Color(99, 130, 191)));
+			customBtn.setPreferredSize(new Dimension(130,130));
 			customBtn.addActionListener(e->{
 				CustomerDialog customerDialog = new CustomerDialog();
 				customerDialog.setVisible(true);
@@ -420,6 +432,9 @@ public class Main extends JFrame{
 		if(salesBtn==null) {
 			salesBtn = new JButton();
 			salesBtn.setText("매출 관리");
+			salesBtn.setBackground(new Color(200, 221, 242));
+			salesBtn.setBorder(BorderFactory.createLineBorder(new Color(99, 130, 191)));
+			salesBtn.setPreferredSize(new Dimension(130,130));
 			salesBtn.addActionListener(e->{
 				SalesDialog salesDialog = new SalesDialog();
 				salesDialog.setVisible(true);
@@ -432,6 +447,9 @@ public class Main extends JFrame{
 		if(refundBtn==null) {
 			refundBtn = new JButton();
 			refundBtn.setText("환불");
+			refundBtn.setBackground(new Color(200, 221, 242));
+			refundBtn.setBorder(BorderFactory.createLineBorder(new Color(99, 130, 191)));
+			refundBtn.setPreferredSize(new Dimension(130,130));
 			refundBtn.addActionListener(e->{
 				Refund refund= new Refund();
 				refund.setVisible(true);
@@ -445,6 +463,9 @@ public class Main extends JFrame{
 		if(paymentBtn==null) {
 			paymentBtn = new JButton();
 			paymentBtn.setText("결제");
+			paymentBtn.setBackground(new Color(200, 221, 242));
+			paymentBtn.setBorder(BorderFactory.createLineBorder(new Color(99, 130, 191)));
+			paymentBtn.setPreferredSize(new Dimension(130,130));
 			paymentBtn.addActionListener(e->{
 				
 				PaymentDialog paymentDialog = new PaymentDialog(main);
