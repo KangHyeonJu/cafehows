@@ -83,22 +83,22 @@ public class Main extends JFrame{
 	
 			for(CategoryDTO dto : category) {
 				if(dto.getVisibility()==0) continue;
-				menuTab.addTab(dto.getKind(), getTabPanel());
+				menuTab.addTab(dto.getKind(), getTabPanel(dto.getCano()));
 			}
 			
 		return menuTab;
 		}
 	
-	private JPanel getTabPanel() {	
+	private JPanel getTabPanel(int cano) {	
 			JPanel tabPanel = new JPanel();
-			tabPanel.add(new JScrollPane(getMenuTable()));
+			tabPanel.add(new JScrollPane(getMenuTable(cano)));
 			tabPanelList.add(tabPanel);
 		
 		return tabPanel;
 	}
 	
 
-	private JTable getMenuTable() {
+	private JTable getMenuTable(int cano) {
 
 			//Table 수정 불가
 			JTable menuTable = new JTable() {
@@ -112,7 +112,10 @@ public class Main extends JFrame{
 			DefaultTableModel tableModel = (DefaultTableModel) menuTable.getModel();
 			tableModel.addColumn("메뉴명");
 			tableModel.addColumn("가격");
-			refreshMenu(tabPanelList.size()+1, menuTable);
+			
+
+			
+			refreshMenu(cano, menuTable);
 			
 			menuTable.getColumn("메뉴명").setPreferredWidth(50);
 			menuTable.getColumn("가격").setPreferredWidth(20);
@@ -134,6 +137,10 @@ public class Main extends JFrame{
 						menuDTO = CafeDAO.getInstance().getMenuByName(mname);
 						
 						//더블 클릭시
+						
+						if(SwingUtilities.isRightMouseButton(e)) {}
+						
+						
 						if(e.getClickCount()==2) {
 							//CountDialog에서 menuDTO 의 수량 변경
 							
