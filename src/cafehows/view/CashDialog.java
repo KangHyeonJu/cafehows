@@ -151,7 +151,7 @@ public class CashDialog extends JDialog{
 					if(paymentDialog.getCno()!=0 && paymentDialog.getCno()!= -1) {
 					CustomerDTO cDTO = new CustomerDTO();
 
-					cDTO.setPoint(paymentDialog.getPoint()-paymentDialog.getUsePoint()+(int)(paymentDialog.getFinalPrice()*0.05));
+					cDTO.setPoint(paymentDialog.getPoint()-paymentDialog.getUsePoint()+(int)(paymentDialog.getFinalPrice()*0.03));
 
 					CafeDAO.getInstance().updatePoint(cDTO, paymentDialog.getCno());
 					main.getOrderList().clear();

@@ -139,20 +139,6 @@ public class Refund extends JDialog{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int ono = Integer.parseInt(txtOrderNum.getText());
-//					int customerPoint = 0;
-//					for(int i=0;i<orderList.size();i++) {
-//						if(ono == orderList.get(i).getOno()){
-//							customerPoint = orderList.get(i).getPrice() - orderList.get(i).getFinalprice();
-//							for(int j=0; j<customerList.size(); j++) {
-//								if(orderList.get(i).getCno() == customerList.get(j).getCno()) {
-//									cDto.setPoint(customerList.get(j).getPoint() + customerPoint);
-//									cafeDao.updatePoint(cDto, customerList.get(j).getCno());
-//								}
-//							}
-//						}
-//					}
-//					
-//					cafeDao.deleteOrder(ono);
 					
 					OrderDTO orderDTO = CafeDAO.getInstance().getOrderItembyOno(ono);
 			
@@ -162,7 +148,7 @@ public class Refund extends JDialog{
 					int price = orderDTO.getPrice();
 					int finalPrice = orderDTO.getFinalprice();
 					CustomerDTO cDTO = CafeDAO.getInstance().getCustomerItemByCno(cno);
-					cDTO.setPoint(cDTO.getPoint()+(price-finalPrice)-(int)(finalPrice*0.05));
+					cDTO.setPoint(cDTO.getPoint()+(price-finalPrice)-(int)(finalPrice*0.03));
 					CafeDAO.getInstance().updatePoint(cDTO, cno);
 					
 					dispose();
@@ -173,22 +159,6 @@ public class Refund extends JDialog{
 		return btnOk;
 	}
 
-//	//결제하면 menusales count++, ono 저장,mno
-//	for(MenuDTO m : main.getOrderList()) {
-//		m.setOno(ono);
-//		m.setCumCount(m.getCumCount()+m.getCount());
-//		System.out.println(m);
-//		CafeDAO.getInstance().insertMenuSales(m);
-//	}
-//	
-//	//customer point 차감, recdate 갱신
-//	CustomerDTO cDTO = new CustomerDTO();
-//	cDTO.setPoint(point-usePoint);
-//	CafeDAO.getInstance().updatePoint(cDTO, cno);
-//	main.getOrderList().clear();
-//	main.refreshOrderList();
-//	dispose();
-	
 	
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {

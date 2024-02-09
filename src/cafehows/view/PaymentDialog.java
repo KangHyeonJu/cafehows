@@ -248,7 +248,7 @@ public class PaymentDialog extends JDialog{
 				//customer point 차감, recdate 갱신
 				if(cno!=0 &&cno!=-1) {
 				CustomerDTO cDTO = new CustomerDTO();
-				cDTO.setPoint(point-usePoint+(int)(finalPrice*0.05));
+				cDTO.setPoint(point-usePoint+(int)(finalPrice*0.03));
 				CafeDAO.getInstance().updatePoint(cDTO, cno);}
 				main.getOrderList().clear();
 				main.refreshOrderList();
