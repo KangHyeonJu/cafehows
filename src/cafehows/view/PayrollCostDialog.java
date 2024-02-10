@@ -4,6 +4,8 @@ package cafehows.view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
@@ -20,16 +22,19 @@ import cafehows.model.CategoryDTO;
 import cafehows.model.CustomerDTO;
 import cafehows.model.MenuDTO;
 import cafehows.model.OrderDTO;
+import cafehows.model.EmployeeDTO;
 
 public class  PayrollCostDialog extends JDialog{
 	private JPanel pCenter, pSouth, searchPanel, searchCno;
-	private JTextField tab2TxtENo,txtEName,txtEHour,txtEWage,txtEDate ;
+	private JTextField txtENo,txtEName,txtEHour,txtEWage,txtEDate ;
 	private JButton btnAD,btnSend, btnCancel, initBtn;
 	private JTextField searchInput;
 	private JTextField startPeriod,endPeriod;
-	private JTable employeeHourTable;
+	private JTable employeeTable, employeeHourTable;
+	private PayrollCostDialog payrollCostDialog;
 
 	public PayrollCostDialog() {
+		this.payrollCostDialog = this;
 		this.setTitle("인건비");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(500, 500);
@@ -42,7 +47,7 @@ public class  PayrollCostDialog extends JDialog{
 	private JTabbedPane getJTabbedPane() {
 		JTabbedPane employeeTab = new JTabbedPane();
 		employeeTab.setTabPlacement(JTabbedPane.TOP);
-		employeeTab.addTab("직원등록",getTab1Panel());
+		employeeTab.addTab("직원조회",getTab1Panel());
 		employeeTab.add("시간등록",getTab2Panel());
 		employeeTab.add("근로시간조회",getTab3Panel());
 
@@ -50,9 +55,171 @@ public class  PayrollCostDialog extends JDialog{
 	}
 	//탭1
 
+	
+	public JPanel getTab1Panel() {
+		JPanel tab1Panel = new JPanel(new BorderLayout());
+	
+		tab1Panel.add(getSearchPanel(),BorderLayout.NORTH);
+		tab1Panel.add(getPCenter(), BorderLayout.CENTER);
+		tab1Panel.add(getPSouth(), BorderLayout.SOUTH);
+		
+		
+		
+		return tab1Panel;
+	}
+	
+	private JPanel getSearchPanel() {
+		
+			JPanel searchPanel = new JPanel();
+			searchPanel.add(getSearchENo());
+			searchPanel.add(getSearchBar());
+			searchPanel.add(getSearchBtn());
+			searchPanel.add(getInitBtn());
+	
+		return searchPanel;
+	}
+	
+	private JPanel getSearchENo() {
+		
+			JPanel searchCno = new JPanel();
+			searchCno.add(new JLabel("직원 번호"));
+		
+		return searchCno;
+	}
+	
+	private JTextField getSearchBar() {
+		
+			searchInput = new JTextField(15);
+			searchInput.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					String enoText = searchInput.getText();
+					//키를 떼었을 때
+					searchKeyword(enoText);
+				}
+			});
+		
+		return searchInput;
+	}
+	
+	public JButton getSearchBtn() {
+	
+			JButton searchBtn = new RoundedButton();
+			searchBtn.setText("검색");
+			searchBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					searchKeyword(searchInput.getText());
+				}
+			});
+			
+		
+		return searchBtn;
+	}
+
+	
+	public JButton getInitBtn() {
+		if(initBtn==null) {
+			initBtn = new RoundedButton();
+			initBtn.setText("초기화");
+			initBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					searchInput.setText("");
+					refreshEmployeeTable();
+				}
+			});
+		}
+		return initBtn;
+	}
+	public void refreshEmployeeTable() {
+		DefaultTableModel tableModel = (DefaultTableModel) employeeTable.getModel();
+		tableModel.setNumRows(0);
+		for(EmployeeDTO dto : CafeDAO.getInstance().getEmployeeItems()) {
+			String status ="";
+			if(dto.getStatus()==1) {status ="재직";}
+			else if(dto.getStatus()==2) {status="휴직";}
+			else if(dto.getStatus()==3) {status="퇴직";}
+			Object[] rowData = { dto.getEno(), dto.getEname(),status };
+			tableModel.addRow(rowData);
+		}
+	}
+	
+	public void searchKeyword(String eno) {
+		DefaultTableModel tableModel = (DefaultTableModel) employeeTable.getModel();
+		tableModel.setNumRows(0);
+		EmployeeDTO dto = CafeDAO.getInstance().getEmployeeByEno(Integer.parseInt(eno)); 
+			String status ="";
+			if(dto.getStatus()==1) {status ="재직";}
+			else if(dto.getStatus()==2) {status="휴직";}
+			else if(dto.getStatus()==3) {status="퇴직";}
+			Object[] rowData = { dto.getEno(), dto.getEname(), status };
+			tableModel.addRow(rowData);
+		
+	}
+
+	
+	public JPanel getPCenter() {
+		if(pCenter == null) {
+			pCenter = new JPanel();
+			JScrollPane jScrollPane = new JScrollPane(getEmployeeTable());
+			jScrollPane.setPreferredSize(new Dimension(450,380));
+			pCenter.add(jScrollPane);
+			refreshEmployeeTable();
+		}
+		return pCenter;
+	}
+	public JTable getEmployeeTable() {
+		if(employeeTable == null) {
+			employeeTable = new JTable() {
+				@Override
+				public boolean isCellEditable(int row, int col) {
+					return false;
+				}
+			};
+			employeeTable.setAutoCreateRowSorter(true);
+			employeeTable.getTableHeader().setReorderingAllowed(false);
+			employeeTable.getTableHeader().setResizingAllowed(false);
+			
+			DefaultTableModel tableModel = (DefaultTableModel) employeeTable.getModel();
+			tableModel.addColumn("직원번호");
+			tableModel.addColumn("직원이름");
+			tableModel.addColumn("상태");
+			
+			refreshEmployeeTable();
+			
+			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+			TableColumnModel tcm = employeeTable.getColumnModel();
+			for(int i=0; i<3; i++) tcm.getColumn(i).setCellRenderer(dtcr);
+		}
+		return employeeTable;
+	}
+	public JPanel getPSouth() {
+		if(pSouth == null) {
+			pSouth = new JPanel();
+			pSouth.add(getBtnAD());
+		}
+		return pSouth;
+	}
+
+	
+	public JButton getBtnAD() {
+		if(btnAD == null) {
+			btnAD = new RoundedButton();
+			btnAD.setText("등록/수정");
+			btnAD.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					EmployeeModify employeemodify = new EmployeeModify(payrollCostDialog);
+					employeemodify.setVisible(true);
+				}
+			});
+		}
+		return btnAD;
+	}
 
 	//tab2Panel
-	private JPanel getTab2Panel() {
+	public JPanel getTab2Panel() {
 		JPanel tab2Panel = new JPanel(new BorderLayout());
 		JPanel centerPanel = new JPanel(new GridLayout(4,1));
 		centerPanel.add(getTab2ENo());
@@ -72,7 +239,7 @@ public class  PayrollCostDialog extends JDialog{
 		JLabel label = new JLabel("직원번호",JLabel.CENTER);
 		label.setPreferredSize(new Dimension(50,30));
 		pENo.add(label);
-	    JTextField txtENo = new JTextField();
+		txtENo = new JTextField();
 		txtENo.setPreferredSize(new Dimension(200,30));
 		pENo.add(txtENo);
 
@@ -123,6 +290,7 @@ public class  PayrollCostDialog extends JDialog{
 		
 		JPanel pSouth = new JPanel();
 			pSouth.add(getTab2BtnOk());
+			pSouth.add(getBtnModify());
 			pSouth.add(getBtnCancel());
 			
 		
@@ -135,11 +303,43 @@ public class  PayrollCostDialog extends JDialog{
 		btnOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-					
+				EmployeeDTO employee = new EmployeeDTO();
+				employee.setEno(Integer.parseInt(txtENo.getText()));
+				employee.setDate(java.sql.Date.valueOf(txtEDate.getText()));
+				employee.setHour(Integer.parseInt(txtEHour.getText()));
+				employee.setWage(Integer.parseInt(txtEWage.getText()));
+				
+				CafeDAO.getInstance().insertEmployeeHour(employee);
+				payrollCostDialog.setEmployeeHourTable();
+				dispose();
+				
 			}
 		});
 	
 	return btnOk;
+}
+	
+	public JButton getBtnModify() {
+		
+		JButton btnModify = new RoundedButton();
+		btnModify.setText("수정");
+		btnModify.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				EmployeeDTO employee = new EmployeeDTO();
+				employee.setEno(Integer.parseInt(txtENo.getText()));
+				employee.setDate(java.sql.Date.valueOf(txtEDate.getText()));
+				employee.setHour(Integer.parseInt(txtEHour.getText()));
+				employee.setWage(Integer.parseInt(txtEWage.getText()));
+				
+				CafeDAO.getInstance().updateEmployeeHour(employee);
+				payrollCostDialog.setEmployeeHourTable();
+				dispose();
+
+			}
+		});
+
+	return btnModify;
 }
 	public JButton getBtnCancel() {
 		
@@ -148,7 +348,7 @@ public class  PayrollCostDialog extends JDialog{
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			
+				dispose();
 
 			}
 		});
@@ -187,7 +387,7 @@ public class  PayrollCostDialog extends JDialog{
 			enterBtn.setText("조회");
 			enterBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-
+					
 					refreshEmployeeHourTable();
 
 			}
@@ -220,7 +420,7 @@ public class  PayrollCostDialog extends JDialog{
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 			TableColumnModel tcm =employeeHourTable.getColumnModel();
-			for(int i=0; i<4; i++) tcm.getColumn(i).setCellRenderer(dtcr);
+			for(int i=0; i<5; i++) tcm.getColumn(i).setCellRenderer(dtcr);
 
 //			
 		}
@@ -231,8 +431,8 @@ public class  PayrollCostDialog extends JDialog{
 	public void setEmployeeHourTable() {
 		DefaultTableModel tableModel = (DefaultTableModel) employeeHourTable.getModel();
 		tableModel.setNumRows(0);
-		for(OrderDTO dto : CafeDAO.getInstance().getOrderItems()) {
-			Object[] rowData = {dto.getDate(), dto.getOno(),dto.getPrice(),dto.getFinalprice()};
+		for(EmployeeDTO dto : CafeDAO.getInstance().getEmployeeHourItems()) {
+			Object[] rowData = {dto.getEno(),dto.getEname(),dto.getDate(),dto.getHour(),dto.getWage()};
 			tableModel.addRow(rowData);
 			
 		}
@@ -243,11 +443,10 @@ public class  PayrollCostDialog extends JDialog{
 		DefaultTableModel tableModel = (DefaultTableModel) employeeHourTable.getModel();
 		tableModel.setNumRows(0);
 
-		for(OrderDTO dto :CafeDAO.getInstance().getDailySalesbyPeriod(
+		for(EmployeeDTO dto : CafeDAO.getInstance().getEmployeeHourItemsbyPeriod(
 				Integer.parseInt(startPeriod.getText()),Integer.parseInt(endPeriod.getText()))
 				) {
-			//String visibility = dto.getVisibility()==1 ? "회원" : "탈퇴";
-			Object[] rowData = {dto.getDate(),dto.getFinalprice()};
+			Object[] rowData = {dto.getEno(),dto.getEname(),dto.getDate(),dto.getHour(),dto.getWage()};
 			tableModel.addRow(rowData);
 			
 		}

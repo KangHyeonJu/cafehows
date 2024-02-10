@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,16 +25,19 @@ import javax.swing.text.NumberFormatter;
 
 import cafehows.model.CafeDAO;
 import cafehows.model.CustomerDTO;
+import cafehows.model.EmployeeDTO;
 import cafehows.model.MenuDTO;
 
 public class EmployeeModify extends JDialog{
 
 	private JPanel customerNum, pCenter, pSouth, pNotice;
-	private JTextField txtCustomerNum,txtEName;
+	private JTextField txtCustomerNum,txtEName,txtENo;
 	private JButton btnOk, btnCancel, btnDelete;
+	private String statusTemp = "재직";
+	private PayrollCostDialog payrollCostDialog;
 	
-	
-	public EmployeeModify() {
+	public EmployeeModify(PayrollCostDialog payrollCostDialog) {
+		this.payrollCostDialog = payrollCostDialog;
 		this.setTitle("직원-등록/수정");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(300, 200);
@@ -60,26 +64,11 @@ public class EmployeeModify extends JDialog{
 		JLabel label = new JLabel("직원번호",JLabel.CENTER);
 		label.setPreferredSize(new Dimension(50,30));
 	    pENo.add(label);
-	    JLabel tab1TxtENo = new JLabel();
-	    tab1TxtENo.setPreferredSize(new Dimension(50,30));
-		pENo.add(tab1TxtENo);
-		pENo.add(getGenerateNoBtn());
-		//번호 데이터에서 받아와야함 자동생성
+	    txtENo = new JTextField();
+	    txtENo.setPreferredSize(new Dimension(50,30));
+		pENo.add(txtENo);
 
 	return pENo;
-}
-	public JButton getGenerateNoBtn() {
-		JButton generateNoBtn = new RoundedButton();
-		generateNoBtn.setText("생성");
-		generateNoBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-					
-			}
-		});
-	
-	return generateNoBtn;
-		
 	}
 	
 	public JPanel getEName() {
@@ -99,9 +88,28 @@ public class EmployeeModify extends JDialog{
 		JLabel label = new JLabel("상태",JLabel.CENTER);
 		label.setPreferredSize(new Dimension(50,30));
 	    pEStatus.add(label);
+	    pEStatus.add(getComboStatus());
+	    
 	    //콤보박스 추가
 	    return pEStatus;
 	}
+	
+	public JComboBox getComboStatus() {
+		
+
+			String[] statusString = {"재직","휴직","퇴직"};
+			JComboBox comboStatus = new JComboBox(statusString);
+			
+			
+			comboStatus.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					statusTemp = comboStatus.getSelectedItem().toString();
+				}
+			});
+		
+		return comboStatus;
+	}
+
 
 	public JPanel getTab1PSouth() {
 		
@@ -122,7 +130,19 @@ public class EmployeeModify extends JDialog{
 			btnOk.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-						
+					EmployeeDTO employee = new EmployeeDTO();
+					employee.setEname(txtEName.getText());
+					System.out.println(employee.getEname());
+					int status = 0;
+					if(statusTemp.equals("재직")) status=1;
+					else if(statusTemp.equals("휴직")) status=2;
+					else if(statusTemp.equals("퇴직")) status=3;
+					employee.setStatus(status);
+					
+					int eno = CafeDAO.getInstance().insertEmployee(employee);
+					txtENo.setText(Integer.toString(eno));
+					payrollCostDialog.refreshEmployeeTable();
+					dispose();
 				}
 			});
 		
@@ -136,7 +156,19 @@ public class EmployeeModify extends JDialog{
 		btnModify.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			
+				EmployeeDTO employee = new EmployeeDTO();
+				employee.setEno(Integer.parseInt(txtENo.getText()));
+				employee.setEname(txtEName.getText());
+				System.out.println(employee.getEname());
+				int status = 0;
+				if(statusTemp.equals("재직")) status=1;
+				else if(statusTemp.equals("휴직")) status=2;
+				else if(statusTemp.equals("퇴직")) status=3;
+				employee.setStatus(status);
+				
+				CafeDAO.getInstance().updateEmployee(employee);
+				payrollCostDialog.refreshEmployeeTable();
+				dispose();
 
 			}
 		});
@@ -151,7 +183,7 @@ public class EmployeeModify extends JDialog{
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-				
+					dispose();
 
 				}
 			});

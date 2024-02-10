@@ -119,6 +119,7 @@ public class CostPanel extends JPanel{
 					monthTemp = comboMonth.getSelectedIndex()+1;
 					txtRevenue.setText(Integer.toString(CafeDAO.getInstance().getMonthlySales(yearTemp, monthTemp)));
 					monthlySales = CafeDAO.getInstance().getMonthlySales(yearTemp, monthTemp);
+					//txtPayrollCost.setText(Integer.toString(CafeDAO.getInstance().getMonthlyPayrollCost(yearTemp, monthTemp)));
 				}
 			});
 		
