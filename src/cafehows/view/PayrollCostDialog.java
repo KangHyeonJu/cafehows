@@ -30,7 +30,7 @@ public class  PayrollCostDialog extends JDialog{
 	private JButton btnAD,btnSend, btnCancel, initBtn;
 	private JTextField searchInput;
 	private JTextField startPeriod,endPeriod;
-	private JTable employeeTable, employeeHourTable;
+	private JTable employeeTable, employeeHourTable,employeeWageTable;
 	private PayrollCostDialog payrollCostDialog;
 
 	public PayrollCostDialog() {
@@ -362,7 +362,7 @@ public class  PayrollCostDialog extends JDialog{
 			tab3Panel.setLayout(new BorderLayout());	
 			tab3Panel.add(getPeriodPanel(),BorderLayout.NORTH);
 			tab3Panel.add(new JScrollPane(getEmployeeHourTable()),BorderLayout.CENTER);
-		
+			tab3Panel.add(new JScrollPane(getEmployeeWageTable()),BorderLayout.SOUTH);
 		return tab3Panel;
 	}
 	public JPanel getPeriodPanel() {
@@ -389,6 +389,7 @@ public class  PayrollCostDialog extends JDialog{
 				public void actionPerformed(ActionEvent e) {
 					
 					refreshEmployeeHourTable();
+					refreshEmployeeWageTable();
 
 			}
 			});
@@ -397,6 +398,63 @@ public class  PayrollCostDialog extends JDialog{
 	}
 
 	
+	public JTable getEmployeeWageTable() {
+		if(employeeWageTable == null) {
+			employeeWageTable = new JTable() {
+				@Override
+				public boolean isCellEditable(int row, int col) {
+					return false;
+				}
+			};
+			employeeWageTable.setAutoCreateRowSorter(true);
+			employeeWageTable.getTableHeader().setReorderingAllowed(false);
+			employeeWageTable.getTableHeader().setResizingAllowed(false);
+			
+			DefaultTableModel tableModel = (DefaultTableModel)employeeWageTable.getModel();
+			tableModel.addColumn("직원번호");
+			tableModel.addColumn("직원이름");
+			tableModel.addColumn("주간");
+			tableModel.addColumn("급여");
+			tableModel.addColumn("주휴수당");
+			tableModel.addColumn("총 급여");
+			setEmployeeWageTable();
+			
+			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+			TableColumnModel tcm =employeeWageTable.getColumnModel();
+			for(int i=0; i<6; i++) tcm.getColumn(i).setCellRenderer(dtcr);
+
+//			
+		}
+		return employeeWageTable;
+	}
+	
+	
+	public void setEmployeeWageTable() {
+		DefaultTableModel tableModel = (DefaultTableModel) employeeWageTable.getModel();
+		tableModel.setNumRows(0);
+		for(EmployeeDTO dto : CafeDAO.getInstance().getEmployeeWageItems()) {
+			String eno = dto.getEno()==0 ? "합계" : Integer.toString(dto.getEno());
+			Object[] rowData = {eno,dto.getEname(),dto.getStartDate()+"~"+dto.getEndDate(),dto.getWage(),dto.getHolidayPay(),dto.getTotalSalary()};
+			tableModel.addRow(rowData);
+			
+		}
+	}
+	
+
+	public void refreshEmployeeWageTable() {
+		DefaultTableModel tableModel = (DefaultTableModel) employeeWageTable.getModel();
+		tableModel.setNumRows(0);
+
+		for(EmployeeDTO dto : CafeDAO.getInstance().getEmployeeWageItemsbyPeriod(
+				Integer.parseInt(startPeriod.getText()),Integer.parseInt(endPeriod.getText()))
+				) {
+			String eno = dto.getEno()==0 ? "합계" : Integer.toString(dto.getEno());
+			Object[] rowData = {eno,dto.getEname(),dto.getStartDate()+"~"+dto.getEndDate(),dto.getWage(),dto.getHolidayPay(),dto.getTotalSalary()};
+			tableModel.addRow(rowData);
+			
+		}
+	}
 	public JTable getEmployeeHourTable() {
 		if(employeeHourTable == null) {
 			employeeHourTable = new JTable() {

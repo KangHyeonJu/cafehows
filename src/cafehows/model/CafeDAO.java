@@ -13,6 +13,8 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import com.mysql.cj.exceptions.RSAException;
+
 
 public class CafeDAO {
 	private static final CafeDAO instance = new CafeDAO();
@@ -603,7 +605,102 @@ public class CafeDAO {
 		return items;
 	}
 	
+	public List<EmployeeDTO> getEmployeeWageItems() {
+		connect();
+		sql = """
+				SELECT eno,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+				DATE_FORMAT(date, '%Y%U') AS datecolumn,
+				sum(hour*wage),sum(hour),8*wage,sum(hour)/5*wage
+				FROM employeehour
+				GROUP BY datecolumn,eno
+				with rollup
+				""";
+	
+		List<EmployeeDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				EmployeeDTO item = new EmployeeDTO();
+				item.setEno(rs.getInt(1));
+				item.setStartDate(rs.getDate(2));
+				item.setEndDate(rs.getDate(3));
+				item.setWage(rs.getInt(5));
+				item.setHour(rs.getInt(6));
+				if(rs.getInt(6)>=40) item.setHolidayPay(rs.getInt(7));
+				else {item.setHolidayPay(rs.getInt(8));}
+				item.setTotalSalary(item.getWage()+item.getHolidayPay());
+				
+				String sql2 = "select ename from employee where eno=? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(1));
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setEname(rs2.getString(1));}
+				
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+	
+	public List<EmployeeDTO> getEmployeeWageItemsbyPeriod(int start, int end) {
+		connect();
+		sql = """
+				SELECT eno,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+				DATE_FORMAT(date, '%Y%U') AS datecolumn,
+				sum(hour*wage),sum(hour),8*wage,sum(hour)/5*wage
+				FROM employeehour
 
+				WHERE DATE(date) >= STR_TO_DATE(?)
+				AND DATE(date) <= STR_TO_DATE(?)
+				GROUP BY datecolumn,eno
+				with rollup
+				""";
+		
+//		WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
+//		AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
+	
+		List<EmployeeDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, start);
+			pstmt.setInt(2, end);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				EmployeeDTO item = new EmployeeDTO();
+				item.setEno(rs.getInt(1));
+				item.setStartDate(rs.getDate(2));
+				item.setEndDate(rs.getDate(3));
+				item.setWage(rs.getInt(5));
+				item.setHour(rs.getInt(6));
+				if(rs.getInt(6)>=40) item.setHolidayPay(rs.getInt(7));
+				else {item.setHolidayPay(rs.getInt(8));}
+				item.setTotalSalary(item.getWage()+item.getHolidayPay());
+				
+				String sql2 = "select ename from employee where eno=? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(1));
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setEname(rs2.getString(1));}
+				
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+	
 	public void updateEmployee(EmployeeDTO employee) {
 		connect();
 		sql = """
@@ -643,7 +740,7 @@ public class CafeDAO {
 			pstmt.setInt(2, employee.getStatus());
 			int rows = pstmt.executeUpdate();
 			rs = pstmt.getGeneratedKeys();
-			
+			w
 			if(rs.next()) {
 				eno = rs.getBigDecimal(1).intValue();
 				

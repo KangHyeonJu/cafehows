@@ -262,26 +262,6 @@ public class Main extends JFrame{
 					}
 				}		
 			});
-
-			
-//			orderTable.getColumn("메뉴명").setPreferredWidth(50);
-//			orderTable.getColumn("수량").setPreferredWidth(50);
-//			orderTable.getColumn("가격").setPreferredWidth(20);
-//			orderTable.getColumn("아이스/핫").setPreferredWidth(20);
-			
-//			CenterTableCellRenderer ctcr = new CenterTableCellRenderer();
-//			menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
-//			menuTable.getColumn("가격").setCellRenderer(ctcr);
-//			
-//			menuTable.addMouseListener(new MouseAdapter() {
-//				public void mouseClicked(MouseEvent e) {
-//					int rowIndex = menuTable.getSelectedRow();
-//					if(rowIndex !=-1) {
-//						int bno = (int)menuTable.getValueAt(rowIndex, 0);
-//						
-//					}
-//				}		
-//			});
 		}
 			
 		return orderTable;

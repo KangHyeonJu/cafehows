@@ -12,6 +12,12 @@ public class EmployeeDTO {
 	Date date;
 	int hour;
 	int wage;
+	int holidayPay;
+	int totalSalary;
+	Date startDate;
+	Date endDate;
+	int datecolumn;
+	
 	public int getEno() {
 		return eno;
 	}
@@ -47,6 +53,36 @@ public class EmployeeDTO {
 	}
 	public void setWage(int wage) {
 		this.wage = wage;
+	}
+	public Date getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	public Date getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+	public int getDatecolumn() {
+		return datecolumn;
+	}
+	public void setDatecolumn(int datecolumn) {
+		this.datecolumn = datecolumn;
+	}
+	public int getHolidayPay() {
+		return holidayPay;
+	}
+	public void setHolidayPay(int holidayPay) {
+		this.holidayPay = holidayPay;
+	}
+	public int getTotalSalary() {
+		return totalSalary;
+	}
+	public void setTotalSalary(int totalSalary) {
+		this.totalSalary = totalSalary;
 	}
 	
 	
