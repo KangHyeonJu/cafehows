@@ -29,7 +29,6 @@ public class UsePoints extends JDialog{
 	private JButton btnOk, btnCancel, searchBtn;
 //	private CustomerDTO cDto = new CustomerDTO();
 //	private CafeDAO dao = new CafeDAO();
-	//포인트 사용, 결제 완료시 회원 보유 포인트가 업데이트가 안 돼서 수정했습니다~
 //	private static List<OrderDTO> orderList = CafeDAO.getInstance().getOrderItems();
 //	private static List<CustomerDTO> customerList = CafeDAO.getInstance().getCustomerItems();
 //	private List<OrderDTO> orderList;

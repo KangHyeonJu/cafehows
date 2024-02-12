@@ -50,7 +50,43 @@ public class CafeDAO {
 		if ( pstmt != null ) pstmt.close();
 		if ( conn != null ) conn.close();
 	}
+	
+	public void insertCustomerWage() {
+		connect();
+		sql= """
+				insert into employeewage (eno,startdate,enddate,wage,holidaypay) 
+				SELECT eno,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+				sum(hour*wage),if(sum(hour)>=40,8*wage,sum(hour)/5*wage)
+				FROM employeehour
+				GROUP BY    DATE_FORMAT(date, '%Y%U'),eno;
+				""";
+		try {
+			Statement stmt = conn.createStatement();
+			stmt.execute(sql);
+			
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
+	public void deleteCustomerWage() {
+		connect();
+		sql= """
+				truncate table employeewage
+
+				""";
+		try {
+			Statement stmt = conn.createStatement();
+			stmt.execute(sql);
+			
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public List<MenuDTO> getItems(int cano) {
 		connect();
@@ -646,13 +682,9 @@ public class CafeDAO {
 	public List<EmployeeDTO> getEmployeeWageItems() {
 		connect();
 		sql = """
-				SELECT eno,
-				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
-				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
-				DATE_FORMAT(date, '%Y%U') AS datecolumn,
-				sum(hour*wage),sum(hour),8*wage,sum(hour)/5*wage
-				FROM employeehour
-				GROUP BY datecolumn,eno
+				select eno,startdate,enddate,sum(wage),sum(holidaypay)
+				from employeewage
+				group by startdate,eno
 				with rollup
 				""";
 	
@@ -665,10 +697,8 @@ public class CafeDAO {
 				item.setEno(rs.getInt(1));
 				item.setStartDate(rs.getDate(2));
 				item.setEndDate(rs.getDate(3));
-				item.setWage(rs.getInt(5));
-				item.setHour(rs.getInt(6));
-				if(rs.getInt(6)>=40) item.setHolidayPay(rs.getInt(7));
-				else {item.setHolidayPay(rs.getInt(8));}
+				item.setWage(rs.getInt(4));
+				item.setHolidayPay(rs.getInt(5));
 				item.setTotalSalary(item.getWage()+item.getHolidayPay());
 				
 				String sql2 = "select ename from employee where eno=? ";
@@ -686,6 +716,53 @@ public class CafeDAO {
 		}
 		return items;
 	}
+	
+//	public List<EmployeeDTO> getEmployeeWageItems() {
+//		connect();
+//		sql = """
+//				SELECT eno,
+//				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+//				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+//				DATE_FORMAT(date, '%Y%U') AS datecolumn,
+//				sum(hour*wage),sum(hour),8*wage,sum(hour)/5*wage
+//				FROM employeehour
+//				GROUP BY datecolumn,eno
+//				with rollup
+//				""";
+//	
+//		List<EmployeeDTO> items = new ArrayList<>();
+//		try {
+//			pstmt = conn.prepareStatement(sql);
+//			rs = pstmt.executeQuery();
+//			while(rs.next()) {
+//				if(rs.getInt(1)==0) continue;
+//				EmployeeDTO item = new EmployeeDTO();
+//				item.setEno(rs.getInt(1));
+//				item.setStartDate(rs.getDate(2));
+//				item.setEndDate(rs.getDate(3));
+//				item.setWage(rs.getInt(5));
+//				item.setHour(rs.getInt(6));
+//				if(rs.getInt(6)>=40) item.setHolidayPay(rs.getInt(7));
+//				else {item.setHolidayPay(rs.getInt(8));}
+//				item.setTotalSalary(item.getWage()+item.getHolidayPay());
+//				
+//				String sql2 = "select ename from employee where eno=? ";
+//				pstmt = conn.prepareStatement(sql2);
+//				pstmt.setInt(1, rs.getInt(1));
+//				ResultSet rs2 = pstmt.executeQuery();
+//				if(rs2.next()) {
+//				item.setEname(rs2.getString(1));}
+//				
+//				items.add(item);
+//			}
+//			close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return items;
+//	}
+//	
+	
 	
 	public List<EmployeeDTO> getEmployeeWageItemsbyPeriod(int start, int end) {
 		connect();
@@ -1458,6 +1535,7 @@ public class CafeDAO {
 		}
 		return orderList;
 	}
+	
 
 
 

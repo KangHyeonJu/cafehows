@@ -37,7 +37,7 @@ public class  PayrollCostDialog extends JDialog{
 		this.payrollCostDialog = this;
 		this.setTitle("인건비");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(500, 500);
+		this.setSize(700,700);
 		this.setModal(true); //상위 frame 클릭 불가
 		this.setResizable(false); //사이즈 고정
 		this.getContentPane().add(getJTabbedPane());
