@@ -6,7 +6,11 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -22,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import cafehows.model.CafeDAO;
 import cafehows.model.MenuDTO;
 import cafehows.model.OrderDTO;
+import exceptions.UnsuitableInputException;
 
 
 public class SalesDialog extends JDialog{
@@ -34,6 +39,7 @@ public class SalesDialog extends JDialog{
 		private JButton enterBtn;
 		private ArrayList<MenuDTO> menuList= new ArrayList<>();
 //		private ArrayList<OrderDTO> orderList= new ArrayList<>();
+		private static final String REGEXP_DATE = "^[\\d]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
 		
 
 		public SalesDialog() {
@@ -91,7 +97,8 @@ public class SalesDialog extends JDialog{
 				enterBtn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
-					
+						validateDate(startPeriod);
+						validateDate(endPeriod);
 						refreshOrderListTable();
 						refreshDailySalesTable();
 					//	startPeriod.setText("");
@@ -232,7 +239,7 @@ public class SalesDialog extends JDialog{
 			tableModel.setNumRows(0);
 	
 			for(OrderDTO dto :CafeDAO.getInstance().getOrderItemsbyPeriod(
-					Integer.parseInt(startPeriod.getText()),Integer.parseInt(endPeriod.getText()))
+				startPeriod.getText(),endPeriod.getText())
 					) {
 				Object[] rowData = {dto.getDate(), dto.getOno(),dto.getPrice(),dto.getFinalprice()};
 				tableModel.addRow(rowData);
@@ -256,7 +263,7 @@ public class SalesDialog extends JDialog{
 			tableModel.setNumRows(0);
 	
 			for(OrderDTO dto :CafeDAO.getInstance().getDailySalesbyPeriod(
-					Integer.parseInt(startPeriod.getText()),Integer.parseInt(endPeriod.getText()))
+					startPeriod.getText(),endPeriod.getText())
 					) {
 				Object[] rowData = {dto.getDate(),dto.getFinalprice()};
 				tableModel.addRow(rowData);
@@ -274,6 +281,13 @@ public class SalesDialog extends JDialog{
 				tableModel.addRow(rowData);
 				
 			}
+		}
+		private void validateDate(JTextField period) throws  UnsuitableInputException {
+			
+			if(!Pattern.matches(REGEXP_DATE,period.getText().trim()))
+				throw new UnsuitableInputException("yyyy-MM-dd 형식이 잘못 입력되었습니다");
+		
+		
 		}
 
 		private void locationCenter() {

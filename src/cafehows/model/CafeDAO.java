@@ -2,6 +2,7 @@ package cafehows.model;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -407,14 +408,19 @@ public class CafeDAO {
 		}
 		return item;
 	}
-	public List<OrderDTO> getOrderItemsbyPeriod(int start, int end){
+	public List<OrderDTO> getOrderItemsbyPeriod(String start,String end){
 		connect();
-		sql = "select * from orderlist where date between ? and ?";
+		sql="""
+			SELECT *
+				FROM orderlist
+				WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
+				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
+				""";
 		List<OrderDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, start);
-			pstmt.setInt(2, end);
+			pstmt.setString(1, start);
+			pstmt.setString(2, end);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				OrderDTO item = new OrderDTO();
@@ -517,52 +523,55 @@ public class CafeDAO {
 //	}
 //	
 //	
-//	public int getMonthlyPayrollCost(int year,int month){
-//		connect();
-//		int monthlyPayrollCost=0;
-//		sql = """
-//			select sum(finalprice) from orderlist 
-//			where year(date)=? and month(date)=? 
-//			group by date_format(date,'%Y-%m')
-//				""";
-//		List<OrderDTO> items = new ArrayList<>();
-//		try {
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setInt(1, year);
-//			pstmt.setInt(2, month);
-//			rs = pstmt.executeQuery();
-//			if(rs.next()) {
-//				monthlySales =rs.getInt(1);
-//				
-//			}
-//			close();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return monthlySales;
-//		
-//	}
-	
-	public List<OrderDTO> getDailySalesbyPeriod(int start,int end){
+	public int getMonthlyPayrollCost(int year,int month){
 		connect();
+		int monthlyPayrollCost=0;
+		sql="""
+				select sum(wage)+sum(holidaypay)
+				from employeewage
+                where year(enddate)=? and month(enddate)=?
+				group by enddate
+				with rollup
+				""";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, year);
+			pstmt.setInt(2, month);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				monthlyPayrollCost =rs.getInt(1);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return monthlyPayrollCost;
+		
+	}
+
+	
+	
+	public List<OrderDTO> getDailySalesbyPeriod(String start,String end){
+		connect();
+		
 		sql = """
-				select ono,date,sum(price),sum(finalprice) 
-				from orderlist 
-				where date 
-				between ? and ? group by date;
+				select date,sum(price),sum(finalprice) 
+				from orderlist
+				WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
+				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
+                group by date;
 				""";
 		List<OrderDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, start);
-			pstmt.setInt(2, end);
+			pstmt.setString(1, start);
+			pstmt.setString(2, end);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				OrderDTO item = new OrderDTO();
-				item.setOno(rs.getInt(1));
-				item.setDate(rs.getDate(2));
-				item.setPrice(rs.getInt(3));
-				item.setFinalprice(rs.getInt(4));
+				item.setDate(rs.getDate(1));
+				item.setPrice(rs.getInt(2));
+				item.setFinalprice(rs.getInt(3));
 				items.add(item);
 			}
 			close();
@@ -648,14 +657,21 @@ public class CafeDAO {
 		return items;
 	}
 	
-	public List<EmployeeDTO> getEmployeeHourItemsbyPeriod(int start, int end){
+	public List<EmployeeDTO> getEmployeeHourItemsbyPeriod(String start, String end){
 		connect();
+		sql="""
+				select * 
+				from employeehour 
+			    WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
+				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
+				""";
+		
 		sql = "select * from employeehour where date between ? and ?";
 		List<EmployeeDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, start);
-			pstmt.setInt(2, end);
+			pstmt.setString(1, start);
+			pstmt.setString(2, end);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				EmployeeDTO item = new EmployeeDTO();
@@ -764,21 +780,18 @@ public class CafeDAO {
 //	
 	
 	
-	public List<EmployeeDTO> getEmployeeWageItemsbyPeriod(int start, int end) {
+	public List<EmployeeDTO> getEmployeeWageItemsbyPeriod(String start, String end) {
 		connect();
+//		
 		sql = """
-				SELECT eno,
-				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
-				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
-				DATE_FORMAT(date, '%Y%U') AS datecolumn,
-				sum(hour*wage),sum(hour),8*wage,sum(hour)/5*wage
-				FROM employeehour
-
-				WHERE DATE(date) >= STR_TO_DATE(?)
-				AND DATE(date) <= STR_TO_DATE(?)
-				GROUP BY datecolumn,eno
-				with rollup
+				select eno,startdate,enddate,sum(wage),sum(holidaypay)
+				from employeewage
+               	WHERE (STR_TO_DATE(?,'%Y-%m-%d') between DATE(startdate) and DATE(enddate)) 
+				or (STR_TO_DATE(?,'%Y-%m-%d') between DATE(startdate) and DATE(enddate)) 
+				group by startdate,eno
+				with rollup;
 				""";
+		
 		
 //		WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
 //		AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
@@ -786,18 +799,16 @@ public class CafeDAO {
 		List<EmployeeDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, start);
-			pstmt.setInt(2, end);
+			pstmt.setString(1, start);
+			pstmt.setString(2, end);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				EmployeeDTO item = new EmployeeDTO();
 				item.setEno(rs.getInt(1));
 				item.setStartDate(rs.getDate(2));
 				item.setEndDate(rs.getDate(3));
-				item.setWage(rs.getInt(5));
-				item.setHour(rs.getInt(6));
-				if(rs.getInt(6)>=40) item.setHolidayPay(rs.getInt(7));
-				else {item.setHolidayPay(rs.getInt(8));}
+				item.setWage(rs.getInt(4));
+				item.setHolidayPay(rs.getInt(5));
 				item.setTotalSalary(item.getWage()+item.getHolidayPay());
 				
 				String sql2 = "select ename from employee where eno=? ";
@@ -815,6 +826,8 @@ public class CafeDAO {
 		}
 		return items;
 	}
+	
+	
 	
 	public void updateEmployee(EmployeeDTO employee) {
 		connect();

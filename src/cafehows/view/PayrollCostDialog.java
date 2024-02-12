@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -22,6 +23,7 @@ import cafehows.model.CategoryDTO;
 import cafehows.model.CustomerDTO;
 import cafehows.model.MenuDTO;
 import cafehows.model.OrderDTO;
+import exceptions.UnsuitableInputException;
 import cafehows.model.EmployeeDTO;
 
 public class  PayrollCostDialog extends JDialog{
@@ -32,6 +34,7 @@ public class  PayrollCostDialog extends JDialog{
 	private JTextField startPeriod,endPeriod;
 	private JTable employeeTable, employeeHourTable,employeeWageTable;
 	private PayrollCostDialog payrollCostDialog;
+	private static final String REGEXP_DATE = "^[\\d]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
 
 	public PayrollCostDialog() {
 		this.payrollCostDialog = this;
@@ -387,7 +390,8 @@ public class  PayrollCostDialog extends JDialog{
 			enterBtn.setText("조회");
 			enterBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					
+					validateDate(startPeriod);
+					validateDate(endPeriod);
 					refreshEmployeeHourTable();
 					refreshEmployeeWageTable();
 
@@ -447,7 +451,7 @@ public class  PayrollCostDialog extends JDialog{
 		tableModel.setNumRows(0);
 
 		for(EmployeeDTO dto : CafeDAO.getInstance().getEmployeeWageItemsbyPeriod(
-				Integer.parseInt(startPeriod.getText()),Integer.parseInt(endPeriod.getText()))
+			startPeriod.getText(),endPeriod.getText())
 				) {
 			String eno = dto.getEno()==0 ? "합계" : Integer.toString(dto.getEno());
 			Object[] rowData = {eno,dto.getEname(),dto.getStartDate()+"~"+dto.getEndDate(),dto.getWage(),dto.getHolidayPay(),dto.getTotalSalary()};
@@ -502,12 +506,19 @@ public class  PayrollCostDialog extends JDialog{
 		tableModel.setNumRows(0);
 
 		for(EmployeeDTO dto : CafeDAO.getInstance().getEmployeeHourItemsbyPeriod(
-				Integer.parseInt(startPeriod.getText()),Integer.parseInt(endPeriod.getText()))
+				startPeriod.getText(),endPeriod.getText())
 				) {
 			Object[] rowData = {dto.getEno(),dto.getEname(),dto.getDate(),dto.getHour(),dto.getWage()};
 			tableModel.addRow(rowData);
 			
 		}
+	}
+	private void validateDate(JTextField period) throws  UnsuitableInputException {
+		
+		if(!Pattern.matches(REGEXP_DATE,period.getText().trim()))
+			throw new UnsuitableInputException("yyyy-MM-dd 형식이 잘못 입력되었습니다");
+	
+	
 	}
 	
 	private void locationCenter() {
