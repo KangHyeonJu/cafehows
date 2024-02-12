@@ -10,6 +10,7 @@ public class CustomerDTO {
 	private int point;
 	private Date recdate;
 	private int visibility;
+	private String phoneNumber;
 	public int getCno() {
 		return cno;
 	}
@@ -34,6 +35,7 @@ public class CustomerDTO {
 	public void setVisibility(int visibility) {
 		this.visibility = visibility;
 	}
+	
 	
 	
 }

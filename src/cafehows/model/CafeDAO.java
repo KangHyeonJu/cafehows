@@ -18,8 +18,8 @@ import com.mysql.cj.exceptions.RSAException;
 
 public class CafeDAO {
 	private static final CafeDAO instance = new CafeDAO();
-	private final String url = "jdbc:mysql://222.119.100.89:3382/cafehows?autoReconnect=true";
-	//private final String url = "jdbc:mysql://222.119.100.89:3382/cafehows";
+	//private final String url = "jdbc:mysql://222.119.100.89:3382/cafehows?autoReconnect=true";
+	private final String url = "jdbc:mysql://222.119.100.89:3382/cafehows";
 
 	private final String user = "cafehows";
 	private final String password = "codehows213";
@@ -39,6 +39,7 @@ public class CafeDAO {
 			conn = DriverManager.getConnection(url, user, password);
 		}catch(SQLException e) {
 			e.printStackTrace();
+		
 		}catch(ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -207,9 +208,10 @@ public class CafeDAO {
 			while(rs.next()) {
 				CustomerDTO item = new CustomerDTO();
 				item.setCno(rs.getInt(1));
-				item.setPoint(rs.getInt(2));
-				item.setRecdate(rs.getDate(3));
-				item.setVisibility(rs.getInt(4));
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
 				items.add(item);
 			}
 			close();
@@ -220,20 +222,24 @@ public class CafeDAO {
 	}
 	
 
-	public CustomerDTO getCustomerItemByCno(int cno) {
+	public CustomerDTO getCustomerItemByCno(String phone) {
 		connect();
 		CustomerDTO item = new CustomerDTO();
-		sql = "select * from customer where cno=? ";
+		sql = "select * from customer where phonenumber=? and visibility=1";
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, cno);
+			pstmt.setString(1, phone);
 			rs = pstmt.executeQuery();
+			int rows = pstmt.executeUpdate();
 			if(rs.next()) {
 				item.setCno(rs.getInt(1));
-				item.setPoint(rs.getInt(2));
-				item.setRecdate(rs.getDate(3));
-				item.setVisibility(rs.getInt(4));
-		
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
+				
+			}else {
+				JOptionPane.showMessageDialog(null,"존재하지 않는 회원입니다.","확인",JOptionPane.WARNING_MESSAGE);
 			}
 			close();
 		} catch (SQLException e) {
@@ -241,6 +247,34 @@ public class CafeDAO {
 		}
 		return item;
 	}
+
+	public CustomerDTO getCustomerItemByCnoAI(int cno) {
+		connect();
+		CustomerDTO item = new CustomerDTO();
+		sql = "select * from customer where cno=? and visibility=1";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, cno);
+			rs = pstmt.executeQuery();
+			int rows = pstmt.executeUpdate();
+			if(rs.next()) {
+				item.setCno(rs.getInt(1));
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
+				
+			}else {
+				JOptionPane.showMessageDialog(null,"존재하지 않는 회원입니다.","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return item;
+	}
+
+	
 	public List<CustomerDTO> getCustomerState() {
 		connect();
 		sql = "select * from customer order by cno ";
@@ -251,9 +285,10 @@ public class CafeDAO {
 			while(rs.next()) {
 				CustomerDTO item = new CustomerDTO();
 				item.setCno(rs.getInt(1));
-				item.setPoint(rs.getInt(2));
-				item.setRecdate(rs.getDate(3));
-				item.setVisibility(rs.getInt(4));
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
 
 				items.add(item);
 
@@ -276,7 +311,10 @@ public class CafeDAO {
 			while(rs.next()) {
 				CustomerDTO item = new CustomerDTO();
 				item.setCno(rs.getInt(1));
-				item.setRecdate(rs.getDate(3));
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
 				items.add(item);
 
 			}
@@ -740,7 +778,7 @@ public class CafeDAO {
 			pstmt.setInt(2, employee.getStatus());
 			int rows = pstmt.executeUpdate();
 			rs = pstmt.getGeneratedKeys();
-			w
+			
 			if(rs.next()) {
 				eno = rs.getBigDecimal(1).intValue();
 				
@@ -814,19 +852,19 @@ public class CafeDAO {
 		}
 	}
 	
-	public void updatePoint(CustomerDTO board, int cno) {
+	public void updatePoint(CustomerDTO board, String phone) {
 		connect();
 		try {
 			sql = new StringBuilder()
 					.append("UPDATE customer SET ")
 					.append("recdate = now(),")
 					.append("point=? ")
-					.append("WHERE cno=?")
+					.append("WHERE phonenumber=? and visibility=1")
 					.toString();
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, board.getPoint());
-			pstmt.setInt(2, cno);
+			pstmt.setString(2, phone);
 			
 			pstmt.executeUpdate();
 		}catch (SQLException e) {
@@ -891,18 +929,16 @@ public class CafeDAO {
 	
 	
 	
-	public void deleteCustomer(CustomerDTO board, int cno) {
+	public void deleteCustomer(String phonenumber) {
 		connect();
 		try {
-			sql = new StringBuilder()
-					.append("UPDATE customer SET ")
-					.append("visibility=? ")
-					.append("WHERE cno=?;")
-					.toString();
+			sql = "update customer set"
+					+"visibility = 0"
+					+"where phonenumber=? and visibility =1";
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, 0);
-			pstmt.setInt(2, cno);
+		
+			pstmt.setString(1, phonenumber);
 			
 			pstmt.executeUpdate();
 		}catch (SQLException e) {
@@ -920,10 +956,10 @@ public class CafeDAO {
 		try {
 			connect();
 			sql = "" + 
-					"INSERT INTO customer(cno, recdate, visibility) " + 
+					"INSERT INTO customer(phonenumber, recdate, visibility) " + 
 					"VALUES(?, now(), 1);";
 			pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			pstmt.setInt(1, customer.getCno());
+			pstmt.setString(1, customer.getPhoneNumber());
 			
 			pstmt.executeUpdate();
 		}catch (SQLException e) {
@@ -936,6 +972,34 @@ public class CafeDAO {
 			}
 		}
 	}
+	//전화번호 변경
+	public void updateCustomer(CustomerDTO customer,String phoneNumber) {
+		try {
+			connect();
+			sql="""
+					update customer
+					set phonenumber=?
+					where phonenumber=?
+					and visibility=1
+					""";
+			pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			pstmt.setString(1, phoneNumber);
+			pstmt.setString(2, customer.getPhoneNumber());
+
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	
 
 	public void deleteMenu(String menuName) {
 		connect();
@@ -1179,7 +1243,7 @@ public class CafeDAO {
 				
 			}
 			if(rows == 1) {
-				JOptionPane.showMessageDialog(null,"주문목록에 추가되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null,"주문번호"+ono+"인 주문 결제되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
 			}else {
 				JOptionPane.showMessageDialog(null,"주문목록에 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 			}
@@ -1321,16 +1385,16 @@ public class CafeDAO {
 		return menuboard;
 	}
 	//고객 재가입
-	public void reSign(CustomerDTO customer) {
+	public void reSign(String phoneNumber) {
 		connect();
 		sql = """
 				update customer
-				set visibility ='1', point = '0'
-				where cno = ?;
+				set visibility =1, point = 0
+				where phonenumber=? and visibility=0;
 				""";
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, customer.getCno());
+			pstmt.setString(1,phoneNumber);
 			int rows = pstmt.executeUpdate();
 			if(rows == 1) {
 				JOptionPane.showMessageDialog(null,"재등록이 되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
@@ -1345,28 +1409,29 @@ public class CafeDAO {
 	}
 	
 	//고객 검색창
-	public List<CustomerDTO> searchKeywordCustomer(String cno) {
+	public List<CustomerDTO> searchKeywordCustomer(String phonenumber) {
 		connect();
-		sql = "select cno, point, recdate, visibility  from customer where cno like ?";
-		List<CustomerDTO> boards = new ArrayList<>();
+		sql = "select *  from customer where phonenumber=?";
+		List<CustomerDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%"+cno+"%");
+			pstmt.setString(1, phonenumber);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				CustomerDTO dto = new CustomerDTO();
-				dto.setCno(rs.getInt("cno"));
-				dto.setPoint(rs.getInt("point"));
-				dto.setRecdate(rs.getDate("recdate"));
-				dto.setVisibility(rs.getInt("visibility"));
-				boards.add(dto);
+				CustomerDTO item = new CustomerDTO();
+				item.setCno(rs.getInt(1));
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
+				items.add(item);
 			}
 			close();
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return boards;
+		return items;
 	}
 
 	//주문번호 검색

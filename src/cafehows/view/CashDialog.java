@@ -153,14 +153,14 @@ public class CashDialog extends JDialog{
 
 					cDTO.setPoint(paymentDialog.getPoint()-paymentDialog.getUsePoint()+(int)(paymentDialog.getFinalPrice()*0.03));
 
-					CafeDAO.getInstance().updatePoint(cDTO, paymentDialog.getCno());
+					CafeDAO.getInstance().updatePoint(cDTO, paymentDialog.getPhonenumber());
+		
+					}
 					main.getOrderList().clear();
 					main.refreshOrderList();
-					CashDialog.this.dispose();
-
+					dispose();
 
 					paymentDialog.dispose();
-					}
 				
 		
 				}
