@@ -180,6 +180,149 @@ public class CafeDAO {
 		
 		return items;
 	}
+	public List<MenuDTO> getDailyMenuSales() {
+		connect();
+		sql = """
+				select date(date),mno,sum(count) 
+				from menusales 
+				group by mno,date;
+		
+				""";
+		List<MenuDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				MenuDTO item = new MenuDTO();
+				item.setDate(rs.getDate(1));
+				item.setMno(rs.getInt(2));
+				item.setCumCount(rs.getInt(3));
+				String sql2 = "select mname from menu where mno = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(2));
+				
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setMname(rs2.getString(1));}
+				else {}
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
+	}
+	public List<MenuDTO> getWeeklyMenuSales(String date) {
+		connect();
+		sql = """
+				SELECT DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y/%m/%d') as start,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y/%m/%d') as end,
+				DATE_FORMAT(date, '%Y%U') AS date,
+				mno,
+				sum(count)
+				FROM menusales
+				GROUP BY date,mno;
+		
+				""";
+		List<MenuDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, date);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				MenuDTO item = new MenuDTO();
+				item.setStartdate(rs.getDate(1));
+				item.setEnddate(rs.getDate(2));
+				item.setMno(rs.getInt(4));
+				item.setCumCount(rs.getInt(5));
+				String sql2 = "select mname from menu where mno = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(4));
+				
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setMname(rs2.getString(1));}
+				else {}
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
+	}	public List<MenuDTO> getMonthlyMenuSales(String date) {
+		connect();
+		sql = """
+				SELECT MONTH(date) AS date,
+				sum(count)
+				FROM menusales
+				GROUP BY date,mno;
+		
+				""";
+		List<MenuDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, date);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				MenuDTO item = new MenuDTO();
+				item.setMonth(rs.getString(1));
+				item.setMno(rs.getInt(2));
+				item.setCumCount(rs.getInt(3));
+				String sql2 = "select mname from menu where mno = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(2));
+				
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setMname(rs2.getString(1));}
+				else {}
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
+	}
+//	public List<MenuDTO> getDailyMenuSales() {
+//		connect();
+//		sql = """
+//				select date(date),mno,sum(count) 
+//				from menusales 
+//				group by mno,date;
+//		
+//				""";
+//		List<MenuDTO> items = new ArrayList<>();
+//		try {
+//			pstmt = conn.prepareStatement(sql);
+//			rs = pstmt.executeQuery();
+//			while(rs.next()) {
+//				MenuDTO item = new MenuDTO();
+//				item.setDate(rs.getDate(1));
+//				item.setMno(rs.getInt(2));
+//				item.setCumCount(rs.getInt(3));
+//				String sql2 = "select mname from menu where mno = ? ";
+//				pstmt = conn.prepareStatement(sql2);
+//				pstmt.setInt(1, rs.getInt(2));
+//				
+//				ResultSet rs2 = pstmt.executeQuery();
+//				if(rs2.next()) {
+//				item.setMname(rs2.getString(1));}
+//				else {}
+//				items.add(item);
+//			}
+//			close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return items;
+//	}
 	
 	
 	public List<MenuDTO> getMDSItems() {
@@ -1353,8 +1496,8 @@ public class CafeDAO {
 //				where mno = ? 
 //				""";
 		sql = """
-				insert into menusales (ono,count,mno)
-				values (?,?,?)
+				insert into menusales (ono,count,mno,date)
+				values (?,?,?,now())
 				""";
 		
 		try {

@@ -157,9 +157,33 @@ public class SalesDialog extends JDialog{
 		}
 		
 		//탭2 panel
+		private JTabbedPane getJTabbedPane2() {
+
+				JTabbedPane menuSalesTab = new JTabbedPane();
+				menuSalesTab.setTabPlacement(JTabbedPane.TOP);
+				menuSalesTab.addTab("일간", getTab1Panel());
+				menuSalesTab.addTab("주간", getTab2Panel());
+				menuSalesTab.addTab("월간", getTab3Panel());
+	
+			return menuSalesTab;
+			}
+		private JPanel getTab1Panel2() {
+		
+				JPanel tab1Panel = new JPanel();
+				tab1panel.add()
+				tab2Panel.setLayout(new BorderLayout());
+				tab2Panel.add(new JScrollPane(getMenuSalesTable()),BorderLayout.CENTER);
+	//			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
+				
+			
+			}
+			return tab2Panel;
+		}
+		
 		private JPanel getTab2Panel() {
 			if(tab2Panel == null) {
 				tab2Panel = new JPanel();
+				tab2panel.add()
 				tab2Panel.setLayout(new BorderLayout());
 				tab2Panel.add(new JScrollPane(getMenuSalesTable()),BorderLayout.CENTER);
 	//			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
@@ -271,12 +295,12 @@ public class SalesDialog extends JDialog{
 			}
 		}
 		//메뉴별 탭
-		public void setMenuSalesTable() {
+		public void setDailyMenuSalesTable() {
 			DefaultTableModel tableModel = (DefaultTableModel) menuSalesTable.getModel();
 			tableModel.setNumRows(0);
 	
-			for(MenuDTO dto :CafeDAO.getInstance().getMenuSales()) {
-				menuList.add(dto);
+			for(MenuDTO dto :CafeDAO.getInstance().getDailyMenuSales()) {
+			//	menuList.add(dto);
 				Object[] rowData = {dto.getMname(),dto.getCumCount()};			
 				tableModel.addRow(rowData);
 				

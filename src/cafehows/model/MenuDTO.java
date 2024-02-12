@@ -19,6 +19,10 @@ public class MenuDTO {
 	private int count=1;
 	private int ice;
 	private int iceChangeable;
+	private Date date;
+	private Date startdate;
+	private Date enddate;
+	private String month;
 
 //	public void setVisibility(int visibility) {
 //		this.visibility = (visibility!=0);
