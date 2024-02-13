@@ -96,9 +96,9 @@ public class  PayrollCostDialog extends JDialog{
 			searchInput.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyReleased(KeyEvent e) {
-					String enoText = searchInput.getText();
+					//String enoText = searchInput.getText();
 					//키를 떼었을 때
-					searchKeyword(enoText);
+				//	searchKeyword(enoText);
 				}
 			});
 		

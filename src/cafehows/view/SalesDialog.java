@@ -9,10 +9,14 @@ import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.regex.Pattern;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,12 +39,14 @@ public class SalesDialog extends JDialog{
 		private JPanel tab1Panel,tab2Panel,tab3Panel,periodPanel,salesChart;
 		private JPanel pNorth,pCenter,pSouth;
 		private JTable orderListTable,dailySalesTable,menuSalesTable1,menuSalesTable2,menuSalesTable3;
-		private JTextField startPeriod,endPeriod;
+		private JTextField startPeriod1,endPeriod1,startPeriod2,endPeriod2;
 		private JButton enterBtn;
+		private JLabel avgField;
 		private ArrayList<MenuDTO> menuList= new ArrayList<>();
 //		private ArrayList<OrderDTO> orderList= new ArrayList<>();
 		private static final String REGEXP_DATE = "^[\\d]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
-		
+		private int monthTemp,yearTemp,totalFinalPrice;
+		private double avgFinalPrice;
 
 		public SalesDialog() {
 			this.setModal(true);
@@ -68,45 +74,93 @@ public class SalesDialog extends JDialog{
 				tab1Panel = new JPanel();
 				tab1Panel.setLayout(new BorderLayout());
 				
-				tab1Panel.add(getPeriodPanel(),BorderLayout.NORTH);
+				tab1Panel.add(getPeriodPanel1(),BorderLayout.NORTH);
 				tab1Panel.add(new JScrollPane(getOrderListTable()),BorderLayout.CENTER);
-				tab1Panel.add(new JScrollPane(getDailySalesTable()), BorderLayout.SOUTH);
+				
+				JPanel salesField = new JPanel();
+				salesField.setLayout(new BoxLayout(salesField,BoxLayout.Y_AXIS));
+				
+				JPanel avg = new JPanel();
+				JLabel avgLabel = new JLabel("일 평균 매출액");
+				avgField = new JLabel(Double.toString(avgFinalPrice));
+				avg.add(avgLabel);
+				avg.add(avgField);
+				
+				salesField.add(new JScrollPane(getDailySalesTable()));
+				salesField.add(avg);
+				tab1Panel.add(salesField,BorderLayout.SOUTH);
+			
+				//tab1Panel.add(new JScrollPane(getDailySalesTable()), BorderLayout.SOUTH);
+				
 			}
 			return tab1Panel;
 		}
-		public JPanel getPeriodPanel() {
-			if(periodPanel == null) {
-				periodPanel = new JPanel();
+		public JPanel getPeriodPanel1() {
+			
+				JPanel periodPanel = new JPanel();
 				JLabel inputPeriod = new JLabel();
 				inputPeriod.setText("조회기간입력");
-				startPeriod = new JTextField(10);
-				endPeriod = new JTextField(10);
+				startPeriod1 = new JTextField(10);
+				endPeriod1 = new JTextField(10);
 				periodPanel.add(inputPeriod);
-				periodPanel.add(startPeriod);
+				periodPanel.add(startPeriod1);
 				periodPanel.add(new JLabel("~"));
-				periodPanel.add(endPeriod);
-				periodPanel.add(getEnterBtn());
-			}
+				periodPanel.add(endPeriod1);
+				periodPanel.add(getEnterBtn1());
+			
 			return periodPanel;
 		}
 		
-		public JButton getEnterBtn() {
+		public JPanel getPeriodPanel2() {
+			
+			JPanel periodPanel = new JPanel();
+			JLabel inputPeriod = new JLabel();
+			inputPeriod.setText("조회기간입력");
+			startPeriod2 = new JTextField(10);
+			endPeriod2 = new JTextField(10);
+			periodPanel.add(inputPeriod);
+			periodPanel.add(startPeriod2);
+			periodPanel.add(new JLabel("~"));
+			periodPanel.add(endPeriod2);
+			periodPanel.add(getEnterBtn2());
+		
+		return periodPanel;
+	}
+	
+		public JButton getEnterBtn1() {
 			if(enterBtn==null) {
 				enterBtn = new RoundedButton();
 				enterBtn.setText("조회");
 				enterBtn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						
-						validateDate(startPeriod);
-						validateDate(endPeriod);
+						validateDate(startPeriod1);
+						validateDate(endPeriod1);
 						refreshOrderListTable();
 						refreshDailySalesTable();
-					//	startPeriod.setText("");
-					//	endPeriod.setText("");
+						avgField.setText(Double.toString(avgFinalPrice));
+//						startPeriod1.setText("");
+//						endPeriod1.setText("");
 						
 					}
 				});
 			}
+			return enterBtn;
+		}
+	
+		public JButton getEnterBtn2() {
+			
+				JButton enterBtn = new RoundedButton();
+				enterBtn.setText("조회");
+				enterBtn.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+						validateDate(startPeriod2);
+						validateDate(endPeriod2);
+						refreshDailyMenuSalesTable();
+	
+					}
+				});
+			
 			return enterBtn;
 		}
 	
@@ -150,6 +204,7 @@ public class SalesDialog extends JDialog{
 				tableModel.addColumn("매출날짜");
 				tableModel.addColumn("매출액");
 				setDailySalesTable();
+				avgField.setText(Double.toString(avgFinalPrice));
 	
 				
 			}
@@ -157,6 +212,8 @@ public class SalesDialog extends JDialog{
 		}
 		
 		//탭2 panel
+		
+		
 		private JTabbedPane getJTabbedPane2() {
 
 				JTabbedPane menuSalesTab = new JTabbedPane();
@@ -172,6 +229,7 @@ public class SalesDialog extends JDialog{
 			JPanel tab2Panel = new JPanel();
 		
 			tab2Panel.setLayout(new BorderLayout());
+			tab2Panel.add(getPeriodPanel2(),BorderLayout.NORTH);
 			tab2Panel.add(new JScrollPane(getMenuSalesTable1()),BorderLayout.CENTER);
 //			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
 			
@@ -179,10 +237,66 @@ public class SalesDialog extends JDialog{
 		
 		return tab2Panel;
 	}
+		
+		public JPanel getMonth() {
+			JPanel pMonth = new JPanel();
+			pMonth.add(getComboYear());
+			pMonth.add(getComboMonth());
+		return pMonth;
+		}
+		
+		public JComboBox getComboYear() {
+			
+			LocalDate now = LocalDate.now();
+			int startYear = 2023;
+			int year = now.getYear();
+			Vector arrYear = new Vector();
+			
+			for(int i=startYear;i<=year;i++) {
+				String yearString = i+"년";
+				arrYear.add(yearString);
+				System.out.println(yearString);
+			}
+			
+			
+			JComboBox comboYear = new JComboBox(arrYear);
+			yearTemp = comboYear.getSelectedIndex()+startYear;
+
+			comboYear.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					yearTemp = comboYear.getSelectedIndex()+startYear;
+				}
+			});
+		
+		return comboYear;
+
+	}
+		
+		public JComboBox getComboMonth() {
+			
+				String[] arrMonth = {"1월","2월","3월","4월","5월","6월",
+						"7월","8월","9월","10월","11월","12월"};
+				
+				JComboBox<String> comboMonth = new JComboBox<String>(arrMonth);
+				monthTemp = comboMonth.getSelectedIndex()+1;
+				comboMonth.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						monthTemp = comboMonth.getSelectedIndex()+1;
+						refreshWeeklyMenuSalesTable();
+						
+						
+					}
+				});
+			
+			return comboMonth;
+		
+		}
+		
 		private JPanel getTab1Panel2() {
 		
 				JPanel tab2Panel = new JPanel();
 				tab2Panel.setLayout(new BorderLayout());
+				tab2Panel.add(getMonth(),BorderLayout.NORTH);
 				tab2Panel.add(new JScrollPane(getMenuSalesTable2()),BorderLayout.CENTER);
 	//			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
 				
@@ -195,6 +309,7 @@ public class SalesDialog extends JDialog{
 			JPanel tab2Panel = new JPanel();
 		
 			tab2Panel.setLayout(new BorderLayout());
+			tab2Panel.add(getMonth(),BorderLayout.NORTH);
 			tab2Panel.add(new JScrollPane(getMenuSalesTable3()),BorderLayout.CENTER);
 //			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
 			
@@ -284,33 +399,7 @@ public class SalesDialog extends JDialog{
 			}
 			return tab3Panel;
 		}
-		
-		
-//		public class CenterTableCellRenderer extends JLabel implements TableCellRenderer {
-//			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-//				setText(value.toString());
-//				setFont(new Font(null, Font.PLAIN, 12));
-//				setHorizontalAlignment(JLabel.CENTER);
-//				setOpaque(true);
-//				if(isSelected) { setBackground(Color.YELLOW); } 
-//				else { setBackground(Color.WHITE); }
-//				return this;
-//			}
-//		}	
-		
-//		public JPanel getSalesChart() {
-//			if(salesChart==null) {
-//				salesChart = new JPanel();
-//				List<MenuDTO> menuSales= CafeDAO.getInstance().getMenuSales();
-//				
-//			
-//				for(MenuDTO m : menuSales) {
-//					
-//				}
-//			}
-//			return salesChart;
-//		}
-//		
+
 		
 		public void setOrderListTable() {
 			DefaultTableModel tableModel = (DefaultTableModel) orderListTable.getModel();
@@ -329,7 +418,7 @@ public class SalesDialog extends JDialog{
 			tableModel.setNumRows(0);
 	
 			for(OrderDTO dto :CafeDAO.getInstance().getOrderItemsbyPeriod(
-				startPeriod.getText(),endPeriod.getText())
+				startPeriod1.getText(),endPeriod1.getText())
 					) {
 				Object[] rowData = {dto.getDate(), dto.getOno(),dto.getPrice(),dto.getFinalprice()};
 				tableModel.addRow(rowData);
@@ -340,25 +429,32 @@ public class SalesDialog extends JDialog{
 		public void setDailySalesTable() {
 			DefaultTableModel tableModel = (DefaultTableModel) dailySalesTable.getModel();
 			tableModel.setNumRows(0);
-			
+			totalFinalPrice=0;
+			avgFinalPrice=0;
 			for(OrderDTO dto : CafeDAO.getInstance().getDailySales()) {
 				Object[] rowData = {dto.getDate(),dto.getFinalprice()};
 				tableModel.addRow(rowData);
+				totalFinalPrice+=dto.getFinalprice();
 				
 			}
+			avgFinalPrice=(double)totalFinalPrice/CafeDAO.getInstance().getDailySales().size();
+			
 		}
 		
 		public void refreshDailySalesTable() {
 			DefaultTableModel tableModel = (DefaultTableModel) dailySalesTable.getModel();
 			tableModel.setNumRows(0);
-	
+			totalFinalPrice=0;
+			avgFinalPrice=0;
 			for(OrderDTO dto :CafeDAO.getInstance().getDailySalesbyPeriod(
-					startPeriod.getText(),endPeriod.getText())
+					startPeriod1.getText(),endPeriod1.getText())
 					) {
 				Object[] rowData = {dto.getDate(),dto.getFinalprice()};
 				tableModel.addRow(rowData);
-				
+				totalFinalPrice+=dto.getFinalprice();
 			}
+			avgFinalPrice=(double)totalFinalPrice/CafeDAO.getInstance().getDailySalesbyPeriod(
+					startPeriod1.getText(),endPeriod1.getText()).size();
 		}
 		//메뉴별 탭
 		
@@ -383,6 +479,19 @@ public class SalesDialog extends JDialog{
 				
 			}
 		}
+		public void refreshDailyMenuSalesTable() {
+			DefaultTableModel tableModel = (DefaultTableModel) menuSalesTable1.getModel();
+			tableModel.setNumRows(0);
+	
+			for(MenuDTO dto :CafeDAO.getInstance().getDailyMenuSales(
+					startPeriod2.getText(),endPeriod2.getText())) {
+				Object[] rowData = {dto.getDate(),dto.getMname(),dto.getCumCount()};			
+				tableModel.addRow(rowData);
+				
+			}
+		}
+		
+		
 		public void setWeeklyMenuSalesTable() {
 			DefaultTableModel tableModel = (DefaultTableModel) menuSalesTable2.getModel();
 			tableModel.setNumRows(0);
@@ -394,11 +503,33 @@ public class SalesDialog extends JDialog{
 				
 			}
 		}
+		public void refreshWeeklyMenuSalesTable() {
+			DefaultTableModel tableModel = (DefaultTableModel) menuSalesTable2.getModel();
+			tableModel.setNumRows(0);
+	
+			for(MenuDTO dto :CafeDAO.getInstance().getWeeklyMenuSales(yearTemp,monthTemp)) {
+			//	menuList.add(dto);
+				Object[] rowData = {dto.getStartdate()+"~"+dto.getEnddate(),dto.getMname(),dto.getCumCount()};			
+				tableModel.addRow(rowData);
+				
+			}
+		}
 		public void setMonthlyMenuSalesTable() {
 			DefaultTableModel tableModel = (DefaultTableModel) menuSalesTable3.getModel();
 			tableModel.setNumRows(0);
 	
 			for(MenuDTO dto :CafeDAO.getInstance().getMonthlyMenuSales()) {
+			//	menuList.add(dto);
+				Object[] rowData = {dto.getMonth(),dto.getMname(),dto.getCumCount()};			
+				tableModel.addRow(rowData);
+				
+			}
+		}
+		public void refreshMonthlyMenuSalesTable() {
+			DefaultTableModel tableModel = (DefaultTableModel) menuSalesTable3.getModel();
+			tableModel.setNumRows(0);
+	
+			for(MenuDTO dto :CafeDAO.getInstance().getMonthlyMenuSales(yearTemp,monthTemp)) {
 			//	menuList.add(dto);
 				Object[] rowData = {dto.getMonth(),dto.getMname(),dto.getCumCount()};			
 				tableModel.addRow(rowData);
