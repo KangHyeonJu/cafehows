@@ -161,7 +161,7 @@ public class SalesDialog extends JDialog{
 
 				JTabbedPane menuSalesTab = new JTabbedPane();
 				menuSalesTab.setTabPlacement(JTabbedPane.TOP);
-				menuSalesTab.addTab("일간", getTab1Panel());
+				menuSalesTab.addTab("기간 선택", getTab1Panel());
 				menuSalesTab.addTab("주간", getTab2Panel());
 				menuSalesTab.addTab("월간", getTab3Panel());
 	
