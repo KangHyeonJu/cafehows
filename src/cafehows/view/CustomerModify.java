@@ -215,6 +215,12 @@ public class CustomerModify extends JDialog{
 						validatePhoneNumber();
 						CustomerDTO customerDTO = new CustomerDTO();
 						customerDTO.setPhoneNumber(txtCustomerNum.getText().trim());
+//						for(CustomerDTO c : CafeDAO.getInstance().getCustomerState()) {
+//							if(c.getPhoneNumber().equals( Integer.parseInt(txtCustomerNum.getText()))
+//								)
+//							{	JOptionPane.showMessageDialog(null,"중복 회원이 존재합니다.","확인",JOptionPane.WARNING_MESSAGE);}
+//							return;
+//						}
 						CafeDAO.getInstance().insertCustomer(customerDTO);
 						JOptionPane.showMessageDialog(null,"등록되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
 						customerDialog.refreshTable();
