@@ -70,7 +70,7 @@ public class CustomerModify extends JDialog{
 	public JPanel getNotice() {
 		if(pNotice == null){
 			pNotice = new JPanel();
-			pNotice.add(new JLabel("010을 제외한 번호 8자리를 입력해주세요."));
+			pNotice.add(new JLabel("전화번호를 입력해주세요."));
 		}
 		return pNotice;
 	}

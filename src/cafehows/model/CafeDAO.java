@@ -1391,7 +1391,7 @@ public class CafeDAO {
 	public CategoryDTO getCategoryBykind(String kind) {
 		connect();
 		CategoryDTO item = new CategoryDTO();
-		sql = "select * from category where kind = ?";
+		sql = "select * from category where kind = ?;";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, kind);
@@ -1412,7 +1412,7 @@ public class CafeDAO {
 	public CategoryDTO getCategoryByCano(int cano) {
 		connect();
 		CategoryDTO item = new CategoryDTO();
-		sql = "select * from category where cano = ?";
+		sql = "select * from category where cano = ?;";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, cano);
@@ -1435,7 +1435,7 @@ public class CafeDAO {
 		connect();
 		sql = """
 				insert into menu (mname,price,cano,ice,icechangeable)
-				values (?,?,?,?,?)
+				values (?,?,?,?,?);
 				""";
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -1461,7 +1461,7 @@ public class CafeDAO {
 		connect();
 		sql = """
 				insert into orderlist (cno,date,price,finalprice)
-				values (?,now(),?,?)
+				values (?,now(),?,?);
 				""";
 		try {
 			pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -1497,7 +1497,7 @@ public class CafeDAO {
 //				""";
 		sql = """
 				insert into menusales (ono,count,mno,date)
-				values (?,?,?,now())
+				values (?,?,?,now());
 				""";
 		
 		try {
@@ -1523,7 +1523,7 @@ public class CafeDAO {
 		connect();
 		sql = """
 				insert into category (kind, visibility)
-				values (?,1)
+				values (?,1);
 				""";
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -1547,7 +1547,7 @@ public class CafeDAO {
 		sql = """
 				update category 
 				set kind =? 
-				where cano = ? 
+				where cano = ? ;
 				""";
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -1591,7 +1591,7 @@ public class CafeDAO {
 
 	public List<MenuDTO> searchKeyword(String keyword){
 		connect();
-		sql = "select * from menu where mname like ?";
+		sql = "select * from menu where mname like ?;";
 		List<MenuDTO> menuboard = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -1604,7 +1604,7 @@ public class CafeDAO {
 				board.setPrice(rs.getInt(3));
 				board.setCano(rs.getInt(5));
 				
-				String sql2 = "select kind from category where cano = ? ";
+				String sql2 = "select kind from category where cano = ? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(5));
 				ResultSet rs2 = pstmt.executeQuery();
@@ -1644,11 +1644,11 @@ public class CafeDAO {
 	//고객 검색창
 	public List<CustomerDTO> searchKeywordCustomer(String phonenumber) {
 		connect();
-		sql = "select *  from customer where phonenumber=?";
+		sql = "select *  from customer where phonenumber like ?;";
 		List<CustomerDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, phonenumber);
+			pstmt.setString(1, "%"+phonenumber+"%");
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				CustomerDTO item = new CustomerDTO();
@@ -1670,7 +1670,7 @@ public class CafeDAO {
 	//주문번호 검색
 	public List<OrderDTO> searchOrderKeyword(String keyword){
 		connect();
-		sql = "select ono, date, price, finalprice from orderlist where ono like ?";
+		sql = "select ono, date, price, finalprice from orderlist where ono like ?;";
 		List<OrderDTO> orderList = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);

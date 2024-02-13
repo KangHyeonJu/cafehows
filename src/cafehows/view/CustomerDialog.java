@@ -74,7 +74,7 @@ public class CustomerDialog extends JDialog{
 			searchPanel = new JPanel();
 			searchPanel.add(getSearchCno());
 			searchPanel.add(getSearchBar());
-			searchPanel.add(getSearchBtn());
+//			searchPanel.add(getSearchBtn());
 			searchPanel.add(getInitBtn());
 		}
 		return searchPanel;
@@ -102,23 +102,23 @@ public class CustomerDialog extends JDialog{
 		}
 		return searchInput;
 	}
-	public JButton getSearchBtn() {
-		
-			JButton searchBtn = new RoundedButton();
-			searchBtn.setText("검색");
-			//JLabel btnImage = new JLabel();
-			//btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
-			//searchBtn.add(btnImage);
-			searchBtn.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					searchKeyword(searchInput.getText());
-				}
-			});
-			
-		
-		return searchBtn;
-	}
+//	public JButton getSearchBtn() {
+//		
+//			JButton searchBtn = new RoundedButton();
+//			searchBtn.setText("검색");
+//			//JLabel btnImage = new JLabel();
+//			//btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
+//			//searchBtn.add(btnImage);
+//			searchBtn.addActionListener(new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					searchKeyword(searchInput.getText());
+//				}
+//			});
+//			
+//		
+//		return searchBtn;
+//	}
 
 
 	public JButton getInitBtn() {
@@ -188,7 +188,7 @@ public class CustomerDialog extends JDialog{
 	}
 	public JButton getBtnModify() {
 		
-		JButton btnModify = new JButton();
+		JButton btnModify = new RoundedButton();
 			btnModify.setText("수정");
 			btnModify.addActionListener(new ActionListener() {
 				@Override
@@ -211,7 +211,7 @@ public class CustomerDialog extends JDialog{
 	
 	public JButton getBtnHide() {
 		
-		JButton btnHide = new JButton();
+		JButton btnHide = new RoundedButton();
 			btnHide.setText("탈퇴");
 			btnHide.addActionListener(new ActionListener() {
 				
@@ -233,7 +233,7 @@ public class CustomerDialog extends JDialog{
 	
 	public JButton getBtnShow() {
 		
-		JButton btnShow = new JButton();
+		JButton btnShow = new RoundedButton();
 			btnShow.setText("재가입");
 			btnShow.addActionListener(new ActionListener() {
 				
