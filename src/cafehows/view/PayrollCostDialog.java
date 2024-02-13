@@ -432,6 +432,12 @@ public class  PayrollCostDialog extends JDialog{
 			setEmployeeWageTable();
 			resizeColumnWidth(employeeWageTable);
 			
+			employeeWageTable.getColumn("직원번호").setPreferredWidth(10);
+			employeeWageTable.getColumn("직원이름").setPreferredWidth(15);
+			employeeWageTable.getColumn("급여").setPreferredWidth(20);
+			employeeWageTable.getColumn("주휴수당").setPreferredWidth(20);
+			employeeWageTable.getColumn("총 급여").setPreferredWidth(20);
+			
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 			TableColumnModel tcm =employeeWageTable.getColumnModel();

@@ -173,7 +173,7 @@ public class CostPanel extends JPanel{
 		return pPayrollCost;
 	}
 	public JButton getPayrollCostInputBtn() {
-		JButton payrollCostInputBtn= new JButton();
+		JButton payrollCostInputBtn= new RoundedButton();
 		payrollCostInputBtn.setText("등록");
 		payrollCostInputBtn.addActionListener(e -> {
 			PayrollCostDialog payrollCostDialog = new PayrollCostDialog();
