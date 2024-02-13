@@ -128,10 +128,7 @@ public class Main extends JFrame{
 			
 			menuTable.getColumn("메뉴명").setPreferredWidth(50);
 			menuTable.getColumn("가격").setPreferredWidth(20);
-			
-//			CenterTableCellRenderer ctcr = new CenterTableCellRenderer();
-//			menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
-//			menuTable.getColumn("가격").setCellRenderer(ctcr);
+
 //			
 			//오른쪽클릭하면 수량 선택 창 구현해야함
 			menuTable.addMouseListener(new MouseAdapter() {
@@ -167,10 +164,7 @@ public class Main extends JFrame{
 							}
 							orderList.add(menuDTO);
 							refreshOrderList();
-							
-							for(MenuDTO dto2 : orderList) {
-								System.out.println(dto2);
-							}	
+					
 								
 						}
 
@@ -186,21 +180,6 @@ public class Main extends JFrame{
 		return menuTable;
 	}
 
-	
-
-
-//	public class CenterTableCellRenderer extends JLabel implements TableCellRenderer {
-//		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-//			setText(value.toString());
-//			setFont(new Font(null, Font.PLAIN, 12));
-//			setHorizontalAlignment(JLabel.CENTER);
-//			setOpaque(true);
-//			if(isSelected) { setBackground(Color.YELLOW); } 
-//			else { setBackground(Color.WHITE); }
-//			return this;
-//		}
-//	}	
-	
 	public JPanel getOrderPanel() {
 		if(orderPanel==null) {
 			orderPanel = new JPanel();

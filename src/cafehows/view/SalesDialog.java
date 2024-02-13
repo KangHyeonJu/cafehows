@@ -63,15 +63,26 @@ public class SalesDialog extends JDialog{
 			if(salesTab == null) {
 				salesTab = new JTabbedPane();
 				salesTab.setTabPlacement(JTabbedPane.TOP);
-				salesTab.addTab("매출액", getTab1Panel());
+				salesTab.addTab("매출액", getJTabbedPane1());
 				salesTab.addTab("메뉴별", getJTabbedPane2());
 				salesTab.addTab("운영비", getTab3Panel());
 				}
 			return salesTab;
 			}
-		private JPanel getTab1Panel() {
-			if(tab1Panel == null) {
-				tab1Panel = new JPanel();
+		private JTabbedPane getJTabbedPane1() {
+
+			JTabbedPane salesTab = new JTabbedPane();
+			salesTab.setTabPlacement(JTabbedPane.TOP);
+			salesTab.addTab("일간", getTab1Panel11());
+			salesTab.addTab("주간", getTab1Panel12());
+			salesTab.addTab("월간", getTab1Panel13());
+
+		return salesTab;
+		}
+		//일간 table 날라감
+		private JPanel getTab1Panel11() {
+			
+			JPanel tab1Panel = new JPanel();
 				tab1Panel.setLayout(new BorderLayout());
 				
 				tab1Panel.add(getPeriodPanel1(),BorderLayout.NORTH);
@@ -92,7 +103,41 @@ public class SalesDialog extends JDialog{
 			
 				//tab1Panel.add(new JScrollPane(getDailySalesTable()), BorderLayout.SOUTH);
 				
-			}
+			
+			return tab1Panel;
+		}
+		private JPanel getTab1Panel12() {
+			//table refresh 필요
+				JPanel tab1Panel = new JPanel();
+				tab1Panel.setLayout(new BorderLayout());
+				
+				tab1Panel.add(getMonth(),BorderLayout.NORTH);
+				tab1Panel.add(new JScrollPane(getDailySalesTable()),BorderLayout.CENTER);
+
+				JPanel avg = new JPanel();
+				JLabel avgLabel = new JLabel("주 평균 매출액");
+				avgField = new JLabel(Double.toString(avgFinalPrice));
+				avg.add(avgLabel);
+				avg.add(avgField);
+	
+				tab1Panel.add(avg,BorderLayout.SOUTH);
+			
+			return tab1Panel;
+		}
+		private JPanel getTab1Panel13() {
+		
+			JPanel tab1Panel = new JPanel();
+			tab1Panel.setLayout(new BorderLayout());
+			
+			tab1Panel.add(new JScrollPane(getDailySalesTable()),BorderLayout.CENTER);
+
+			JPanel avg = new JPanel();
+			JLabel avgLabel = new JLabel("월 평균 매출액");
+			avgField = new JLabel(Double.toString(avgFinalPrice));
+			avg.add(avgLabel);
+			avg.add(avgField);
+
+			tab1Panel.add(avg,BorderLayout.SOUTH);
 			return tab1Panel;
 		}
 		public JPanel getPeriodPanel1() {
