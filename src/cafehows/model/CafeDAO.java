@@ -51,43 +51,6 @@ public class CafeDAO {
 		if ( pstmt != null ) pstmt.close();
 		if ( conn != null ) conn.close();
 	}
-	
-	public void insertCustomerWage() {
-		connect();
-		sql= """
-				insert into employeewage (eno,startdate,enddate,wage,holidaypay) 
-				SELECT eno,
-				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
-				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
-				sum(hour*wage),if(sum(hour)>=40,8*wage,sum(hour)/5*wage)
-				FROM employeehour
-				GROUP BY    DATE_FORMAT(date, '%Y%U'),eno;
-				""";
-		try {
-			Statement stmt = conn.createStatement();
-			stmt.execute(sql);
-			
-			close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void deleteCustomerWage() {
-		connect();
-		sql= """
-				truncate table employeewage
-
-				""";
-		try {
-			Statement stmt = conn.createStatement();
-			stmt.execute(sql);
-			
-			close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public List<MenuDTO> getItems(int cano) {
 		connect();
@@ -669,11 +632,22 @@ public class CafeDAO {
 		connect();
 		int monthlyPayrollCost=0;
 		sql="""
-				select sum(wage)+sum(holidaypay)
-				from employeewage
-                where year(enddate)=? and month(enddate)=?
-				group by enddate
-				with rollup
+			select 
+			sum(totalmoney)+sum(e.forty+e.underforty) 
+				 from 
+				   (SELECT   eno,
+				     DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+				      DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+				      DATE_FORMAT(date, '%Y%U') AS datecolumn,
+				      sum(hour*wage) as totalMoney,
+				      sum(hour) as totalHour,
+				      if(sum(hour) >= 40, 8*wage, 0) as forty,
+				      if(sum(hour)<15,0,if(sum(hour)<40,sum(hour)/5*wage,0)) as underforty
+				 FROM employeehour
+				 GROUP BY  DATE_FORMAT(date, '%Y%U'),eno) as e
+				where year(e.end)=? and month(e.end)=?
+                GROUP BY datecolumn,eno
+				with rollup;
 				""";
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -837,13 +811,62 @@ public class CafeDAO {
 		return items;
 	}
 	
+//	public List<EmployeeDTO> getEmployeeWageItems() {
+//		connect();
+//		sql = """
+//				select eno,startdate,enddate,sum(wage),sum(holidaypay)
+//				from employeewage
+//				group by startdate,eno
+//				with rollup
+//				""";
+//	
+//		List<EmployeeDTO> items = new ArrayList<>();
+//		try {
+//			pstmt = conn.prepareStatement(sql);
+//			rs = pstmt.executeQuery();
+//			while(rs.next()) {
+//				EmployeeDTO item = new EmployeeDTO();
+//				item.setEno(rs.getInt(1));
+//				item.setStartDate(rs.getDate(2));
+//				item.setEndDate(rs.getDate(3));
+//				item.setWage(rs.getInt(4));
+//				item.setHolidayPay(rs.getInt(5));
+//				item.setTotalSalary(item.getWage()+item.getHolidayPay());
+//				
+//				String sql2 = "select ename from employee where eno=? ";
+//				pstmt = conn.prepareStatement(sql2);
+//				pstmt.setInt(1, rs.getInt(1));
+//				ResultSet rs2 = pstmt.executeQuery();
+//				if(rs2.next()) {
+//				item.setEname(rs2.getString(1));}
+//				
+//				items.add(item);
+//			}
+//			close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return items;
+//	}
+	
 	public List<EmployeeDTO> getEmployeeWageItems() {
 		connect();
 		sql = """
-				select eno,startdate,enddate,sum(wage),sum(holidaypay)
-				from employeewage
-				group by startdate,eno
-				with rollup
+				select e.eno, e.start, e.end, 
+				sum(totalmoney),sum(e.forty+e.underforty) as addMoney 
+				 from 
+				   (SELECT   eno,
+				     DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+				      DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+				      DATE_FORMAT(date, '%Y%U') AS datecolumn,
+				      sum(hour*wage) as totalMoney,
+				      sum(hour) as totalHour,
+				      if(sum(hour) >= 40, 8*wage, 0) as forty,
+				      if(sum(hour)<15,0,if(sum(hour)<40,sum(hour)/5*wage,0)) as underforty
+				 FROM employeehour
+				 GROUP BY  DATE_FORMAT(date, '%Y%U'),eno) as e
+				GROUP BY datecolumn,eno
+				with rollup;
 				""";
 	
 		List<EmployeeDTO> items = new ArrayList<>();
@@ -926,18 +949,25 @@ public class CafeDAO {
 		connect();
 //		
 		sql = """
-				select eno,startdate,enddate,sum(wage),sum(holidaypay)
-				from employeewage
-               	WHERE (STR_TO_DATE(?,'%Y-%m-%d') between DATE(startdate) and DATE(enddate)) 
-				or (STR_TO_DATE(?,'%Y-%m-%d') between DATE(startdate) and DATE(enddate)) 
-				group by startdate,eno
+				select e.eno, e.start, e.end, 
+				sum(totalmoney),sum(e.forty+e.underforty) as addMoney 
+				 from 
+				  (SELECT   eno,
+				    DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+				     DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+				     DATE_FORMAT(date, '%Y%U') AS datecolumn,
+				     sum(hour*wage) as totalMoney,
+				     sum(hour) as totalHour,
+				     if(sum(hour) >= 40, 8*wage, 0) as forty,
+				     if(sum(hour)<15,0,if(sum(hour)<40,sum(hour)/5*wage,0)) as underforty
+				 FROM employeehour
+				 GROUP BY  DATE_FORMAT(date, '%Y%U'),eno) as e
+                 WHERE (STR_TO_DATE(?,'%Y-%m-%d') between DATE(e.start) and DATE(e.end)) 
+				or (STR_TO_DATE(?,'%Y-%m-%d') between DATE(e.start) and DATE(e.end)) 
+				GROUP BY datecolumn,eno
 				with rollup;
 				""";
-		
-		
-//		WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
-//		AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
-	
+
 		List<EmployeeDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);

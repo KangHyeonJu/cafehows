@@ -481,8 +481,6 @@ public class Main extends JFrame{
 		SwingUtilities.invokeLater(() -> {
 			Main main = new Main();
 			main.setVisible(true);
-			CafeDAO.getInstance().deleteCustomerWage();
-			CafeDAO.getInstance().insertCustomerWage();
 		
 		});
 	}
