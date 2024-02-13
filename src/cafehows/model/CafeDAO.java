@@ -54,7 +54,7 @@ public class CafeDAO {
 
 	public List<MenuDTO> getItems(int cano) {
 		connect();
-		sql = "select * from menu where visibility=1 && cano = ? order by mno ";
+		sql = "select * from menu where visibility=1 && cano = ? order by mno ;";
 		List<MenuDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -69,7 +69,7 @@ public class CafeDAO {
 				item.setIce(rs.getInt(6));
 				item.setIceChangeable(rs.getInt(7));
 				
-				String sql2 = "select kind from category where cano = ? ";
+				String sql2 = "select kind from category where cano = ? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(5));
 				ResultSet rs2 = pstmt.executeQuery();
@@ -89,7 +89,7 @@ public class CafeDAO {
 	public MenuDTO getMenuByName(String mname) {
 		connect();
 		MenuDTO item = new MenuDTO();
-		sql = "select * from menu where mname = ?";
+		sql = "select * from menu where mname = ?;";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, mname);
@@ -116,7 +116,7 @@ public class CafeDAO {
 		sql = """
 				select mno,sum(count) 
 				from menusales 
-				group by mno
+				group by mno;
 				""";
 		List<MenuDTO> items = new ArrayList<>();
 		try {
@@ -126,7 +126,7 @@ public class CafeDAO {
 				MenuDTO item = new MenuDTO();
 				item.setMno(rs.getInt(1));
 				item.setCumCount(rs.getInt(2));
-				String sql2 = "select mname from menu where mno = ? ";
+				String sql2 = "select mname from menu where mno = ?; ";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(1));
 				
@@ -161,7 +161,7 @@ public class CafeDAO {
 				item.setDate(rs.getDate(1));
 				item.setMno(rs.getInt(2));
 				item.setCumCount(rs.getInt(3));
-				String sql2 = "select mname from menu where mno = ? ";
+				String sql2 = "select mname from menu where mno = ? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(2));
 				
@@ -185,7 +185,7 @@ public class CafeDAO {
 				from menusales 
                 WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
 				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
-				group by mno,date
+				group by mno,date;
 		
 				""";
 		List<MenuDTO> items = new ArrayList<>();
@@ -199,7 +199,7 @@ public class CafeDAO {
 				item.setDate(rs.getDate(1));
 				item.setMno(rs.getInt(2));
 				item.setCumCount(rs.getInt(3));
-				String sql2 = "select mname from menu where mno = ? ";
+				String sql2 = "select mname from menu where mno = ? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(2));
 				
@@ -239,7 +239,7 @@ public class CafeDAO {
 				item.setEnddate(rs.getDate(2));
 				item.setMno(rs.getInt(4));
 				item.setCumCount(rs.getInt(5));
-				String sql2 = "select mname from menu where mno = ? ";
+				String sql2 = "select mname from menu where mno = ? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(4));
 				
@@ -280,7 +280,7 @@ public class CafeDAO {
 				item.setEnddate(rs.getDate(2));
 				item.setMno(rs.getInt(4));
 				item.setCumCount(rs.getInt(5));
-				String sql2 = "select mname from menu where mno = ? ";
+				String sql2 = "select mname from menu where mno = ? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(4));
 				
@@ -342,7 +342,7 @@ public class CafeDAO {
 				SELECT MONTH(date) AS datecolumn,mno,
 				sum(count)
 				FROM menusales
-				GROUP BY datecolumn,mno
+				GROUP BY datecolumn,mno;
 				""";
 		List<MenuDTO> items = new ArrayList<>();
 		try {
@@ -354,7 +354,7 @@ public class CafeDAO {
 				item.setMonth(rs.getString(1));
 				item.setMno(rs.getInt(2));
 				item.setCumCount(rs.getInt(3));
-				String sql2 = "select mname from menu where mno = ? ";
+				String sql2 = "select mname from menu where mno = ? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(2));
 				
@@ -392,7 +392,7 @@ public class CafeDAO {
 				item.setMonth(rs.getString(1));
 				item.setMno(rs.getInt(2));
 				item.setCumCount(rs.getInt(3));
-				String sql2 = "select mname from menu where mno = ? ";
+				String sql2 = "select mname from menu where mno = ? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(2));
 				
@@ -447,7 +447,7 @@ public class CafeDAO {
 	
 	public List<MenuDTO> getMDSItems() {
 		connect();
-		sql = "select * from menu  order by mno ";
+		sql = "select * from menu  order by mno ;";
 		List<MenuDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -459,7 +459,7 @@ public class CafeDAO {
 				item.setVisibility(rs.getInt(4));
 				item.setCano(rs.getInt(5));
 								
-				String sql2 = "select kind from category where cano = ? ";
+				String sql2 = "select kind from category where cano = ? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(5));
 				ResultSet rs2 = pstmt.executeQuery();
@@ -479,7 +479,7 @@ public class CafeDAO {
 	
 	public List<CategoryDTO> getCategoryItems() {
 		connect();
-		sql = "select * from category order by cano ";
+		sql = "select * from category order by cano ;";
 		List<CategoryDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -500,7 +500,7 @@ public class CafeDAO {
 	
 	public List<CustomerDTO> getCustomerItems() {
 		connect();
-		sql = "select * from customer where visibility=1 order by cno ";
+		sql = "select * from customer where visibility=1 order by cno ;";
 		List<CustomerDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -525,12 +525,12 @@ public class CafeDAO {
 	public CustomerDTO getCustomerItemByCno(String phone) {
 		connect();
 		CustomerDTO item = new CustomerDTO();
-		sql = "select * from customer where phonenumber=? and visibility=1";
+		sql = "select * from customer where phonenumber=? and visibility=1;";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, phone);
 			rs = pstmt.executeQuery();
-			int rows = pstmt.executeUpdate();
+			//int rows = pstmt.executeUpdate();
 			if(rs.next()) {
 				item.setCno(rs.getInt(1));
 				item.setPhoneNumber(rs.getString(2));
@@ -551,7 +551,7 @@ public class CafeDAO {
 	public CustomerDTO getCustomerItemByCnoAI(int cno) {
 		connect();
 		CustomerDTO item = new CustomerDTO();
-		sql = "select * from customer where cno=? and visibility=1";
+		sql = "select * from customer where cno=? and visibility=1;";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, cno);
@@ -603,7 +603,7 @@ public class CafeDAO {
 
 	public List<CustomerDTO> getRdcDate() {
 		connect();
-		sql = "select * from customer where visibility=1 && datediff(now(), recdate) >= 365 order by cno ";
+		sql = "select * from customer where visibility=1 && datediff(now(), recdate) >= 365 order by cno ;";
 		List<CustomerDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -629,7 +629,7 @@ public class CafeDAO {
 	
 	public List<OrderDTO> getOrderItems() {
 		connect();
-		sql = "select * from orderlist order by ono ";
+		sql = "select * from orderlist order by ono ;";
 		List<OrderDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -652,7 +652,7 @@ public class CafeDAO {
 	public OrderDTO getOrderItembyOno(int ono) {
 		connect();
 		OrderDTO item = new OrderDTO();
-		sql = "select * from orderlist where ono=? ";
+		sql = "select * from orderlist where ono=? ;";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, ono);
@@ -677,7 +677,7 @@ public class CafeDAO {
 			SELECT *
 				FROM orderlist
 				WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
-				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
+				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d');
 				""";
 		List<OrderDTO> items = new ArrayList<>();
 		try {
@@ -734,7 +734,7 @@ public class CafeDAO {
 		sql = """
 			select sum(finalprice) from orderlist 
 			where year(date)=? and month(date)=? 
-			group by date_format(date,'%Y-%m')
+			group by date_format(date,'%Y-%m');
 				""";
 		List<OrderDTO> items = new ArrayList<>();
 		try {
@@ -827,7 +827,7 @@ public class CafeDAO {
 	
 	public List<EmployeeDTO> getEmployeeItems() {
 		connect();
-		sql = "select * from employee order by eno ";
+		sql = "select * from employee order by eno ;";
 		List<EmployeeDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -849,7 +849,7 @@ public class CafeDAO {
 	public EmployeeDTO getEmployeeByEno(int eno) {
 		connect();
 		EmployeeDTO item = new EmployeeDTO();
-		sql = "select *  from employee where eno = ?";
+		sql = "select *  from employee where eno = ?;";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -872,7 +872,7 @@ public class CafeDAO {
 	
 	public List<EmployeeDTO> getEmployeeHourItems() {
 		connect();
-		sql = "select * from employeehour order by eno ";
+		sql = "select * from employeehour order by eno ;";
 		List<EmployeeDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -883,7 +883,7 @@ public class CafeDAO {
 				item.setDate(rs.getDate(2));
 				item.setHour(rs.getInt(3));
 				item.setWage(rs.getInt(4));
-				String sql2 = "select ename from employee where eno=? ";
+				String sql2 = "select ename from employee where eno=? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(1));
 				ResultSet rs2 = pstmt.executeQuery();
@@ -905,10 +905,10 @@ public class CafeDAO {
 				select * 
 				from employeehour 
 			    WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
-				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
+				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d');
 				""";
 		
-		sql = "select * from employeehour where date between ? and ?";
+		sql = "select * from employeehour where date between ? and ?;";
 		List<EmployeeDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -921,7 +921,7 @@ public class CafeDAO {
 				item.setDate(rs.getDate(2));
 				item.setHour(rs.getInt(3));
 				item.setWage(rs.getInt(4));
-				String sql2 = "select ename from employee where eno=? ";
+				String sql2 = "select ename from employee where eno=? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(1));
 				ResultSet rs2 = pstmt.executeQuery();
@@ -971,7 +971,7 @@ public class CafeDAO {
 				item.setHolidayPay(rs.getInt(5));
 				item.setTotalSalary(item.getWage()+item.getHolidayPay());
 				
-				String sql2 = "select ename from employee where eno=? ";
+				String sql2 = "select ename from employee where eno=? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(1));
 				ResultSet rs2 = pstmt.executeQuery();
@@ -1072,7 +1072,7 @@ public class CafeDAO {
 				item.setHolidayPay(rs.getInt(5));
 				item.setTotalSalary(item.getWage()+item.getHolidayPay());
 				
-				String sql2 = "select ename from employee where eno=? ";
+				String sql2 = "select ename from employee where eno=? ;";
 				pstmt = conn.prepareStatement(sql2);
 				pstmt.setInt(1, rs.getInt(1));
 				ResultSet rs2 = pstmt.executeQuery();
@@ -1095,7 +1095,7 @@ public class CafeDAO {
 		sql = """
 				update employee 
 				set  ename=?, status=?  
-				where eno = ? 
+				where eno = ? ;
 				""";
 		try {
 			pstmt.setString(1, employee.getEname());
@@ -1121,7 +1121,7 @@ public class CafeDAO {
 		connect();
 		sql = """
 				insert into employee (ename,status) 
-				values (?,?)
+				values (?,?);
 				""";
 		try {
 			pstmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
@@ -1153,7 +1153,7 @@ public class CafeDAO {
 		connect();
 		sql = """
 				insert into employeehour (eno,date,hour,wage)
-				values (?,?,?,?)
+				values (?,?,?,?);
 				""";
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -1179,7 +1179,7 @@ public class CafeDAO {
 		sql = """
 				update employeehour 
 				set  hour=?, wage=?  
-				where eno = ? and date =? 
+				where eno = ? and date =? ;
 				""";
 		try {
 			pstmt.setInt(1, employee.getHour());
@@ -1210,7 +1210,7 @@ public class CafeDAO {
 					.append("UPDATE customer SET ")
 					.append("recdate = now(),")
 					.append("point=? ")
-					.append("WHERE phonenumber=? and visibility=1")
+					.append("WHERE phonenumber=? and visibility=1;")
 					.toString();
 			
 			pstmt = conn.prepareStatement(sql);
@@ -1234,7 +1234,7 @@ public class CafeDAO {
 
 	public void deleteOrder(int ono) {
 		connect();
-		sql = "DELETE FROM orderlist WHERE ono=? ";
+		sql = "DELETE FROM orderlist WHERE ono=? ;";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, ono);

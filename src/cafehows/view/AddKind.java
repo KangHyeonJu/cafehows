@@ -79,7 +79,7 @@ public class AddKind extends JDialog{
 	//추가 버튼
 	public JButton getBtnAdd() {
 		if(btnAdd == null) {
-			btnAdd = new JButton();
+			btnAdd = new RoundedButton();
 			btnAdd.setText("추가");
 			btnAdd.addActionListener(new ActionListener() {
 				
@@ -100,7 +100,7 @@ public class AddKind extends JDialog{
 	//취소 버튼
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
 				
