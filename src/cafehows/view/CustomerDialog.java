@@ -44,7 +44,7 @@ public class CustomerDialog extends JDialog{
 		this.customerDialog = this;
 		this.setTitle("고객 관리");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setSize(500, 500);
+		this.setSize(550, 500);
 		this.setModal(true); //상위 frame 클릭 불가
 		this.setResizable(false); //사이즈 고정
 		this.getContentPane().add(getSearchPanel(),BorderLayout.NORTH);
