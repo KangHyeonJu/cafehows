@@ -77,9 +77,6 @@ public class CostPanel extends JPanel{
 		JPanel pMonth = new JPanel();
 		pMonth.add(getComboYear());
 		pMonth.add(getComboMonth());
-	
-		
-
 	return pMonth;
 	}
 	
@@ -121,10 +118,8 @@ public class CostPanel extends JPanel{
 				public void actionPerformed(ActionEvent e) {
 					monthTemp = comboMonth.getSelectedIndex()+1;
 					txtRevenue.setText(Integer.toString(CafeDAO.getInstance().getMonthlySales(yearTemp, monthTemp)));
-					monthlySales = CafeDAO.getInstance().getMonthlySales(yearTemp, monthTemp);
-				//	System.out.println(monthlySales);
-//					System.out.println(yearTemp);
-//					System.out.println(monthTemp);
+					//monthlySales = CafeDAO.getInstance().getMonthlySales(yearTemp, monthTemp);
+					txtPayrollCost.setText(Integer.toString(CafeDAO.getInstance().getMonthlyPayrollCost(yearTemp, monthTemp)));
 				}
 			});
 		
@@ -173,8 +168,20 @@ public class CostPanel extends JPanel{
 				txtPayrollCost.setPreferredSize(new Dimension(200,30));
 			}
 			pPayrollCost.add(txtPayrollCost);
+			pPayrollCost.add(getPayrollCostInputBtn());
 		}
 		return pPayrollCost;
+	}
+	public JButton getPayrollCostInputBtn() {
+		JButton payrollCostInputBtn= new JButton();
+		payrollCostInputBtn.setText("등록");
+		payrollCostInputBtn.addActionListener(e -> {
+			PayrollCostDialog payrollCostDialog = new PayrollCostDialog();
+			payrollCostDialog.setModal(true);
+			payrollCostDialog.setVisible(true);
+		});
+	
+	return payrollCostInputBtn;
 	}
 	
 	//재료비 입력

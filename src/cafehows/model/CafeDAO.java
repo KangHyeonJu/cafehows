@@ -2,6 +2,7 @@ package cafehows.model;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,10 +14,14 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import com.mysql.cj.exceptions.RSAException;
+
 
 public class CafeDAO {
 	private static final CafeDAO instance = new CafeDAO();
+	//private final String url = "jdbc:mysql://222.119.100.89:3382/cafehows?autoReconnect=true";
 	private final String url = "jdbc:mysql://222.119.100.89:3382/cafehows";
+
 	private final String user = "cafehows";
 	private final String password = "codehows213";
 	
@@ -35,6 +40,7 @@ public class CafeDAO {
 			conn = DriverManager.getConnection(url, user, password);
 		}catch(SQLException e) {
 			e.printStackTrace();
+		
 		}catch(ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -45,7 +51,43 @@ public class CafeDAO {
 		if ( pstmt != null ) pstmt.close();
 		if ( conn != null ) conn.close();
 	}
+	
+	public void insertCustomerWage() {
+		connect();
+		sql= """
+				insert into employeewage (eno,startdate,enddate,wage,holidaypay) 
+				SELECT eno,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+				sum(hour*wage),if(sum(hour)>=40,8*wage,sum(hour)/5*wage)
+				FROM employeehour
+				GROUP BY    DATE_FORMAT(date, '%Y%U'),eno;
+				""";
+		try {
+			Statement stmt = conn.createStatement();
+			stmt.execute(sql);
+			
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
+	public void deleteCustomerWage() {
+		connect();
+		sql= """
+				truncate table employeewage
+
+				""";
+		try {
+			Statement stmt = conn.createStatement();
+			stmt.execute(sql);
+			
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public List<MenuDTO> getItems(int cano) {
 		connect();
@@ -138,6 +180,148 @@ public class CafeDAO {
 		
 		return items;
 	}
+	public List<MenuDTO> getDailyMenuSales() {
+		connect();
+		sql = """
+				select date(date),mno,sum(count) 
+				from menusales 
+				group by mno,date;
+		
+				""";
+		List<MenuDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				MenuDTO item = new MenuDTO();
+				item.setDate(rs.getDate(1));
+				item.setMno(rs.getInt(2));
+				item.setCumCount(rs.getInt(3));
+				String sql2 = "select mname from menu where mno = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(2));
+				
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setMname(rs2.getString(1));}
+				else {}
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
+	}
+	public List<MenuDTO> getWeeklyMenuSales() {
+		connect();
+		sql = """
+				SELECT DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+				DATE_FORMAT(date, '%Y%U') AS date,
+				mno,
+				sum(count)
+				FROM menusales
+				GROUP BY date,mno;
+		
+				""";
+		List<MenuDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+		//	pstmt.setString(1, date);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				MenuDTO item = new MenuDTO();
+				item.setStartdate(rs.getDate(1));
+				item.setEnddate(rs.getDate(2));
+				item.setMno(rs.getInt(4));
+				item.setCumCount(rs.getInt(5));
+				String sql2 = "select mname from menu where mno = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(4));
+				
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setMname(rs2.getString(1));}
+				else {}
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
+	}	public List<MenuDTO> getMonthlyMenuSales() {
+		connect();
+		sql = """
+				SELECT MONTH(date) AS date,mno,
+				sum(count)
+				FROM menusales
+				GROUP BY date,mno
+				""";
+		List<MenuDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+		//	pstmt.setString(1, date);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				MenuDTO item = new MenuDTO();
+				item.setMonth(rs.getString(1));
+				item.setMno(rs.getInt(2));
+				item.setCumCount(rs.getInt(3));
+				String sql2 = "select mname from menu where mno = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(2));
+				
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setMname(rs2.getString(1));}
+				else {}
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
+	}
+//	public List<MenuDTO> getDailyMenuSales() {
+//		connect();
+//		sql = """
+//				select date(date),mno,sum(count) 
+//				from menusales 
+//				group by mno,date;
+//		
+//				""";
+//		List<MenuDTO> items = new ArrayList<>();
+//		try {
+//			pstmt = conn.prepareStatement(sql);
+//			rs = pstmt.executeQuery();
+//			while(rs.next()) {
+//				MenuDTO item = new MenuDTO();
+//				item.setDate(rs.getDate(1));
+//				item.setMno(rs.getInt(2));
+//				item.setCumCount(rs.getInt(3));
+//				String sql2 = "select mname from menu where mno = ? ";
+//				pstmt = conn.prepareStatement(sql2);
+//				pstmt.setInt(1, rs.getInt(2));
+//				
+//				ResultSet rs2 = pstmt.executeQuery();
+//				if(rs2.next()) {
+//				item.setMname(rs2.getString(1));}
+//				else {}
+//				items.add(item);
+//			}
+//			close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return items;
+//	}
 	
 	
 	public List<MenuDTO> getMDSItems() {
@@ -160,7 +344,7 @@ public class CafeDAO {
 				ResultSet rs2 = pstmt.executeQuery();
 				if(rs2.next()) {
 				item.setKind(rs2.getString(1));}
-				else {}
+				
 				items.add(item);
 			}
 			close();
@@ -203,9 +387,10 @@ public class CafeDAO {
 			while(rs.next()) {
 				CustomerDTO item = new CustomerDTO();
 				item.setCno(rs.getInt(1));
-				item.setPoint(rs.getInt(2));
-				item.setRecdate(rs.getDate(3));
-				item.setVisibility(rs.getInt(4));
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
 				items.add(item);
 			}
 			close();
@@ -216,20 +401,24 @@ public class CafeDAO {
 	}
 	
 
-	public CustomerDTO getCustomerItemByCno(int cno) {
+	public CustomerDTO getCustomerItemByCno(String phone) {
 		connect();
 		CustomerDTO item = new CustomerDTO();
-		sql = "select * from customer where cno=? ";
+		sql = "select * from customer where phonenumber=? and visibility=1";
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, cno);
+			pstmt.setString(1, phone);
 			rs = pstmt.executeQuery();
+			int rows = pstmt.executeUpdate();
 			if(rs.next()) {
 				item.setCno(rs.getInt(1));
-				item.setPoint(rs.getInt(2));
-				item.setRecdate(rs.getDate(3));
-				item.setVisibility(rs.getInt(4));
-		
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
+				
+			}else {
+				JOptionPane.showMessageDialog(null,"존재하지 않는 회원입니다.","확인",JOptionPane.WARNING_MESSAGE);
 			}
 			close();
 		} catch (SQLException e) {
@@ -237,6 +426,34 @@ public class CafeDAO {
 		}
 		return item;
 	}
+
+	public CustomerDTO getCustomerItemByCnoAI(int cno) {
+		connect();
+		CustomerDTO item = new CustomerDTO();
+		sql = "select * from customer where cno=? and visibility=1";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, cno);
+			rs = pstmt.executeQuery();
+			int rows = pstmt.executeUpdate();
+			if(rs.next()) {
+				item.setCno(rs.getInt(1));
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
+				
+			}else {
+				JOptionPane.showMessageDialog(null,"존재하지 않는 회원입니다.","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return item;
+	}
+
+	
 	public List<CustomerDTO> getCustomerState() {
 		connect();
 		sql = "select * from customer order by cno ";
@@ -247,9 +464,10 @@ public class CafeDAO {
 			while(rs.next()) {
 				CustomerDTO item = new CustomerDTO();
 				item.setCno(rs.getInt(1));
-				item.setPoint(rs.getInt(2));
-				item.setRecdate(rs.getDate(3));
-				item.setVisibility(rs.getInt(4));
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
 
 				items.add(item);
 
@@ -272,7 +490,10 @@ public class CafeDAO {
 			while(rs.next()) {
 				CustomerDTO item = new CustomerDTO();
 				item.setCno(rs.getInt(1));
-				item.setRecdate(rs.getDate(3));
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
 				items.add(item);
 
 			}
@@ -329,14 +550,19 @@ public class CafeDAO {
 		}
 		return item;
 	}
-	public List<OrderDTO> getOrderItemsbyPeriod(int start, int end){
+	public List<OrderDTO> getOrderItemsbyPeriod(String start,String end){
 		connect();
-		sql = "select * from orderlist where date between ? and ?";
+		sql="""
+			SELECT *
+				FROM orderlist
+				WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
+				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
+				""";
 		List<OrderDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, start);
-			pstmt.setInt(2, end);
+			pstmt.setString(1, start);
+			pstmt.setString(2, end);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				OrderDTO item = new OrderDTO();
@@ -408,27 +634,86 @@ public class CafeDAO {
 	}
 	
 	
-	
-	public List<OrderDTO> getDailySalesbyPeriod(int start,int end){
+//	public int getWeeklyPayrollCost(int year,int month){
+//		connect();
+//		int monthlyPayrollCost=0;
+//		sql = """
+//				SELECT DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-2) DAY), '%Y/%m/%d') as start,
+//				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-8) DAY), '%Y/%m/%d') as end,
+//				DATE_FORMAT(date, '%Y%U') AS date,
+//				sum(hour*wage)
+//				FROM employeehour
+//				GROUP BY eno
+//				;
+//				""";
+//		List<OrderDTO> items = new ArrayList<>();
+//		try {
+//			pstmt = conn.prepareStatement(sql);
+//			pstmt.setInt(1, year);
+//			pstmt.setInt(2, month);
+//			rs = pstmt.executeQuery();
+//			if(rs.next()) {
+//				monthlySales =rs.getInt(1);
+//				
+//			}
+//			close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return monthlySales;
+//		
+//	}
+//	
+//	
+	public int getMonthlyPayrollCost(int year,int month){
 		connect();
+		int monthlyPayrollCost=0;
+		sql="""
+				select sum(wage)+sum(holidaypay)
+				from employeewage
+                where year(enddate)=? and month(enddate)=?
+				group by enddate
+				with rollup
+				""";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, year);
+			pstmt.setInt(2, month);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				monthlyPayrollCost =rs.getInt(1);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return monthlyPayrollCost;
+		
+	}
+
+	
+	
+	public List<OrderDTO> getDailySalesbyPeriod(String start,String end){
+		connect();
+		
 		sql = """
-				select ono,date,sum(price),sum(finalprice) 
-				from orderlist 
-				where date 
-				between ? and ? group by date;
+				select date,sum(price),sum(finalprice) 
+				from orderlist
+				WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
+				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
+                group by date;
 				""";
 		List<OrderDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, start);
-			pstmt.setInt(2, end);
+			pstmt.setString(1, start);
+			pstmt.setString(2, end);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				OrderDTO item = new OrderDTO();
-				item.setOno(rs.getInt(1));
-				item.setDate(rs.getDate(2));
-				item.setPrice(rs.getInt(3));
-				item.setFinalprice(rs.getInt(4));
+				item.setDate(rs.getDate(1));
+				item.setPrice(rs.getInt(2));
+				item.setFinalprice(rs.getInt(3));
 				items.add(item);
 			}
 			close();
@@ -438,20 +723,380 @@ public class CafeDAO {
 		return items;
 		
 	}
+	//Employee
 	
-	public void updatePoint(CustomerDTO board, int cno) {
+	public List<EmployeeDTO> getEmployeeItems() {
+		connect();
+		sql = "select * from employee order by eno ";
+		List<EmployeeDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				EmployeeDTO item = new EmployeeDTO();
+				item.setEno(rs.getInt(1));
+				item.setEname(rs.getString(2));
+				item.setStatus(rs.getInt(3));
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+	
+	public EmployeeDTO getEmployeeByEno(int eno) {
+		connect();
+		EmployeeDTO item = new EmployeeDTO();
+		sql = "select *  from employee where eno = ?";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, eno);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				
+				item.setEno(rs.getInt(1));
+				item.setEname(rs.getString(2));
+				item.setStatus(rs.getInt(3));
+				
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return item;
+	}
+	
+	public List<EmployeeDTO> getEmployeeHourItems() {
+		connect();
+		sql = "select * from employeehour order by eno ";
+		List<EmployeeDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				EmployeeDTO item = new EmployeeDTO();
+				item.setEno(rs.getInt(1));
+				item.setDate(rs.getDate(2));
+				item.setHour(rs.getInt(3));
+				item.setWage(rs.getInt(4));
+				String sql2 = "select ename from employee where eno=? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(1));
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setEname(rs2.getString(1));}
+				
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+	
+	public List<EmployeeDTO> getEmployeeHourItemsbyPeriod(String start, String end){
+		connect();
+		sql="""
+				select * 
+				from employeehour 
+			    WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
+				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
+				""";
+		
+		sql = "select * from employeehour where date between ? and ?";
+		List<EmployeeDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, start);
+			pstmt.setString(2, end);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				EmployeeDTO item = new EmployeeDTO();
+				item.setEno(rs.getInt(1));
+				item.setDate(rs.getDate(2));
+				item.setHour(rs.getInt(3));
+				item.setWage(rs.getInt(4));
+				String sql2 = "select ename from employee where eno=? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(1));
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setEname(rs2.getString(1));}
+				
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+	
+	public List<EmployeeDTO> getEmployeeWageItems() {
+		connect();
+		sql = """
+				select eno,startdate,enddate,sum(wage),sum(holidaypay)
+				from employeewage
+				group by startdate,eno
+				with rollup
+				""";
+	
+		List<EmployeeDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				EmployeeDTO item = new EmployeeDTO();
+				item.setEno(rs.getInt(1));
+				item.setStartDate(rs.getDate(2));
+				item.setEndDate(rs.getDate(3));
+				item.setWage(rs.getInt(4));
+				item.setHolidayPay(rs.getInt(5));
+				item.setTotalSalary(item.getWage()+item.getHolidayPay());
+				
+				String sql2 = "select ename from employee where eno=? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(1));
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setEname(rs2.getString(1));}
+				
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+	
+//	public List<EmployeeDTO> getEmployeeWageItems() {
+//		connect();
+//		sql = """
+//				SELECT eno,
+//				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+//				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+//				DATE_FORMAT(date, '%Y%U') AS datecolumn,
+//				sum(hour*wage),sum(hour),8*wage,sum(hour)/5*wage
+//				FROM employeehour
+//				GROUP BY datecolumn,eno
+//				with rollup
+//				""";
+//	
+//		List<EmployeeDTO> items = new ArrayList<>();
+//		try {
+//			pstmt = conn.prepareStatement(sql);
+//			rs = pstmt.executeQuery();
+//			while(rs.next()) {
+//				if(rs.getInt(1)==0) continue;
+//				EmployeeDTO item = new EmployeeDTO();
+//				item.setEno(rs.getInt(1));
+//				item.setStartDate(rs.getDate(2));
+//				item.setEndDate(rs.getDate(3));
+//				item.setWage(rs.getInt(5));
+//				item.setHour(rs.getInt(6));
+//				if(rs.getInt(6)>=40) item.setHolidayPay(rs.getInt(7));
+//				else {item.setHolidayPay(rs.getInt(8));}
+//				item.setTotalSalary(item.getWage()+item.getHolidayPay());
+//				
+//				String sql2 = "select ename from employee where eno=? ";
+//				pstmt = conn.prepareStatement(sql2);
+//				pstmt.setInt(1, rs.getInt(1));
+//				ResultSet rs2 = pstmt.executeQuery();
+//				if(rs2.next()) {
+//				item.setEname(rs2.getString(1));}
+//				
+//				items.add(item);
+//			}
+//			close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return items;
+//	}
+//	
+	
+	
+	public List<EmployeeDTO> getEmployeeWageItemsbyPeriod(String start, String end) {
+		connect();
+//		
+		sql = """
+				select eno,startdate,enddate,sum(wage),sum(holidaypay)
+				from employeewage
+               	WHERE (STR_TO_DATE(?,'%Y-%m-%d') between DATE(startdate) and DATE(enddate)) 
+				or (STR_TO_DATE(?,'%Y-%m-%d') between DATE(startdate) and DATE(enddate)) 
+				group by startdate,eno
+				with rollup;
+				""";
+		
+		
+//		WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
+//		AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
+	
+		List<EmployeeDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, start);
+			pstmt.setString(2, end);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				EmployeeDTO item = new EmployeeDTO();
+				item.setEno(rs.getInt(1));
+				item.setStartDate(rs.getDate(2));
+				item.setEndDate(rs.getDate(3));
+				item.setWage(rs.getInt(4));
+				item.setHolidayPay(rs.getInt(5));
+				item.setTotalSalary(item.getWage()+item.getHolidayPay());
+				
+				String sql2 = "select ename from employee where eno=? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(1));
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setEname(rs2.getString(1));}
+				
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return items;
+	}
+	
+	
+	
+	public void updateEmployee(EmployeeDTO employee) {
+		connect();
+		sql = """
+				update employee 
+				set  ename=?, status=?  
+				where eno = ? 
+				""";
+		try {
+			pstmt.setString(1, employee.getEname());
+			pstmt.setInt(2, employee.getStatus());
+			pstmt.setInt(3, employee.getEno());
+			int rows = pstmt.executeUpdate();
+	
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"근로자가 수정되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"근로자를 수정할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"근로자를 수정할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			
+		}
+	}
+	public int insertEmployee(EmployeeDTO employee) {
+		int eno = 0;
+		connect();
+		sql = """
+				insert into employee (ename,status) 
+				values (?,?)
+				""";
+		try {
+			pstmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			pstmt.setString(1, employee.getEname());
+			pstmt.setInt(2, employee.getStatus());
+			int rows = pstmt.executeUpdate();
+			rs = pstmt.getGeneratedKeys();
+			
+			if(rs.next()) {
+				eno = rs.getBigDecimal(1).intValue();
+				
+			}
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"직원번호"+eno+"인 근로자가 추가되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"근로자를 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+			return eno;
+		}catch(SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"근로자를 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			return eno;
+		}
+	}
+
+	
+	public void insertEmployeeHour(EmployeeDTO employee) {
+		connect();
+		sql = """
+				insert into employeehour (eno,date,hour,wage)
+				values (?,?,?,?)
+				""";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, employee.getEno());
+			pstmt.setDate(2, employee.getDate());
+			pstmt.setInt(3, employee.getHour());
+			pstmt.setInt(4, employee.getWage());
+			int rows = pstmt.executeUpdate();
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"근로시간이 추가되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"근로시간을 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"근로시간을 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	
+	public void updateEmployeeHour(EmployeeDTO employee) {
+		connect();
+		sql = """
+				update employeehour 
+				set  hour=?, wage=?  
+				where eno = ? and date =? 
+				""";
+		try {
+			pstmt.setInt(1, employee.getHour());
+			pstmt.setInt(2, employee.getWage());
+			pstmt.setInt(3, employee.getEno());
+			pstmt.setDate(4, employee.getDate());
+			
+			int rows = pstmt.executeUpdate();
+	
+			if(rows == 1) {
+				JOptionPane.showMessageDialog(null,"근로시간이 수정되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+			}else {
+				JOptionPane.showMessageDialog(null,"근로시간을 수정할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			}
+			close();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"근로시간을 수정할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
+			
+		}
+	}
+	
+	public void updatePoint(CustomerDTO board, String phone) {
 		connect();
 		try {
 			sql = new StringBuilder()
 					.append("UPDATE customer SET ")
 					.append("recdate = now(),")
 					.append("point=? ")
-					.append("WHERE cno=?")
+					.append("WHERE phonenumber=? and visibility=1")
 					.toString();
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, board.getPoint());
-			pstmt.setInt(2, cno);
+			pstmt.setString(2, phone);
 			
 			pstmt.executeUpdate();
 		}catch (SQLException e) {
@@ -516,18 +1161,16 @@ public class CafeDAO {
 	
 	
 	
-	public void deleteCustomer(CustomerDTO board, int cno) {
+	public void deleteCustomer(String phonenumber) {
 		connect();
 		try {
-			sql = new StringBuilder()
-					.append("UPDATE customer SET ")
-					.append("visibility=? ")
-					.append("WHERE cno=?;")
-					.toString();
+			sql = "update customer set"
+					+"visibility = 0"
+					+"where phonenumber=? and visibility =1";
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, 0);
-			pstmt.setInt(2, cno);
+		
+			pstmt.setString(1, phonenumber);
 			
 			pstmt.executeUpdate();
 		}catch (SQLException e) {
@@ -545,10 +1188,10 @@ public class CafeDAO {
 		try {
 			connect();
 			sql = "" + 
-					"INSERT INTO customer(cno, recdate, visibility) " + 
+					"INSERT INTO customer(phonenumber, recdate, visibility) " + 
 					"VALUES(?, now(), 1);";
 			pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			pstmt.setInt(1, customer.getCno());
+			pstmt.setString(1, customer.getPhoneNumber());
 			
 			pstmt.executeUpdate();
 		}catch (SQLException e) {
@@ -561,6 +1204,34 @@ public class CafeDAO {
 			}
 		}
 	}
+	//전화번호 변경
+	public void updateCustomer(CustomerDTO customer,String phoneNumber) {
+		try {
+			connect();
+			sql="""
+					update customer
+					set phonenumber=?
+					where phonenumber=?
+					and visibility=1
+					""";
+			pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			pstmt.setString(1, phoneNumber);
+			pstmt.setString(2, customer.getPhoneNumber());
+
+			pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	
 
 	public void deleteMenu(String menuName) {
 		connect();
@@ -801,10 +1472,10 @@ public class CafeDAO {
 			
 			if(rs.next()) {
 				ono = rs.getBigDecimal(1).intValue();
-				System.out.println(ono);
+				
 			}
 			if(rows == 1) {
-				JOptionPane.showMessageDialog(null,"주문목록에 추가되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null,"주문번호"+ono+"인 주문 결제되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
 			}else {
 				JOptionPane.showMessageDialog(null,"주문목록에 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 			}
@@ -818,14 +1489,14 @@ public class CafeDAO {
 	}
 	public void insertMenuSales(MenuDTO menu) {
 		connect();
+//		sql = """
+//				insert menusales 
+//				set ono =?, count=? 
+//				where mno = ? 
+//				""";
 		sql = """
-				insert menusales 
-				set ono =?, count=? 
-				where mno = ? 
-				""";
-		sql = """
-				insert into menusales (ono,count,mno)
-				values (?,?,?)
+				insert into menusales (ono,count,mno,date)
+				values (?,?,?,now())
 				""";
 		
 		try {
@@ -946,16 +1617,16 @@ public class CafeDAO {
 		return menuboard;
 	}
 	//고객 재가입
-	public void reSign(CustomerDTO customer) {
+	public void reSign(String phoneNumber) {
 		connect();
 		sql = """
 				update customer
-				set visibility ='1', point = '0'
-				where cno = ?;
+				set visibility =1, point = 0
+				where phonenumber=? and visibility=0;
 				""";
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, customer.getCno());
+			pstmt.setString(1,phoneNumber);
 			int rows = pstmt.executeUpdate();
 			if(rows == 1) {
 				JOptionPane.showMessageDialog(null,"재등록이 되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
@@ -970,28 +1641,29 @@ public class CafeDAO {
 	}
 	
 	//고객 검색창
-	public List<CustomerDTO> searchKeywordCustomer(String cno) {
+	public List<CustomerDTO> searchKeywordCustomer(String phonenumber) {
 		connect();
-		sql = "select cno, point, recdate, visibility  from customer where cno like ?";
-		List<CustomerDTO> boards = new ArrayList<>();
+		sql = "select *  from customer where phonenumber=?";
+		List<CustomerDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%"+cno+"%");
+			pstmt.setString(1, phonenumber);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				CustomerDTO dto = new CustomerDTO();
-				dto.setCno(rs.getInt("cno"));
-				dto.setPoint(rs.getInt("point"));
-				dto.setRecdate(rs.getDate("recdate"));
-				dto.setVisibility(rs.getInt("visibility"));
-				boards.add(dto);
+				CustomerDTO item = new CustomerDTO();
+				item.setCno(rs.getInt(1));
+				item.setPhoneNumber(rs.getString(2));
+				item.setPoint(rs.getInt(3));
+				item.setRecdate(rs.getDate(4));
+				item.setVisibility(rs.getInt(5));
+				items.add(item);
 			}
 			close();
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return boards;
+		return items;
 	}
 
 	//주문번호 검색
@@ -1018,4 +1690,8 @@ public class CafeDAO {
 		}
 		return orderList;
 	}
+	
+
+
+
 }

@@ -28,8 +28,9 @@ public class PaymentDialog extends JDialog{
 	private JLabel priceField,onoField,pointField,finalPriceField;
 	private JTable orderTable;
 
-	private int cno, point,usePoint,ono,finalPrice;
-
+	private int point,usePoint,ono,finalPrice,cno;
+	private String phonenumber;
+	
 	private PaymentDialog paymentDialog;
 	
 
@@ -87,9 +88,7 @@ public class PaymentDialog extends JDialog{
 
 
 
-	public int getCno() {
-		return cno;
-	}
+	
 	public int getPoint() {
 		return point;
 	}
@@ -99,9 +98,30 @@ public class PaymentDialog extends JDialog{
 	
 
 
+	
+
+	public int getCno() {
+		return cno;
+	}
+
+
+
 	public void setCno(int cno) {
 		this.cno = cno;
 	}
+
+
+
+	public String getPhonenumber() {
+		return phonenumber;
+	}
+
+
+
+	public void setPhonenumber(String phonenumber) {
+		this.phonenumber = phonenumber;
+	}
+
 
 
 	public void setPoint(int point) {
@@ -251,8 +271,8 @@ public class PaymentDialog extends JDialog{
 				//customer point 차감, recdate 갱신
 				if(cno!=0 &&cno!=-1) {
 				CustomerDTO cDTO = new CustomerDTO();
-				cDTO.setPoint(point-usePoint+(int)(finalPrice*0.05));
-				CafeDAO.getInstance().updatePoint(cDTO, cno);}
+				cDTO.setPoint(point-usePoint+(int)(finalPrice*0.03));
+				CafeDAO.getInstance().updatePoint(cDTO, phonenumber);}
 				main.getOrderList().clear();
 				main.refreshOrderList();
 				dispose();

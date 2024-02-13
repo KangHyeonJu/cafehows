@@ -6,19 +6,20 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.regex.Pattern;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
+import javax.swing.*;
+
 
 import cafehows.model.CafeDAO;
 import cafehows.model.CustomerDTO;
+import exceptions.UnsuitableInputException;
+
 
 
 public class UsePoints extends JDialog{
@@ -28,14 +29,16 @@ public class UsePoints extends JDialog{
 	private JButton btnOk, btnCancel, searchBtn;
 //	private CustomerDTO cDto = new CustomerDTO();
 //	private CafeDAO dao = new CafeDAO();
-	//포인트 사용, 결제 완료시 회원 보유 포인트가 업데이트가 안 돼서 수정했습니다~
 //	private static List<OrderDTO> orderList = CafeDAO.getInstance().getOrderItems();
 //	private static List<CustomerDTO> customerList = CafeDAO.getInstance().getCustomerItems();
 //	private List<OrderDTO> orderList;
 	private List<CustomerDTO> customerList;
 	
-	private int cno, point,usePoint, customerNum,customerPoint;
+	private int  point,usePoint, customerNum,customerPoint;
 	private PaymentDialog paymentDialog;
+	private String phonenumber;
+	private final String PHONENUMBER_FORMAT = "^\\d{2,3}\\d{3,4}\\d{4}$";
+	private CustomerDTO customerDTO;
 	
 	
 	public UsePoints(PaymentDialog paymentDialog,Main main) {
@@ -113,18 +116,30 @@ public class UsePoints extends JDialog{
 			searchBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					customerNum = Integer.parseInt(txtCono.getText().trim());
-					customerPoint = -1;
-	
-					customerList = CafeDAO.getInstance().getCustomerItems();
-					for(CustomerDTO cDTO: customerList) {
-						if(customerNum==cDTO.getCno()) {
-							customerPoint = cDTO.getPoint();
-							
-							getTxtPoint().setText(Integer.toString(customerPoint));
-							break;
-						}
+					
+					try {
+	            		//유효성 검사
+						validatePhoneNumber();
+						customerDTO = CafeDAO.getInstance().getCustomerItemByCno(txtCono.getText().trim());
+						txtPoint.setText(Integer.toString(customerDTO.getPoint()));
+	            		JOptionPane.showMessageDialog(null,"존재하는 회원입니다","확인",JOptionPane.PLAIN_MESSAGE);
+	            	}catch (UnsuitableInputException ue) {
+						JOptionPane.showMessageDialog(null,ue.getMessage(),"확인",JOptionPane.WARNING_MESSAGE);
 					}
+
+//					
+//					customerNum = Integer.parseInt();
+//					customerPoint = -1;
+//	
+//					customerList = CafeDAO.getInstance().getCustomerItems();
+//					for(CustomerDTO cDTO: customerList) {
+//						if(customerNum==cDTO.getCno()) {
+//							customerPoint = cDTO.getPoint();
+//							
+//							getTxtPoint().setText(Integer.toString(customerPoint));
+//							break;
+//						}
+//					}
 					
 					
 //					for(int i=0;i<customerList.size();i++) {
@@ -134,9 +149,9 @@ public class UsePoints extends JDialog{
 //							break;
 //						}
 //					}
-					if(customerPoint == -1) {
-						JOptionPane.showMessageDialog(null, "회원정보가 없습니다.","오류",JOptionPane.ERROR_MESSAGE);
-					}
+//					if(customerPoint == -1) {
+//						JOptionPane.showMessageDialog(null, "회원정보가 없습니다.","오류",JOptionPane.ERROR_MESSAGE);
+//					}
 				}
 			});
 		}
@@ -178,7 +193,7 @@ public class UsePoints extends JDialog{
 
 					//dispose();
 					
-					cno = Integer.parseInt(getTxtCono().getText());
+					phonenumber=getTxtCono().getText();
 					point = Integer.parseInt(getTxtPoint().getText());
 					usePoint = Integer.parseInt(getTxtUsePoint().getText());
 					
@@ -205,7 +220,8 @@ public class UsePoints extends JDialog{
 //						CafeDAO.getInstance().updatePoint(cDTO, cno);
 //						main.getOrderList().clear();
 //						main.refreshOrderList();
-						paymentDialog.setCno(customerNum);
+						paymentDialog.setCno(customerDTO.getCno());
+						paymentDialog.setPhonenumber(phonenumber);
 						paymentDialog.setPoint(customerPoint);
 
 						paymentDialog.setUsePoint(usePoint);
@@ -236,6 +252,15 @@ public class UsePoints extends JDialog{
 			});
 		}
 		return btnCancel;
+	}
+	
+	private void validatePhoneNumber() throws UnsuitableInputException {
+	
+		if(!Pattern.matches(PHONENUMBER_FORMAT, txtCono.getText().trim()))
+			throw new UnsuitableInputException("전화번호('-'없이 입력) 형식이 잘못 입력되었습니다");
+	
+		
+	
 	}
 	
 	private void locationCenter() {

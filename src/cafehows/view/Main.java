@@ -160,9 +160,6 @@ public class Main extends JFrame{
 							for(MenuDTO dto2 : orderList) {
 								if(dto2.getMname().equals(menuDTO.getMname()
 										)&&dto2.getIce()==menuDTO.getIce()) {
-									System.out.print("main 결과");
-									System.out.println(dto2.getMname().equals(menuDTO.getMname()
-										)&&dto2.getIce()==menuDTO.getIce());
 									dto2.setCount(dto2.getCount()+1);
 									refreshOrderList();
 									return;
@@ -265,50 +262,6 @@ public class Main extends JFrame{
 					}
 				}		
 			});
-			
-//			TableCellEditor editor = new DefaultCellEditor(new JTextField());
-//			editor.addCellEditorListener(new CellEditorListener() {
-//			@Override
-//			public void editingStopped(ChangeEvent e) {
-//			// 수정을 끝내고 enter 를 입력하면 ChangeEvent가 도착한다.
-//			String value = (String) editor.getCellEditorValue();
-//			TableModel model = orderTable.getModel();
-//			int rowIdx = orderTable.getSelectedRow();
-//			int colIdx =orderTable.getSelectedColumn();
-//
-//			//현재 선택된 셀에서 편집이 이루어졌으므로 모델의 값을 갱신해준다.
-//			model.setValueAt(value, rowIdx, colIdx);
-//			}
-//
-//			@Override
-//			public void editingCanceled(ChangeEvent e) {
-//			// TODO Auto-generated method stub
-//
-//			}
-//			});
-//	
-//			}
-			
-		//	refreshMenu();
-			
-//			orderTable.getColumn("메뉴명").setPreferredWidth(50);
-//			orderTable.getColumn("수량").setPreferredWidth(50);
-//			orderTable.getColumn("가격").setPreferredWidth(20);
-//			orderTable.getColumn("아이스/핫").setPreferredWidth(20);
-			
-//			CenterTableCellRenderer ctcr = new CenterTableCellRenderer();
-//			menuTable.getColumn("메뉴명").setCellRenderer(ctcr);
-//			menuTable.getColumn("가격").setCellRenderer(ctcr);
-//			
-//			menuTable.addMouseListener(new MouseAdapter() {
-//				public void mouseClicked(MouseEvent e) {
-//					int rowIndex = menuTable.getSelectedRow();
-//					if(rowIndex !=-1) {
-//						int bno = (int)menuTable.getValueAt(rowIndex, 0);
-//						
-//					}
-//				}		
-//			});
 		}
 			
 		return orderTable;
@@ -528,6 +481,9 @@ public class Main extends JFrame{
 		SwingUtilities.invokeLater(() -> {
 			Main main = new Main();
 			main.setVisible(true);
+			CafeDAO.getInstance().deleteCustomerWage();
+			CafeDAO.getInstance().insertCustomerWage();
+		
 		});
 	}
 }
