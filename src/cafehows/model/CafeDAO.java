@@ -155,6 +155,45 @@ public class CafeDAO {
 		try {
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				MenuDTO item = new MenuDTO();
+				item.setDate(rs.getDate(1));
+				item.setMno(rs.getInt(2));
+				item.setCumCount(rs.getInt(3));
+				String sql2 = "select mname from menu where mno = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(2));
+				
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setMname(rs2.getString(1));}
+				else {}
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
+	}
+	public List<MenuDTO> getDailyMenuSales(String start, String end) {
+		connect();
+		sql = """
+			 	select date(date),mno,sum(count) 
+				from menusales 
+                WHERE DATE(date) >= STR_TO_DATE(?, '%Y-%m-%d')
+				AND DATE(date) <= STR_TO_DATE(?, '%Y-%m-%d')
+				group by mno,date
+		
+				""";
+		List<MenuDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, start);
+			pstmt.setString(2, end);
+			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				MenuDTO item = new MenuDTO();
 				item.setDate(rs.getDate(1));
@@ -182,11 +221,11 @@ public class CafeDAO {
 		sql = """
 				SELECT DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
 				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
-				DATE_FORMAT(date, '%Y%U') AS date,
+				DATE_FORMAT(date, '%Y%U') AS datecolumn,
 				mno,
 				sum(count)
 				FROM menusales
-				GROUP BY date,mno;
+				GROUP BY datecolumn,mno;
 		
 				""";
 		List<MenuDTO> items = new ArrayList<>();
@@ -215,19 +254,138 @@ public class CafeDAO {
 			e.printStackTrace();
 		}
 		
-		return items;
-	}	public List<MenuDTO> getMonthlyMenuSales() {
+		return items;}	
+	public List<MenuDTO> getWeeklyMenuSales(int year, int month) {
 		connect();
 		sql = """
-				SELECT MONTH(date) AS date,mno,
+				SELECT DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+				DATE_FORMAT(date, '%Y%U') AS datecolumn,
+				mno,
 				sum(count)
 				FROM menusales
-				GROUP BY date,mno
+                where (year(date)= ? and month(date)=? )
+				GROUP BY datecolumn,mno;
+		
+				""";
+		List<MenuDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, year);
+			pstmt.setInt(2, month);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				MenuDTO item = new MenuDTO();
+				item.setStartdate(rs.getDate(1));
+				item.setEnddate(rs.getDate(2));
+				item.setMno(rs.getInt(4));
+				item.setCumCount(rs.getInt(5));
+				String sql2 = "select mname from menu where mno = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(4));
+				
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setMname(rs2.getString(1));}
+				else {}
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;}	
+//	public List<MenuDTO> getWeeklyMenuSales() {
+//		connect();
+//		sql = """
+//				SELECT DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+//				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
+//				DATE_FORMAT(date, '%Y%U') AS date,
+//				mno,
+//				sum(count)
+//				FROM menusales
+//				GROUP BY date,mno;
+//		
+//				""";
+//		List<MenuDTO> items = new ArrayList<>();
+//		try {
+//			pstmt = conn.prepareStatement(sql);
+//		//	pstmt.setString(1, date);
+//			rs = pstmt.executeQuery();
+//			while(rs.next()) {
+//				MenuDTO item = new MenuDTO();
+//				item.setStartdate(rs.getDate(1));
+//				item.setEnddate(rs.getDate(2));
+//				item.setMno(rs.getInt(4));
+//				item.setCumCount(rs.getInt(5));
+//				String sql2 = "select mname from menu where mno = ? ";
+//				pstmt = conn.prepareStatement(sql2);
+//				pstmt.setInt(1, rs.getInt(4));
+//				
+//				ResultSet rs2 = pstmt.executeQuery();
+//				if(rs2.next()) {
+//				item.setMname(rs2.getString(1));}
+//				else {}
+//				items.add(item);
+//			}
+//			close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return items;}	
+	
+	public List<MenuDTO> getMonthlyMenuSales() {
+		connect();
+		sql = """
+				SELECT MONTH(date) AS datecolumn,mno,
+				sum(count)
+				FROM menusales
+				GROUP BY datecolumn,mno
 				""";
 		List<MenuDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
 		//	pstmt.setString(1, date);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				MenuDTO item = new MenuDTO();
+				item.setMonth(rs.getString(1));
+				item.setMno(rs.getInt(2));
+				item.setCumCount(rs.getInt(3));
+				String sql2 = "select mname from menu where mno = ? ";
+				pstmt = conn.prepareStatement(sql2);
+				pstmt.setInt(1, rs.getInt(2));
+				
+				ResultSet rs2 = pstmt.executeQuery();
+				if(rs2.next()) {
+				item.setMname(rs2.getString(1));}
+				else {}
+				items.add(item);
+			}
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return items;
+	}
+	
+	public List<MenuDTO> getMonthlyMenuSales(int year,int month) {
+		connect();
+		sql = """
+			   	SELECT MONTH(date) AS datecolumn,mno,
+				sum(count)
+				FROM menusales
+                where year(date)=2024 and month(date)=2
+				GROUP BY datecolumn,mno;
+				""";
+		List<MenuDTO> items = new ArrayList<>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, year);
+			pstmt.setInt(2, month);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				MenuDTO item = new MenuDTO();
