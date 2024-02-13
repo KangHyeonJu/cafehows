@@ -449,7 +449,6 @@ public class Main extends JFrame{
 	}
 	
 	public void refreshTab() {
-		System.out.println("실행되니");
 		Main.this.menuTab.removeAll();
 		Main.this.remove(menuTab);
 		tabPanelList.clear();

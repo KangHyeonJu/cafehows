@@ -102,7 +102,7 @@ public class SendMessage extends JDialog{
 	
 	public JButton getBtnOk() {
 		if(btnOk == null) {
-			btnOk = new JButton();
+			btnOk = new RoundedButton();
 			btnOk.setText("전송");
 			btnOk.addActionListener(new ActionListener() {
 				@Override
@@ -117,7 +117,7 @@ public class SendMessage extends JDialog{
 	
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("닫기");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override

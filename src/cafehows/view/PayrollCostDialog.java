@@ -229,8 +229,8 @@ public class  PayrollCostDialog extends JDialog{
 		centerPanel.add(getEDate());
 		centerPanel.add(getEHour());
 		centerPanel.add(getEWage());
-		tab2Panel.add(centerPanel,BorderLayout.CENTER);
-		tab2Panel.add(getTab2PSouth(),BorderLayout.SOUTH);
+		tab2Panel.add(centerPanel,BorderLayout.NORTH);
+		tab2Panel.add(getTab2PSouth(),BorderLayout.CENTER);
 		
 		
 		return tab2Panel;

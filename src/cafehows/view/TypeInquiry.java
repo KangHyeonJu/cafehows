@@ -94,7 +94,7 @@ public class TypeInquiry extends JDialog{
 	}
 	public JButton getBtnModify() {
 		if(btnModify == null) {
-			btnModify = new JButton();
+			btnModify = new RoundedButton();
 			btnModify.setText("수정");
 			btnModify.addActionListener(new ActionListener() {
 				@Override
@@ -115,7 +115,7 @@ public class TypeInquiry extends JDialog{
 	
 	public JButton getBtnHide() {
 		if(btnHide == null) {
-			btnHide = new JButton();
+			btnHide = new RoundedButton();
 			btnHide.setText("숨김");
 			btnHide.addActionListener(new ActionListener() {
 				
@@ -139,7 +139,7 @@ public class TypeInquiry extends JDialog{
 	
 	public JButton getBtnShow() {
 		if(btnShow == null) {
-			btnShow = new JButton();
+			btnShow = new RoundedButton();
 			btnShow.setText("해제");
 			btnShow.addActionListener(new ActionListener() {
 				
@@ -230,7 +230,7 @@ public class TypeInquiry extends JDialog{
 	
 	public JButton getBtnAdd() {
 		if(btnAdd == null) {
-			btnAdd = new JButton();
+			btnAdd = new RoundedButton();
 			btnAdd.setText("추가");
 			btnAdd.addActionListener(new ActionListener() {
 				@Override
@@ -248,7 +248,7 @@ public class TypeInquiry extends JDialog{
 	
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override
