@@ -108,7 +108,6 @@ public class CustomerModify extends JDialog{
 		if(pSouth == null) {
 			pSouth = new JPanel();
 
-			pSouth.setBackground(Color.WHITE);
 			pSouth.add(getSaveBtn());
 		//	pSouth.add(getBtnDelete());
 

@@ -45,7 +45,7 @@ public class UsePoints extends JDialog{
 		this.paymentDialog = paymentDialog;
 		this.main =main;
 		this.setModal(true);
-		this.setTitle("회원 포인트 사용");					
+		this.setTitle("회원 포인트 적립/사용");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(350, 200);
 		
@@ -109,10 +109,11 @@ public class UsePoints extends JDialog{
 	
 	public JButton getSerachBtn() {
 		if (searchBtn == null) {
-			searchBtn = new JButton();
-			JLabel btnImage = new JLabel();
-			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
-			searchBtn.add(btnImage);
+			searchBtn = new RoundedButton();
+			searchBtn.setText("조회");
+//			JLabel btnImage = new JLabel();
+//			btnImage.setIcon(new ImageIcon(getClass().getResource("search.png")));
+//			searchBtn.add(btnImage);
 			searchBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -183,7 +184,7 @@ public class UsePoints extends JDialog{
 	
 	public JButton getBtnOk() {
 		if(btnOk == null) {
-			btnOk = new JButton();
+			btnOk = new RoundedButton();
 			btnOk.setText("확인");
 			btnOk.addActionListener(new ActionListener() {
 				@Override
@@ -242,7 +243,7 @@ public class UsePoints extends JDialog{
 	
 	public JButton getBtnCancel() {
 		if(btnCancel == null) {
-			btnCancel = new JButton();
+			btnCancel = new RoundedButton();
 			btnCancel.setText("취소");
 			btnCancel.addActionListener(new ActionListener() {
 				@Override

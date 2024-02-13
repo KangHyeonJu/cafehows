@@ -1506,7 +1506,7 @@ public class CafeDAO {
 				
 			}
 			if(rows == 1) {
-				JOptionPane.showMessageDialog(null,"주문번호"+ono+"인 주문 결제되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null,"주문번호"+ono+" 결제되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
 			}else {
 				JOptionPane.showMessageDialog(null,"주문목록에 추가할 수 없습니다","확인",JOptionPane.WARNING_MESSAGE);
 			}
