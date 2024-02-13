@@ -118,6 +118,39 @@ public class MenuDTO {
 	public void setVisibility(int visibility) {
 		this.visibility = visibility;
 	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public Date getStartdate() {
+		return startdate;
+	}
+
+	public void setStartdate(Date startdate) {
+		this.startdate = startdate;
+	}
+
+	public Date getEnddate() {
+		return enddate;
+	}
+
+	public void setEnddate(Date enddate) {
+		this.enddate = enddate;
+	}
+
+	public String getMonth() {
+		return month;
+	}
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
+	
 	
 	
 

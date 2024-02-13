@@ -35,6 +35,13 @@ public class CustomerDTO {
 	public void setVisibility(int visibility) {
 		this.visibility = visibility;
 	}
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+	
 	
 //	public void setPhoneNumber(int phoneNumber) {
 //		this.phoneNumber = phoneNumber;

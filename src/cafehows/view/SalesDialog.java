@@ -63,7 +63,7 @@ public class SalesDialog extends JDialog{
 			if(salesTab == null) {
 				salesTab = new JTabbedPane();
 				salesTab.setTabPlacement(JTabbedPane.TOP);
-				salesTab.addTab("매출액", getJTabbedPane1());
+				salesTab.addTab("매출액", getTab1Panel11());
 				salesTab.addTab("메뉴별", getJTabbedPane2());
 				salesTab.addTab("운영비", getTab3Panel());
 				}
