@@ -341,7 +341,7 @@ public class SalesDialog extends JDialog{
 				menuSalesTable1.getTableHeader().setReorderingAllowed(false);
 				menuSalesTable1.getTableHeader().setResizingAllowed(false);
 				DefaultTableModel tableModel = (DefaultTableModel)menuSalesTable1.getModel();
-				tableModel.addColumn("기간");
+				tableModel.addColumn("일자");
 				tableModel.addColumn("메뉴명");
 				tableModel.addColumn("판매량");
 				 setDailyMenuSalesTable();
@@ -382,7 +382,7 @@ public class SalesDialog extends JDialog{
 				menuSalesTable3.getTableHeader().setReorderingAllowed(false);
 				menuSalesTable3.getTableHeader().setResizingAllowed(false);
 				DefaultTableModel tableModel = (DefaultTableModel)menuSalesTable3.getModel();
-				tableModel.addColumn("기간");
+				tableModel.addColumn("월");
 				tableModel.addColumn("메뉴명");
 				tableModel.addColumn("판매량");
 	

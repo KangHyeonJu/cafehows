@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import cafehows.model.CafeDAO;
@@ -95,7 +96,7 @@ public class  PayrollCostDialog extends JDialog{
 			searchInput = new JTextField(15);
 			searchInput.addKeyListener(new KeyAdapter() {
 				@Override
-				public void keyReleased(KeyEvent e) {
+				public	 void keyReleased(KeyEvent e) {
 					//String enoText = searchInput.getText();
 					//키를 떼었을 때
 				//	searchKeyword(enoText);
@@ -189,6 +190,7 @@ public class  PayrollCostDialog extends JDialog{
 			tableModel.addColumn("상태");
 			
 			refreshEmployeeTable();
+			resizeColumnWidth(employeeTable);
 			
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
@@ -312,9 +314,15 @@ public class  PayrollCostDialog extends JDialog{
 				employee.setHour(Integer.parseInt(txtEHour.getText()));
 				employee.setWage(Integer.parseInt(txtEWage.getText()));
 				
+				txtENo.setText("");
+				txtEDate.setText("");
+				txtEHour.setText("");
+				txtEWage.setText("");
+				
+				
 				CafeDAO.getInstance().insertEmployeeHour(employee);
 				payrollCostDialog.setEmployeeHourTable();
-				dispose();
+				
 				
 			}
 		});
@@ -413,7 +421,6 @@ public class  PayrollCostDialog extends JDialog{
 			employeeWageTable.setAutoCreateRowSorter(true);
 			employeeWageTable.getTableHeader().setReorderingAllowed(false);
 			employeeWageTable.getTableHeader().setResizingAllowed(false);
-			
 			DefaultTableModel tableModel = (DefaultTableModel)employeeWageTable.getModel();
 			tableModel.addColumn("직원번호");
 			tableModel.addColumn("직원이름");
@@ -421,7 +428,9 @@ public class  PayrollCostDialog extends JDialog{
 			tableModel.addColumn("급여");
 			tableModel.addColumn("주휴수당");
 			tableModel.addColumn("총 급여");
+		
 			setEmployeeWageTable();
+			resizeColumnWidth(employeeWageTable);
 			
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
@@ -437,7 +446,15 @@ public class  PayrollCostDialog extends JDialog{
 	public void setEmployeeWageTable() {
 		DefaultTableModel tableModel = (DefaultTableModel) employeeWageTable.getModel();
 		tableModel.setNumRows(0);
+		int count=0;
 		for(EmployeeDTO dto : CafeDAO.getInstance().getEmployeeWageItems()) {
+			count++;
+			if(count==CafeDAO.getInstance().getEmployeeWageItems().size())
+			{	
+				Object[] rowData2 = {"총합",dto.getEname(),"",dto.getWage(),dto.getHolidayPay(),dto.getTotalSalary()};
+				tableModel.addRow(rowData2);
+				break;
+			}
 			String eno = dto.getEno()==0 ? "합계" : Integer.toString(dto.getEno());
 			Object[] rowData = {eno,dto.getEname(),dto.getStartDate()+"~"+dto.getEndDate(),dto.getWage(),dto.getHolidayPay(),dto.getTotalSalary()};
 			tableModel.addRow(rowData);
@@ -519,6 +536,18 @@ public class  PayrollCostDialog extends JDialog{
 			throw new UnsuitableInputException("yyyy-MM-dd 형식이 잘못 입력되었습니다");
 	
 	
+	}
+	public void resizeColumnWidth(JTable table) {
+	    final TableColumnModel columnModel = table.getColumnModel();
+	    for (int column = 0; column < table.getColumnCount(); column++) {
+	        int width = 50; // Min width
+	        for (int row = 0; row < table.getRowCount(); row++) {
+	            TableCellRenderer renderer = table.getCellRenderer(row, column);
+	            Component comp = table.prepareRenderer(renderer, row, column);
+	            width = Math.max(comp.getPreferredSize().width +1 , width);
+	        }
+	        columnModel.getColumn(column).setPreferredWidth(width);
+	    }
 	}
 	
 	private void locationCenter() {

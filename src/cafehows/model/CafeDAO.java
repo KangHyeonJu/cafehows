@@ -753,39 +753,7 @@ public class CafeDAO {
 		return monthlySales;
 		
 	}
-	
-	
-//	public int getWeeklyPayrollCost(int year,int month){
-//		connect();
-//		int monthlyPayrollCost=0;
-//		sql = """
-//				SELECT DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-2) DAY), '%Y/%m/%d') as start,
-//				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-8) DAY), '%Y/%m/%d') as end,
-//				DATE_FORMAT(date, '%Y%U') AS date,
-//				sum(hour*wage)
-//				FROM employeehour
-//				GROUP BY eno
-//				;
-//				""";
-//		List<OrderDTO> items = new ArrayList<>();
-//		try {
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setInt(1, year);
-//			pstmt.setInt(2, month);
-//			rs = pstmt.executeQuery();
-//			if(rs.next()) {
-//				monthlySales =rs.getInt(1);
-//				
-//			}
-//			close();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return monthlySales;
-//		
-//	}
-//	
-//	
+
 	public int getMonthlyPayrollCost(int year,int month){
 		connect();
 		int monthlyPayrollCost=0;
@@ -969,44 +937,7 @@ public class CafeDAO {
 		return items;
 	}
 	
-//	public List<EmployeeDTO> getEmployeeWageItems() {
-//		connect();
-//		sql = """
-//				select eno,startdate,enddate,sum(wage),sum(holidaypay)
-//				from employeewage
-//				group by startdate,eno
-//				with rollup
-//				""";
-//	
-//		List<EmployeeDTO> items = new ArrayList<>();
-//		try {
-//			pstmt = conn.prepareStatement(sql);
-//			rs = pstmt.executeQuery();
-//			while(rs.next()) {
-//				EmployeeDTO item = new EmployeeDTO();
-//				item.setEno(rs.getInt(1));
-//				item.setStartDate(rs.getDate(2));
-//				item.setEndDate(rs.getDate(3));
-//				item.setWage(rs.getInt(4));
-//				item.setHolidayPay(rs.getInt(5));
-//				item.setTotalSalary(item.getWage()+item.getHolidayPay());
-//				
-//				String sql2 = "select ename from employee where eno=? ";
-//				pstmt = conn.prepareStatement(sql2);
-//				pstmt.setInt(1, rs.getInt(1));
-//				ResultSet rs2 = pstmt.executeQuery();
-//				if(rs2.next()) {
-//				item.setEname(rs2.getString(1));}
-//				
-//				items.add(item);
-//			}
-//			close();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return items;
-//	}
-	
+
 	public List<EmployeeDTO> getEmployeeWageItems() {
 		connect();
 		sql = """
