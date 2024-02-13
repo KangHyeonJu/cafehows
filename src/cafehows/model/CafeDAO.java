@@ -456,7 +456,7 @@ public class CafeDAO {
 	
 	public List<CustomerDTO> getCustomerState() {
 		connect();
-		sql = "select * from customer order by cno ";
+		sql = "select * from customer order by phoneNumber;";
 		List<CustomerDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -1164,15 +1164,16 @@ public class CafeDAO {
 	public void deleteCustomer(String phonenumber) {
 		connect();
 		try {
-			sql = "update customer set"
-					+"visibility = 0"
-					+"where phonenumber=? and visibility =1";
+			sql = "update customer set "
+					+"visibility = 0 "
+					+"where phonenumber=? and visibility =1;";
 			
 			pstmt = conn.prepareStatement(sql);
 		
 			pstmt.setString(1, phonenumber);
 			
 			pstmt.executeUpdate();
+			JOptionPane.showMessageDialog(null,"탈퇴되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
