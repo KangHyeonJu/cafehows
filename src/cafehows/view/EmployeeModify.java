@@ -38,7 +38,7 @@ public class EmployeeModify extends JDialog{
 	
 	public EmployeeModify(PayrollCostDialog payrollCostDialog) {
 		this.payrollCostDialog = payrollCostDialog;
-		this.setTitle("직원-등록/수정");					
+		this.setTitle("직원 등록/수정");					
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(300, 200);
 		this.setModal(true); //상위 frame 클릭 불가
@@ -65,7 +65,7 @@ public class EmployeeModify extends JDialog{
 		label.setPreferredSize(new Dimension(50,30));
 	    pENo.add(label);
 	    txtENo = new JTextField();
-	    txtENo.setPreferredSize(new Dimension(50,30));
+	    txtENo.setPreferredSize(new Dimension(70,30));
 		pENo.add(txtENo);
 
 	return pENo;
@@ -77,7 +77,7 @@ public class EmployeeModify extends JDialog{
 		label.setPreferredSize(new Dimension(50,30));
 	    pEName.add(label);
 	    txtEName = new JTextField();
-		txtEName.setPreferredSize(new Dimension(200,30));
+		txtEName.setPreferredSize(new Dimension(70,30));
 		pEName.add(txtEName);
 
 	return pEName;
