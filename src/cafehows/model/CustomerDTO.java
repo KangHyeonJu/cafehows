@@ -36,8 +36,13 @@ public class CustomerDTO {
 		this.visibility = visibility;
 	}
 	
-	
-	
+//	public void setPhoneNumber(int phoneNumber) {
+//		this.phoneNumber = phoneNumber;
+//	}
+//	
+//	public int getPhoneNumber() {
+//		return phoneNumber;
+//	}
 }
 //boolean b = (i != 0);
 

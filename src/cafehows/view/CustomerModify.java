@@ -70,7 +70,7 @@ public class CustomerModify extends JDialog{
 	public JPanel getNotice() {
 		if(pNotice == null){
 			pNotice = new JPanel();
-			pNotice.add(new JLabel("010을 제외한 번호 8자리를 입력해주세요."));
+			pNotice.add(new JLabel("전화번호를 입력해주세요."));
 		}
 		return pNotice;
 	}
@@ -206,7 +206,7 @@ public class CustomerModify extends JDialog{
 	
 	private JButton getSaveBtn() {
 		if(state == CustomerViewState.CREATE) {
-        	saveBtn = new JButton("추가");
+        	saveBtn = new RoundedButton("추가");
 	        saveBtn.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
@@ -218,6 +218,8 @@ public class CustomerModify extends JDialog{
 						customerDTO.setPhoneNumber(txtCustomerNum.getText().trim());
 						CafeDAO.getInstance().insertCustomer(customerDTO);
 						JOptionPane.showMessageDialog(null,"등록되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
+						customerDialog.refreshTable();
+						CustomerModify.this.dispose();
 	            		
 	            	}catch (UnsuitableInputException ue) {
 						JOptionPane.showMessageDialog(null,ue.getMessage(),"확인",JOptionPane.WARNING_MESSAGE);
@@ -226,7 +228,7 @@ public class CustomerModify extends JDialog{
 	        });
     	}
         if(state == CustomerViewState.UPDATE) {
-        	saveBtn = new JButton("수정");
+        	saveBtn = new RoundedButton("수정");
 	        saveBtn.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
@@ -236,6 +238,8 @@ public class CustomerModify extends JDialog{
 						customerDTO.setPhoneNumber(customerDialog.getPhoneNumber());
 						CafeDAO.getInstance().updateCustomer(customerDTO,txtCustomerNum.getText().trim());
 	            		JOptionPane.showMessageDialog(null,"수정되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
+	            		customerDialog.refreshTable();
+						CustomerModify.this.dispose();
 		            }catch (UnsuitableInputException ue) {
 						JOptionPane.showMessageDialog(null,ue.getMessage(),"확인",JOptionPane.WARNING_MESSAGE);
 					}
