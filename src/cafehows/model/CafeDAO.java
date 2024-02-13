@@ -214,11 +214,11 @@ public class CafeDAO {
 		
 		return items;
 	}
-	public List<MenuDTO> getWeeklyMenuSales(String date) {
+	public List<MenuDTO> getWeeklyMenuSales() {
 		connect();
 		sql = """
-				SELECT DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y/%m/%d') as start,
-				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y/%m/%d') as end,
+				SELECT DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-1) DAY), '%Y-%m-%d') as start,
+				DATE_FORMAT(DATE_SUB(date, INTERVAL (DAYOFWEEK(date)-7) DAY), '%Y-%m-%d') as end,
 				DATE_FORMAT(date, '%Y%U') AS date,
 				mno,
 				sum(count)
@@ -229,7 +229,7 @@ public class CafeDAO {
 		List<MenuDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, date);
+		//	pstmt.setString(1, date);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				MenuDTO item = new MenuDTO();
@@ -253,19 +253,18 @@ public class CafeDAO {
 		}
 		
 		return items;
-	}	public List<MenuDTO> getMonthlyMenuSales(String date) {
+	}	public List<MenuDTO> getMonthlyMenuSales() {
 		connect();
 		sql = """
-				SELECT MONTH(date) AS date,
+				SELECT MONTH(date) AS date,mno,
 				sum(count)
 				FROM menusales
-				GROUP BY date,mno;
-		
+				GROUP BY date,mno
 				""";
 		List<MenuDTO> items = new ArrayList<>();
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, date);
+		//	pstmt.setString(1, date);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				MenuDTO item = new MenuDTO();

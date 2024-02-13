@@ -34,7 +34,7 @@ public class SalesDialog extends JDialog{
 		private JTabbedPane salesTab;
 		private JPanel tab1Panel,tab2Panel,tab3Panel,periodPanel,salesChart;
 		private JPanel pNorth,pCenter,pSouth;
-		private JTable orderListTable,dailySalesTable,menuSalesTable;
+		private JTable orderListTable,dailySalesTable,menuSalesTable1,menuSalesTable2,menuSalesTable3;
 		private JTextField startPeriod,endPeriod;
 		private JButton enterBtn;
 		private ArrayList<MenuDTO> menuList= new ArrayList<>();
@@ -58,7 +58,7 @@ public class SalesDialog extends JDialog{
 				salesTab = new JTabbedPane();
 				salesTab.setTabPlacement(JTabbedPane.TOP);
 				salesTab.addTab("매출액", getTab1Panel());
-				salesTab.addTab("메뉴별", getTab2Panel());
+				salesTab.addTab("메뉴별", getJTabbedPane2());
 				salesTab.addTab("운영비", getTab3Panel());
 				}
 			return salesTab;
@@ -161,54 +161,120 @@ public class SalesDialog extends JDialog{
 
 				JTabbedPane menuSalesTab = new JTabbedPane();
 				menuSalesTab.setTabPlacement(JTabbedPane.TOP);
-				menuSalesTab.addTab("기간 선택", getTab1Panel());
-				menuSalesTab.addTab("주간", getTab2Panel());
-				menuSalesTab.addTab("월간", getTab3Panel());
+				menuSalesTab.addTab("일간", getTab1Panel1());
+				menuSalesTab.addTab("주간", getTab1Panel2());
+				menuSalesTab.addTab("월간", getTab1Panel3());
 	
 			return menuSalesTab;
 			}
+		private JPanel getTab1Panel1() {
+			
+			JPanel tab2Panel = new JPanel();
+		
+			tab2Panel.setLayout(new BorderLayout());
+			tab2Panel.add(new JScrollPane(getMenuSalesTable1()),BorderLayout.CENTER);
+//			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
+			
+		
+		
+		return tab2Panel;
+	}
 		private JPanel getTab1Panel2() {
 		
-				JPanel tab1Panel = new JPanel();
-				tab1panel.add()
+				JPanel tab2Panel = new JPanel();
 				tab2Panel.setLayout(new BorderLayout());
-				tab2Panel.add(new JScrollPane(getMenuSalesTable()),BorderLayout.CENTER);
+				tab2Panel.add(new JScrollPane(getMenuSalesTable2()),BorderLayout.CENTER);
 	//			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
 				
-			
-			}
-			return tab2Panel;
-		}
 		
-		private JPanel getTab2Panel() {
-			if(tab2Panel == null) {
-				tab2Panel = new JPanel();
-				tab2panel.add()
-				tab2Panel.setLayout(new BorderLayout());
-				tab2Panel.add(new JScrollPane(getMenuSalesTable()),BorderLayout.CENTER);
-	//			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
-				
 			
-			}
 			return tab2Panel;
 		}
-		public JTable getMenuSalesTable() {
-			if(menuSalesTable==null) {
-				menuSalesTable = new JTable() {
+		private JPanel getTab1Panel3() {
+			
+			JPanel tab2Panel = new JPanel();
+		
+			tab2Panel.setLayout(new BorderLayout());
+			tab2Panel.add(new JScrollPane(getMenuSalesTable3()),BorderLayout.CENTER);
+//			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
+			
+	
+		
+		return tab2Panel;
+	}
+	
+//		private JPanel getTab2Panel() {
+//			if(tab2Panel == null) {
+//				tab2Panel = new JPanel();
+//				tab2Panel.setLayout(new BorderLayout());
+//				tab2Panel.add(new JScrollPane(getMenuSalesTable()),BorderLayout.CENTER);
+//	//			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
+//				
+//			
+//			}
+//			return tab2Panel;
+//		}
+		public JTable getMenuSalesTable1() {
+			if(menuSalesTable1==null) {
+				menuSalesTable1 = new JTable() {
 					@Override
 					public boolean isCellEditable(int row, int col) {
 						return false;
 					}
 				};
-				menuSalesTable.setAutoCreateRowSorter(true);
-				menuSalesTable.getTableHeader().setReorderingAllowed(false);
-				menuSalesTable.getTableHeader().setResizingAllowed(false);
-				DefaultTableModel tableModel = (DefaultTableModel)menuSalesTable.getModel();
+				menuSalesTable1.setAutoCreateRowSorter(true);
+				menuSalesTable1.getTableHeader().setReorderingAllowed(false);
+				menuSalesTable1.getTableHeader().setResizingAllowed(false);
+				DefaultTableModel tableModel = (DefaultTableModel)menuSalesTable1.getModel();
+				tableModel.addColumn("기간");
 				tableModel.addColumn("메뉴명");
 				tableModel.addColumn("판매량");
-				setMenuSalesTable();
+				 setDailyMenuSalesTable();
+
 			}
-			return menuSalesTable;
+			return menuSalesTable1;
+		}
+		public JTable getMenuSalesTable2() {
+			if(menuSalesTable2==null) {
+				menuSalesTable2 = new JTable() {
+					@Override
+					public boolean isCellEditable(int row, int col) {
+						return false;
+					}
+				};
+				menuSalesTable2.setAutoCreateRowSorter(true);
+				menuSalesTable2.getTableHeader().setReorderingAllowed(false);
+				menuSalesTable2.getTableHeader().setResizingAllowed(false);
+				DefaultTableModel tableModel = (DefaultTableModel)menuSalesTable2.getModel();
+				tableModel.addColumn("기간");
+				tableModel.addColumn("메뉴명");
+				tableModel.addColumn("판매량");
+	
+				setWeeklyMenuSalesTable();
+	
+			}
+			return menuSalesTable2;
+		}
+		public JTable getMenuSalesTable3() {
+			if(menuSalesTable3==null) {
+				menuSalesTable3 = new JTable() {
+					@Override
+					public boolean isCellEditable(int row, int col) {
+						return false;
+					}
+				};
+				menuSalesTable3.setAutoCreateRowSorter(true);
+				menuSalesTable3.getTableHeader().setReorderingAllowed(false);
+				menuSalesTable3.getTableHeader().setResizingAllowed(false);
+				DefaultTableModel tableModel = (DefaultTableModel)menuSalesTable3.getModel();
+				tableModel.addColumn("기간");
+				tableModel.addColumn("메뉴명");
+				tableModel.addColumn("판매량");
+	
+				setMonthlyMenuSalesTable();
+	
+			}
+			return menuSalesTable3;
 		}
 		
 		private JPanel getTab3Panel() {
@@ -295,13 +361,46 @@ public class SalesDialog extends JDialog{
 			}
 		}
 		//메뉴별 탭
+		
+//		public void setMenuSalesTable() {
+//			DefaultTableModel tableModel = (DefaultTableModel) menuSalesTable.getModel();
+//			tableModel.setNumRows(0);
+//	
+//			for(MenuDTO dto :CafeDAO.getInstance().getDailyMenuSales()) {
+//			//	menuList.add(dto);
+//				Object[] rowData = {dto.getMname(),dto.getCumCount()};			
+//				tableModel.addRow(rowData);
+//				
+//			}
 		public void setDailyMenuSalesTable() {
-			DefaultTableModel tableModel = (DefaultTableModel) menuSalesTable.getModel();
+			DefaultTableModel tableModel = (DefaultTableModel) menuSalesTable1.getModel();
 			tableModel.setNumRows(0);
 	
 			for(MenuDTO dto :CafeDAO.getInstance().getDailyMenuSales()) {
 			//	menuList.add(dto);
-				Object[] rowData = {dto.getMname(),dto.getCumCount()};			
+				Object[] rowData = {dto.getDate(),dto.getMname(),dto.getCumCount()};			
+				tableModel.addRow(rowData);
+				
+			}
+		}
+		public void setWeeklyMenuSalesTable() {
+			DefaultTableModel tableModel = (DefaultTableModel) menuSalesTable2.getModel();
+			tableModel.setNumRows(0);
+	
+			for(MenuDTO dto :CafeDAO.getInstance().getWeeklyMenuSales()) {
+			//	menuList.add(dto);
+				Object[] rowData = {dto.getStartdate()+"~"+dto.getEnddate(),dto.getMname(),dto.getCumCount()};			
+				tableModel.addRow(rowData);
+				
+			}
+		}
+		public void setMonthlyMenuSalesTable() {
+			DefaultTableModel tableModel = (DefaultTableModel) menuSalesTable3.getModel();
+			tableModel.setNumRows(0);
+	
+			for(MenuDTO dto :CafeDAO.getInstance().getMonthlyMenuSales()) {
+			//	menuList.add(dto);
+				Object[] rowData = {dto.getMonth(),dto.getMname(),dto.getCumCount()};			
 				tableModel.addRow(rowData);
 				
 			}
