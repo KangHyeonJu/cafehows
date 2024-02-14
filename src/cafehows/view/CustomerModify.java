@@ -240,13 +240,23 @@ public class CustomerModify extends JDialog{
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	            	try {
+	            		
 	            		validatePhoneNumber();
-	    				CustomerDTO customerDTO = new CustomerDTO();
+						CustomerDTO customerDTO = new CustomerDTO();
 						customerDTO.setPhoneNumber(customerDialog.getPhoneNumber());
-						CafeDAO.getInstance().updateCustomer(customerDTO,txtCustomerNum.getText().trim());
-	            		JOptionPane.showMessageDialog(null,"수정되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
-	            		customerDialog.refreshTable();
-						CustomerModify.this.dispose();
+						boolean flag = true;
+						for(CustomerDTO c : CafeDAO.getInstance().getCustomerItems()) {
+							if(c.getPhoneNumber().equals( txtCustomerNum.getText())
+								&&c.getVisibility()==1)
+							{	flag=false;
+								JOptionPane.showMessageDialog(null,"중복 회원이 존재합니다.","확인",JOptionPane.WARNING_MESSAGE);}
+								dispose();}
+						if(flag==true) {
+							CafeDAO.getInstance().updateCustomer(customerDTO,txtCustomerNum.getText().trim());
+		            		JOptionPane.showMessageDialog(null,"수정되었습니다","확인",JOptionPane.PLAIN_MESSAGE);
+						customerDialog.refreshTable();
+						CustomerModify.this.dispose();}
+	            		
 		            }catch (UnsuitableInputException ue) {
 						JOptionPane.showMessageDialog(null,ue.getMessage(),"확인",JOptionPane.WARNING_MESSAGE);
 					}

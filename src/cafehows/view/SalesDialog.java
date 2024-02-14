@@ -328,6 +328,7 @@ public class SalesDialog extends JDialog{
 					public void actionPerformed(ActionEvent e) {
 						monthTemp = comboMonth.getSelectedIndex()+1;
 						refreshWeeklyMenuSalesTable();
+						refreshMonthlyMenuSalesTable();
 						
 						
 					}
@@ -363,17 +364,7 @@ public class SalesDialog extends JDialog{
 		return tab2Panel;
 	}
 	
-//		private JPanel getTab2Panel() {
-//			if(tab2Panel == null) {
-//				tab2Panel = new JPanel();
-//				tab2Panel.setLayout(new BorderLayout());
-//				tab2Panel.add(new JScrollPane(getMenuSalesTable()),BorderLayout.CENTER);
-//	//			tab2Panel.add(new JScrollPane(new SalesChart()),BorderLayout.SOUTH);
-//				
-//			
-//			}
-//			return tab2Panel;
-//		}
+
 		public JTable getMenuSalesTable1() {
 			if(menuSalesTable1==null) {
 				menuSalesTable1 = new JTable() {

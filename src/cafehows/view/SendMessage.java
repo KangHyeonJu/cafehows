@@ -48,11 +48,11 @@ public class SendMessage extends JDialog{
 			recdateTable.setAutoCreateRowSorter(true);
 			
 			DefaultTableModel tableModel = (DefaultTableModel) recdateTable.getModel();
-			tableModel.addColumn("회원번호");
+			tableModel.addColumn("전화번호");
 			tableModel.addColumn("최근방문일");
 
 			for(CustomerDTO dto : CafeDAO.getInstance().getRdcDate()) {
-				Object[] rowData = {dto.getCno(), dto.getRecdate()};
+				Object[] rowData = {dto.getPhoneNumber(), dto.getRecdate()};
 				tableModel.addRow(rowData);
 			}
 			

@@ -246,6 +246,7 @@ public class CustomerDialog extends JDialog{
 						CafeDAO.getInstance().reSign(phoneNumber);
 						// main의 탭 reFresh
 						refreshTable();
+					
 						
 					}
 				}

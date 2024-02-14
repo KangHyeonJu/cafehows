@@ -378,7 +378,7 @@ public class CafeDAO {
 			   	SELECT MONTH(date) AS datecolumn,mno,
 				sum(count)
 				FROM menusales
-                where year(date)=2024 and month(date)=2
+                where year(date)=? and month(date)=?
 				GROUP BY datecolumn,mno;
 				""";
 		List<MenuDTO> items = new ArrayList<>();
@@ -626,6 +626,8 @@ public class CafeDAO {
 		return items;
 
 	}
+	
+
 	
 	public List<OrderDTO> getOrderItems() {
 		connect();
@@ -1482,17 +1484,19 @@ public class CafeDAO {
 	public void updateMenu(MenuDTO menu, String mname) {
 		connect();
 		try {
-			sql = new StringBuilder()
-					.append("UPDATE menu SET ")
-					.append("mname=?, ")
-					.append("price=? ")
-					.append("WHERE mname=?;")
-					.toString();
+			sql ="""
+					update menu set 
+					mname=?, price=?, ice= ?, icechangeable=? 
+					where mname=?
+					
+					""";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, menu.getMname());
 			pstmt.setInt(2, menu.getPrice());
-			pstmt.setString(3, mname);
+			pstmt.setInt(3, menu.getIce());
+			pstmt.setInt(4, menu.getIceChangeable());
+			pstmt.setString(5, mname);
 			
 			pstmt.executeUpdate();
 		}catch (SQLException e) {
@@ -1752,14 +1756,15 @@ public class CafeDAO {
 			if(rows == 1) {
 				JOptionPane.showMessageDialog(null,"재등록이 되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
 			}else {
-				JOptionPane.showMessageDialog(null,"재등록이 불가능 합니다.","확인",JOptionPane.WARNING_MESSAGE);
+			//	JOptionPane.showMessageDialog(null,"재등록이 불가능 합니다.","확인",JOptionPane.WARNING_MESSAGE);
 			}
 			close();
 		}catch(Exception e){
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,"재등록이 불가능 합니다.","확인",JOptionPane.WARNING_MESSAGE);
+			
 		}
 	}
+	
 	
 	//고객 검색창
 	public List<CustomerDTO> searchKeywordCustomer(String phonenumber) {
