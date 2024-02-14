@@ -165,7 +165,9 @@ public class EmployeeModify extends JDialog{
 				else if(statusTemp.equals("휴직")) status=2;
 				else if(statusTemp.equals("퇴직")) status=3;
 				employee.setStatus(status);
-				
+				System.out.println(status);
+				System.out.println(Integer.parseInt(txtENo.getText()));
+				System.out.println(employee);
 				CafeDAO.getInstance().updateEmployee(employee);
 				payrollCostDialog.refreshEmployeeTable();
 				dispose();

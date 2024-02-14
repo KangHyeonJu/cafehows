@@ -1093,16 +1093,16 @@ public class CafeDAO {
 	public void updateEmployee(EmployeeDTO employee) {
 		connect();
 		sql = """
-				update employee 
-				set  ename=?, status=?  
-				where eno = ? ;
+				update employee  
+				set  ename=?,  status=?   
+			 	where eno = ? 
 				""";
 		try {
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, employee.getEname());
 			pstmt.setInt(2, employee.getStatus());
 			pstmt.setInt(3, employee.getEno());
 			int rows = pstmt.executeUpdate();
-	
 			if(rows == 1) {
 				JOptionPane.showMessageDialog(null,"근로자가 수정되었습니다.","확인",JOptionPane.PLAIN_MESSAGE);
 			}else {
@@ -1116,6 +1116,7 @@ public class CafeDAO {
 			
 		}
 	}
+	
 	public int insertEmployee(EmployeeDTO employee) {
 		int eno = 0;
 		connect();
