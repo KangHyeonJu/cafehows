@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
@@ -25,7 +26,7 @@ public class CashDialog extends JDialog{
 	private JPanel pCenter, pSouth, pAmount, pReceived, pChange;
 	private JButton btnOk, btnCancel;
 	private JTextField txtReceived, txtChange;
-	private int ono;
+	private int ono,received;
 	private JLabel onoField;
 	
 	
@@ -72,6 +73,7 @@ public class CashDialog extends JDialog{
 			pReceived = new JPanel();
 			pReceived.add(new JLabel("받은 금액", JLabel.CENTER));
 			pReceived.add(getTxtReceived());
+			pReceived.add(getBtn());
 		}
 		return pReceived;
 	}
@@ -85,6 +87,27 @@ public class CashDialog extends JDialog{
 		}
 		return pChange;
 	}
+	public JButton getBtn() {
+		JButton btn = new JButton("입력");
+		btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				received = Integer.parseInt(getTxtReceived().getText());
+				if(	paymentDialog.getFinalPrice()<=received) {
+					//received = Integer.parseInt(getTxtReceived().getText());
+
+					String change = Integer.toString(received-paymentDialog.getFinalPrice());
+
+					getTxtChange().setText(change);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "금액이 부족합니다.","오류",JOptionPane.ERROR_MESSAGE);
+				}	
+				
+			}
+		});
+		return btn;
+	}
 	
 	public JTextField getTxtReceived() {
 		if(txtReceived==null) {
@@ -92,11 +115,11 @@ public class CashDialog extends JDialog{
 			txtReceived.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int received = Integer.parseInt(getTxtReceived().getText());
-
-					String change = Integer.toString(received-paymentDialog.getFinalPrice());
-
-					getTxtChange().setText(change);
+//					received = Integer.parseInt(getTxtReceived().getText());
+//
+//					String change = Integer.toString(received-paymentDialog.getFinalPrice());
+//
+//					getTxtChange().setText(change);
 				}
 			});
 			
