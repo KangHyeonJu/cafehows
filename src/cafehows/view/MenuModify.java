@@ -200,7 +200,7 @@ public class MenuModify extends JDialog{
 					menuDTO.setMname(txtMenuName.getText());
 					menuDTO.setPrice(Integer.parseInt(txtPrice.getText()));
 
-					int ice = iceTemp.equals("ice") ? 1 : 0;
+					int ice = iceTemp.equals("ICE") ? 1 : 0;
 					menuDTO.setIce(ice);
 					
 					int iceChangeable = iceChangeableTemp.equals("변경가능") ? 1 : 0;

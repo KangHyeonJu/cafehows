@@ -218,7 +218,7 @@ public class AddMenu extends JDialog {
 						menu.setPrice(Integer.parseInt(txtPrice.getText()));
 
 						menu.setCano(CafeDAO.getInstance().getCategoryBykind(kindTemp).getCano());
-						int ice = iceTemp.equals("ice") ? 1 : 0;
+						int ice = iceTemp.equals("ICE") ? 1 : 0;
 						menu.setIce(ice);
 						
 						int iceChangeable = iceChangeableTemp.equals("변경가능") ? 1 : 0;

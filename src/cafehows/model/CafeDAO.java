@@ -1185,6 +1185,7 @@ public class CafeDAO {
 				where eno = ? and date =? ;
 				""";
 		try {
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, employee.getHour());
 			pstmt.setInt(2, employee.getWage());
 			pstmt.setInt(3, employee.getEno());
