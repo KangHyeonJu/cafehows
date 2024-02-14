@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -19,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -26,17 +29,19 @@ import javax.swing.table.TableColumnModel;
 
 import cafehows.model.CafeDAO;
 import cafehows.model.CustomerDTO;
+import cafehows.model.MenuDTO;
 import cafehows.model.OrderDTO;
 
 public class Refund extends JDialog{
 	private JPanel orderNum, pSouth, pNorth, pCenter;
 	private JTextField txtOrderNum;
 	private JButton btnOk, btnCancel, btnOrderList, btnreload;
-	private static JTable OrderListTable;
+	private JTable OrderListTable;
 //	private CafeDAO cafeDao = new CafeDAO();
 	private static List<OrderDTO> orderList = CafeDAO.getInstance().getOrderItems();
 	private static List<CustomerDTO> customerList = CafeDAO.getInstance().getCustomerItems();
 	private CustomerDTO cDto = new CustomerDTO();
+	private int ono;
 	
 	public Refund() {
 		this.setTitle("환불-주문번호입력");					
@@ -138,7 +143,7 @@ public class Refund extends JDialog{
 			btnOk.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int ono = Integer.parseInt(txtOrderNum.getText());
+					//ono = Integer.parseInt(txtOrderNum.getText());
 					
 					OrderDTO orderDTO = CafeDAO.getInstance().getOrderItembyOno(ono);
 			
@@ -184,7 +189,7 @@ public class Refund extends JDialog{
 		}
 		return pCenter;
 	}
-	public static JTable orderTable() {
+	public JTable orderTable() {
 		if(OrderListTable == null) {
 			OrderListTable = new JTable() {
 				@Override
@@ -208,6 +213,25 @@ public class Refund extends JDialog{
 				Object[] rowData = { dto.getOno(), dto.getDate(), dto.getPrice(), dto.getFinalprice() };
 				tableModel.addRow(rowData);
 			}
+			OrderListTable.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					
+		
+		
+					//클릭한 셀의 행 인덱스 받아옴
+					int rowIndex = OrderListTable.getSelectedRow();
+					//menuTable 의 선택한 행 첫번째 칼럼에 있는 mname 받아와서
+					//Menu 에 있는 데이터 찾기
+					if(rowIndex !=-1) {
+					
+						ono = (int) OrderListTable.getValueAt(rowIndex, 0);
+						System.out.println(ono);
+						
+						}
+
+						}
+			
+		});
 			
 			//테이블 내부 중앙정렬
 			DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();

@@ -556,7 +556,7 @@ public class CafeDAO {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, cno);
 			rs = pstmt.executeQuery();
-			int rows = pstmt.executeUpdate();
+		//	int rows = pstmt.executeUpdate();
 			if(rs.next()) {
 				item.setCno(rs.getInt(1));
 				item.setPhoneNumber(rs.getString(2));
@@ -565,7 +565,7 @@ public class CafeDAO {
 				item.setVisibility(rs.getInt(5));
 				
 			}else {
-				JOptionPane.showMessageDialog(null,"존재하지 않는 회원입니다.","확인",JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(null,"비회원 구매기록입니다.","확인",JOptionPane.WARNING_MESSAGE);
 			}
 			close();
 		} catch (SQLException e) {

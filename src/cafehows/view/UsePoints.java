@@ -190,15 +190,15 @@ public class UsePoints extends JDialog{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 
-					int usePoint = Integer.parseInt(getTxtUsePoint().getText());
+					 usePoint = Integer.parseInt(getTxtUsePoint().getText());
 
 					//dispose();
 					
 					phonenumber=getTxtCono().getText();
-					point = Integer.parseInt(getTxtPoint().getText());
+					point = customerDTO.getPoint();
 					usePoint = Integer.parseInt(getTxtUsePoint().getText());
 					
-					if(customerPoint>=usePoint) {
+					if(point >=usePoint) {
 						// orderlist date 저장, ono 생성, cno,price, finalprice 저장
 //						OrderDTO orderDTO= new OrderDTO();
 //						orderDTO.setCno(cno);
@@ -223,7 +223,7 @@ public class UsePoints extends JDialog{
 //						main.refreshOrderList();
 						paymentDialog.setCno(customerDTO.getCno());
 						paymentDialog.setPhonenumber(phonenumber);
-						paymentDialog.setPoint(customerPoint);
+						paymentDialog.setPoint( customerDTO.getPoint());
 
 						paymentDialog.setUsePoint(usePoint);
 						paymentDialog.getPointField().setText(Integer.toString(usePoint));
