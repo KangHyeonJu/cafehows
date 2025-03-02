@@ -73,7 +73,7 @@ CafeHows는 다음과 같은 구조로 설계되었습니다.
 
 CafeHows의 데이터베이스 구조는 다음과 같이 설계되었습니다.
 
-![ERD 다이어그램](images/erd.png)
+![ERD 다이어그램](images/cafehows_page-0009.jpg)
 
 ---
 
